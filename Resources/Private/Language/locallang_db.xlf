@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.0" xmlns:t3="http://typo3.org/schemas/xliff">
+    <file source-language="en" datatype="plaintext" original="messages" date="2018-02-28T00:32:23Z" product-name="filefill">
+        <header />
+        <body>
+            <trans-unit id="sys_file_storage.filefill">
+                <source>File Fill</source>
+            </trans-unit>
+            <trans-unit id="sys_file_storage.filefill.enable">
+                <source>Enable</source>
+            </trans-unit>
+            <trans-unit id="sys_file_storage.filefill.resources">
+                <source>Resources</source>
+            </trans-unit>
+            <trans-unit id="sys_file_storage.filefill.domain">
+                <source>Single domain</source>
+            </trans-unit>
+            <trans-unit id="sys_file_storage.filefill.url">
+                <source>URL</source>
+            </trans-unit>
+            <trans-unit id="sys_file_storage.filefill.sys_domain">
+                <source>Domain records</source>
+            </trans-unit>
+            <trans-unit id="sys_file_storage.filefill.placeholder_com">
+                <source>Placeholder.com</source>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

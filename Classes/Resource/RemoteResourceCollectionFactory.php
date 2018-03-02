@@ -3,6 +3,7 @@ namespace IchHabRecht\Filefill\Resource;
 
 use IchHabRecht\Filefill\Resource\Domain\DomainResource;
 use IchHabRecht\Filefill\Resource\Domain\DomainResourceRepository;
+use IchHabRecht\Filefill\Resource\Placeholder\PlaceholderResource;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class RemoteResourceCollectionFactory
@@ -27,6 +28,9 @@ class RemoteResourceCollectionFactory
                 case 'sys_domain':
                     $domainResourceRepository = GeneralUtility::makeInstance(DomainResourceRepository::class);
                     $remoteResources = array_merge($remoteResources, $domainResourceRepository->findAll());
+                    break;
+                case 'placeholder':
+                    $remoteResources[] = GeneralUtility::makeInstance(PlaceholderResource::class);
                     break;
                 default:
                     throw new \RuntimeException('Unexpected File Fill Resource configuration "' . $key . '"', 1519788775);

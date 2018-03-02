@@ -4,6 +4,7 @@ namespace IchHabRecht\Filefill\Resource\Driver;
 use IchHabRecht\Filefill\Resource\RemoteResourceCollection;
 use TYPO3\CMS\Core\Resource\Driver\DriverInterface;
 use TYPO3\CMS\Core\Resource\Driver\LocalDriver;
+use TYPO3\CMS\Core\Utility\PathUtility;
 
 class FileFillDriver extends LocalDriver
 {
@@ -98,6 +99,14 @@ class FileFillDriver extends LocalDriver
      */
     protected function ensureFileExists($fileIdentifier)
     {
+        $absoluteFilePath = $this->getAbsolutePath($fileIdentifier);
+        if (!file_exists($absoluteFilePath)) {
+            $fileName = basename($absoluteFilePath);
+            $filePath = PathUtility::getRelativePath(PATH_site, dirname($absoluteFilePath)) . $fileName;
+
+            return $this->remoteResourceCollection->save($fileIdentifier, $filePath);
+        }
+
         return true;
     }
 }

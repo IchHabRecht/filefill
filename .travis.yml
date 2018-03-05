@@ -1,0 +1,91 @@
+language: php
+
+addons:
+  apt:
+    packages:
+      - parallel
+  sonarcloud:
+    organization: "ichhabrecht-github"
+    branches:
+      - master
+      - pre-merge
+
+cache:
+  directories:
+    - $HOME/.composer/cache
+    - $HOME/.sonar/cache
+
+jdk:
+  - oraclejdk8
+
+sudo: required
+
+before_install:
+  - if php -i | grep -q xdebug; then phpenv config-rm xdebug.ini; fi
+
+script:
+  - >
+    echo;
+    echo "Running php lint";
+    echo;
+    echo;
+    find . -name \*.php ! -path "./.Build/*" | parallel --gnu php -d display_errors=stderr -l {} > /dev/null \;;
+
+jobs:
+  fast_finish: true
+  include:
+    - stage: test
+      php: 7.2
+    - stage: test
+      php: 7.1
+    - stage: test
+      php: 7.0
+    - stage: test
+      php: 5.6
+    - stage: test
+      php: 5.5
+
+    - stage: publish to ter
+      if: tag IS present
+      php: 7.0
+      env: TYPO3=^8.7
+      before_install: skip
+      install: skip
+      before_script: skip
+      script:
+        - >
+          if [ -n "$TYPO3_ORG_USERNAME" ] && [ -n "$TYPO3_ORG_PASSWORD" ]; then
+            echo;
+            echo "Preparing upload of release ${TRAVIS_TAG} to TER";
+            echo;
+            echo;
+            composer require --dev nimut/typo3-complete="$TYPO3"
+            composer require --update-no-dev helhum/ter-client dev-master;
+
+            # Cleanup before we upload
+            git reset --hard HEAD && git clean -fx;
+
+            # Upload
+            TAG_MESSAGE=`git tag -n10 -l $TRAVIS_TAG | sed 's/^[0-9.]*[ ]*//g'`;
+            echo;
+            echo "Uploading release ${TRAVIS_TAG} to TER";
+            echo;
+            echo;
+            .Build/bin/ter-client upload filefill . -u "$TYPO3_ORG_USERNAME" -p "$TYPO3_ORG_PASSWORD" -m "$TAG_MESSAGE";
+          fi
+
+    - stage: sonarqube scanner
+      if: type = push AND branch IN (master, pre-merge)
+      php: 7.2
+      before_install: skip
+      install:
+      before_script:
+      script:
+        - git fetch --unshallow || true
+
+        - >
+          echo;
+          echo "Running SonarQube Scanner";
+          echo;
+          echo;
+          sonar-scanner;

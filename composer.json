@@ -21,6 +21,9 @@
     "require": {
         "typo3/cms-core": "^7.6 || ^8.7"
     },
+    "suggest": {
+        "friendsofphp/php-cs-fixer": "Tool to automatically fix PHP coding standards issues"
+    },
     "replace": {
         "filefill": "self.version",
         "typo3-ter/filefill": "self.version"

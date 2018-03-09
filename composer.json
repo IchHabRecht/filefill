@@ -24,6 +24,11 @@
     "suggest": {
         "friendsofphp/php-cs-fixer": "Tool to automatically fix PHP coding standards issues"
     },
+    "autoload": {
+        "psr-4": {
+            "IchHabRecht\\Filefill\\": "Classes/"
+        }
+    },
     "replace": {
         "filefill": "self.version",
         "typo3-ter/filefill": "self.version"

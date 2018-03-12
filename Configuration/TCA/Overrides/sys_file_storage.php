@@ -20,12 +20,21 @@ $tempColumns = [
             ],
         ],
     ],
+    'tx_filefill_missing' => [
+        'label' => 'LLL:EXT:filefill/Resources/Private/Language/locallang_db.xlf:sys_file_storage.filefill.missing',
+        'displayCond' => 'FIELD:driver:=:Local',
+        'config' => [
+            'type' => 'user',
+            'userFunc' => \IchHabRecht\Filefill\UserFunc\CheckMissingFiles::class . '->render',
+        ],
+    ],
 ];
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns('sys_file_storage', $tempColumns);
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes(
     'sys_file_storage',
-    '--div--;LLL:EXT:filefill/Resources/Private/Language/locallang_db.xlf:sys_file_storage.filefill, tx_filefill_enable, tx_filefill_resources',
+    '--div--;LLL:EXT:filefill/Resources/Private/Language/locallang_db.xlf:sys_file_storage.filefill,'
+    . 'tx_filefill_enable, tx_filefill_resources, tx_filefill_missing',
     '',
     'after:processingfolder'
 );

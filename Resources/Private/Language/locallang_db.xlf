@@ -12,6 +12,9 @@
             <trans-unit id="sys_file_storage.filefill.resources">
                 <source>Resources</source>
             </trans-unit>
+            <trans-unit id="sys_file_storage.filefill.missing">
+                <source>Missing files</source>
+            </trans-unit>
             <trans-unit id="sys_file_storage.filefill.domain">
                 <source>Single domain</source>
             </trans-unit>
@@ -23,6 +26,15 @@
             </trans-unit>
             <trans-unit id="sys_file_storage.filefill.placeholder_com">
                 <source>Placeholder.com</source>
+            </trans-unit>
+            <trans-unit id="sys_file_storage.filefill.no_missing">
+                <source>No missing files found!</source>
+            </trans-unit>
+            <trans-unit id="sys_file_storage.filefill.missing_files">
+                <source>%d files are marked missing!</source>
+            </trans-unit>
+            <trans-unit id="sys_file_storage.filefill.reset">
+                <source>Reset missing files</source>
             </trans-unit>
         </body>
     </file>

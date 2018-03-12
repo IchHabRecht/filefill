@@ -19,6 +19,10 @@ class RemoteResourceCollectionFactory
         $resourcesConfiguration = GeneralUtility::xml2array($configuration);
 
         foreach ((array)$resourcesConfiguration['data']['sDEF']['lDEF']['resources']['el'] as $resource) {
+            if (empty($resource)) {
+                continue;
+            }
+
             $key = key($resource);
 
             switch ($key) {

@@ -1,3 +1,7 @@
+2018-03-12         [RELEASE] Release of filefill 1.1.0 (Nicole Cordes)
+2018-03-12 482284d [FEATURE] Allow to reset missing files in storage record (Nicole Cordes)
+2018-03-12 3f1934b [BUGFIX] Prevent exception for empty resources configuration (Nicole Cordes)
+
 2018-03-10         [RELEASE] Release of filefill 1.0.0 (Nicole Cordes)
 2018-03-09 a945b47 [FEATURE] Add README.md (Nicole Cordes)
 2018-03-09 ef7db81 [BUGFIX] Add missing autoload information (Nicole Cordes)

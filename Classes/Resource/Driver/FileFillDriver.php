@@ -113,13 +113,17 @@ class FileFillDriver extends LocalDriver
     protected function ensureFileExists($fileIdentifier)
     {
         $absoluteFilePath = $this->getAbsolutePath($fileIdentifier);
-        if (!file_exists($absoluteFilePath)) {
-            $fileName = basename($absoluteFilePath);
-            $filePath = PathUtility::getRelativePath(PATH_site, dirname($absoluteFilePath)) . $fileName;
-
-            return $this->remoteResourceCollection->save($fileIdentifier, $filePath);
+        if (empty($absoluteFilePath) || file_exists($absoluteFilePath)) {
+            return true;
         }
 
-        return true;
+        $fileName = basename($absoluteFilePath);
+        if (empty($fileName)) {
+            return true;
+        }
+
+        $filePath = PathUtility::getRelativePath(PATH_site, dirname($absoluteFilePath)) . $fileName;
+
+        return $this->remoteResourceCollection->save($fileIdentifier, $filePath);
     }
 }

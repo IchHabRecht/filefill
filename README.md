@@ -67,3 +67,7 @@ Configuration:
 - no configuration required (the checkbox is just a field placeholder)
 
 There is no need for multiple usage. This resource can be the last one in the chain but can handle image files only.
+
+## Community
+
+- Thanks to [Marcus Schwemer](https://twitter.com/MarcusSchwemer) who wrote about filefill in his blog [TYPO3worx](https://typo3worx.eu/2018/03/eight-typo3-extensions-making-developers-happy/)

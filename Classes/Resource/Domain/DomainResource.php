@@ -29,7 +29,7 @@ class DomainResource implements RemoteResourceInterface
      */
     public function __construct($url)
     {
-        $this->url = ltrim($url, '/') . '/';
+        $this->url = rtrim($url, '/') . '/';
     }
 
     /**

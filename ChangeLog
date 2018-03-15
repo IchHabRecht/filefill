@@ -1,3 +1,11 @@
+2018-03-15         [RELEASE] Release of filefill 1.2.0 (Nicole Cordes)
+2018-03-15 7c6cb1e [FEATURE] Add slot to fetch processed files (Nicole Cordes)
+2018-03-15 77dc578 [BUGFIX] Ensure only valid file paths are fetched (Nicole Cordes)
+2018-03-15 02f3a38 [BUGFIX] Remove slash from domains right side (Nicole Cordes)
+2018-03-15 d56976f [TASK] Add community part to README (Nicole Cordes)
+2018-03-15 76a7b83 [TASK] Add header and license information (Nicole Cordes)
+2018-03-14 73e53b5 [TASK] Update coding style rules (Nicole Cordes)
+
 2018-03-12         [RELEASE] Release of filefill 1.1.0 (Nicole Cordes)
 2018-03-12 482284d [FEATURE] Allow to reset missing files in storage record (Nicole Cordes)
 2018-03-12 3f1934b [BUGFIX] Prevent exception for empty resources configuration (Nicole Cordes)

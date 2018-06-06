@@ -1,3 +1,6 @@
+2018-06-07         [RELEASE] Release of filefill 1.2.1 (Nicole Cordes)
+2018-06-07 ebdda28 [BUGFIX] Ensure original file is always fetched (Nicole Cordes)
+
 2018-03-15         [RELEASE] Release of filefill 1.2.0 (Nicole Cordes)
 2018-03-15 7c6cb1e [FEATURE] Add slot to fetch processed files (Nicole Cordes)
 2018-03-15 77dc578 [BUGFIX] Ensure only valid file paths are fetched (Nicole Cordes)

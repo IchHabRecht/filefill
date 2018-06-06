@@ -24,6 +24,7 @@ class FileProcessingServiceSlot
     public function ensureOriginalFileExists(FileProcessingService $fileProcessingService, DriverInterface $driver, ProcessedFile $processedFile, File $file)
     {
         // Call exists() function to ensure driver fetches missing files
-        $processedFile->exists() && $file->exists();
+        $processedFile->exists();
+        $file->exists();
     }
 }

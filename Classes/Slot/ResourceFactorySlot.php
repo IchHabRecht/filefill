@@ -27,8 +27,10 @@ class ResourceFactorySlot
     {
         $storageRecord = $resourceStorage->getStorageRecord();
         if ($storageRecord['driver'] !== 'Local'
-            || empty($storageRecord['tx_filefill_enable'])
-            || empty($storageRecord['tx_filefill_resources'])
+            || (
+                (empty($storageRecord['tx_filefill_enable']) || empty($storageRecord['tx_filefill_resources']))
+                && empty($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['filefill']['storages'][$resourceStorage->getUid()])
+            )
         ) {
             return;
         }
@@ -38,9 +40,15 @@ class ResourceFactorySlot
         }, null, ResourceStorage::class);
         $originalDriverObject = $closure();
 
-        $remoteResourceCollection = RemoteResourceCollectionFactory::createRemoteResourceCollectionFromConfiguration(
-            $storageRecord['tx_filefill_resources']
-        );
+        if (!empty($storageRecord['tx_filefill_enable'])) {
+            $remoteResourceCollection = RemoteResourceCollectionFactory::createRemoteResourceCollectionFromFlexForm(
+                $storageRecord['tx_filefill_resources']
+            );
+        } else {
+            $remoteResourceCollection = RemoteResourceCollectionFactory::createRemoteResourceCollectionFromConfiguration(
+                $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['filefill']['storages'][$resourceStorage->getUid()]
+            );
+        }
 
         $driverObject = GeneralUtility::makeInstance(
             FileFillDriver::class,

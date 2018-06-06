@@ -22,25 +22,22 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class RemoteResourceCollectionFactory
 {
     /**
-     * @param string $configuration
+     * @param array $configuration
+     * @throws \RuntimeException
      * @return RemoteResourceCollection
      */
-    public static function createRemoteResourceCollectionFromConfiguration($configuration)
+    public static function createRemoteResourceCollectionFromConfiguration(array $configuration)
     {
         $remoteResources = [];
 
-        $resourcesConfiguration = GeneralUtility::xml2array($configuration);
-
-        foreach ((array)$resourcesConfiguration['data']['sDEF']['lDEF']['resources']['el'] as $resource) {
+        foreach ($configuration as $key => $resource) {
             if (empty($resource)) {
                 continue;
             }
 
-            $key = key($resource);
-
             switch ($key) {
                 case 'domain':
-                    $remoteResources[] = GeneralUtility::makeInstance(DomainResource::class, $resource['domain']['el']['domain']['vDEF']);
+                    $remoteResources[] = GeneralUtility::makeInstance(DomainResource::class, $resource);
                     break;
                 case 'sys_domain':
                     $domainResourceRepository = GeneralUtility::makeInstance(DomainResourceRepository::class);
@@ -55,5 +52,39 @@ class RemoteResourceCollectionFactory
         }
 
         return GeneralUtility::makeInstance(RemoteResourceCollection::class, $remoteResources);
+    }
+
+    /**
+     * @param string $flexForm
+     * @throws \RuntimeException
+     * @return RemoteResourceCollection
+     */
+    public static function createRemoteResourceCollectionFromFlexForm($flexForm)
+    {
+        $configuration = [];
+
+        $resourcesConfiguration = GeneralUtility::xml2array($flexForm);
+
+        foreach ((array)$resourcesConfiguration['data']['sDEF']['lDEF']['resources']['el'] as $resource) {
+            if (empty($resource)) {
+                continue;
+            }
+
+            $key = key($resource);
+
+            switch ($key) {
+                case 'domain':
+                    $configuration[$key] = $resource['domain']['el']['domain']['vDEF'];
+                    break;
+                case 'sys_domain':
+                case 'placeholder':
+                    $configuration[$key] = true;
+                    break;
+                default:
+                    throw new \RuntimeException('Unexpected File Fill Resource configuration "' . $key . '"', 1528326468);
+            }
+        }
+
+        return self::createRemoteResourceCollectionFromConfiguration($configuration);
     }
 }

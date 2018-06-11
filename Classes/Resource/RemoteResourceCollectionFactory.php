@@ -37,7 +37,9 @@ class RemoteResourceCollectionFactory
 
             switch ($key) {
                 case 'domain':
-                    $remoteResources[] = GeneralUtility::makeInstance(DomainResource::class, $resource);
+                    foreach ($resource as $domain) {
+                        $remoteResources[] = GeneralUtility::makeInstance(DomainResource::class, $domain);
+                    }
                     break;
                 case 'sys_domain':
                     $domainResourceRepository = GeneralUtility::makeInstance(DomainResourceRepository::class);
@@ -74,7 +76,13 @@ class RemoteResourceCollectionFactory
 
             switch ($key) {
                 case 'domain':
-                    $configuration[$key] = $resource['domain']['el']['domain']['vDEF'];
+                    if (empty($configuration[$key])) {
+                        $configuration[$key] = [];
+                    }
+                    $configuration[$key] = array_merge(
+                        $configuration[$key],
+                        [$resource['domain']['el']['domain']['vDEF']]
+                    );
                     break;
                 case 'sys_domain':
                 case 'placeholder':

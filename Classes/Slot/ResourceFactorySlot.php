@@ -26,12 +26,11 @@ class ResourceFactorySlot
     public function initializeResourceStorage(ResourceFactory $resourceFactory, ResourceStorage $resourceStorage)
     {
         $storageRecord = $resourceStorage->getStorageRecord();
-        if ($storageRecord['driver'] !== 'Local'
-            || (
-                (empty($storageRecord['tx_filefill_enable']) || empty($storageRecord['tx_filefill_resources']))
-                && empty($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['filefill']['storages'][$resourceStorage->getUid()])
-            )
-        ) {
+        $isLocalDriver = $storageRecord['driver'] === 'Local';
+        $isRecordEnabled = !empty($storageRecord['tx_filefill_enable']) && !empty($storageRecord['tx_filefill_resources']);
+        $isStorageConfigured = !empty($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['filefill']['storages'][$resourceStorage->getUid()]);
+
+        if (!$isLocalDriver || (!$isRecordEnabled && !$isStorageConfigured)) {
             return;
         }
 
@@ -40,7 +39,7 @@ class ResourceFactorySlot
         }, null, ResourceStorage::class);
         $originalDriverObject = $closure();
 
-        if (!empty($storageRecord['tx_filefill_enable'])) {
+        if ($isRecordEnabled) {
             $remoteResourceCollection = RemoteResourceCollectionFactory::createRemoteResourceCollectionFromFlexForm(
                 $storageRecord['tx_filefill_resources']
             );

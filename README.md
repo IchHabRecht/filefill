@@ -25,11 +25,31 @@ You only need to configure one or more existing "File Storage" records
 
 *Prerequisite: Only storages with a "Local filesystem" driver are currently supported.*
 
+### Database record configuration
+
 - go to the root of your TYPO3 page tree (id=0)
 - change to the list module (Web -> List on the left side)
 - find the "File Storage" section and edit a record
 - change to the tab "File Fill" and select the enable checkbox
 - define the resource chain that should be used to fetch missing files
+
+### TYPO3_CONF_VARS configuration
+
+- given a file storage with uid 1, the configuration might look like this
+
+```php
+$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['filefill']['storages'][1] = [
+    'domain' => [
+        'https://example.com',
+        'https://example.org',
+    ],
+    'sys_domain' => true,
+    'placeholder' => true,
+];
+```
+
+- you don't need to configure resources that you don't want to use
+- the ordering in your configuration defines the ordering of processing
 
 ## Resources
 

@@ -1,3 +1,9 @@
+2018-06-19         [RELEASE] Release of filefill 1.3.0 (Nicole Cordes)
+2018-06-19 0bc79fa [BUGFIX] Simplify return conditions in ResourceFactorySlot (Nicole Cordes)
+2018-06-11 d16bf28 [TASK] Add documentation for TYPO3_CONF_VARS configuration (Nicole Cordes)
+2018-06-11 120b1e7 [BUGFIX] Support multiple domain configuration (Nicole Cordes)
+2018-06-07 ff7640d [FEATURE] Allow storage configuration in TYPO3_CONF_VARS (Nicole Cordes)
+
 2018-06-07         [RELEASE] Release of filefill 1.2.1 (Nicole Cordes)
 2018-06-07 ebdda28 [BUGFIX] Ensure original file is always fetched (Nicole Cordes)
 

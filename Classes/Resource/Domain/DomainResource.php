@@ -42,7 +42,7 @@ class DomainResource implements RemoteResourceInterface
         $report = [];
         GeneralUtility::getUrl($this->url . ltrim($filePath, '/'), 2, false, $report);
 
-        return (empty($report['http_code']) && $report['error'] === 200) || $report['http_code'] === 200;
+        return (empty($report['http_code']) && (int)$report['error'] === 200) || (int)$report['http_code'] === 200;
     }
 
     /**

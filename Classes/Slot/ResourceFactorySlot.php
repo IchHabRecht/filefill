@@ -61,6 +61,7 @@ class ResourceFactorySlot
         try {
             $driverObject->processConfiguration();
         } catch (InvalidConfigurationException $e) {
+            // Intended fallthrough
         }
         $driverObject->initialize();
 

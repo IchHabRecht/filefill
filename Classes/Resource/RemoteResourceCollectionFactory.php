@@ -15,6 +15,7 @@ namespace IchHabRecht\Filefill\Resource;
  * LICENSE file that was distributed with this source code.
  */
 
+use IchHabRecht\Filefill\Exception\UnknownResourceException;
 use IchHabRecht\Filefill\Resource\Domain\DomainResource;
 use IchHabRecht\Filefill\Resource\Domain\DomainResourceRepository;
 use IchHabRecht\Filefill\Resource\Placeholder\PlaceholderResource;
@@ -50,7 +51,7 @@ class RemoteResourceCollectionFactory
                     $remoteResources[] = GeneralUtility::makeInstance(PlaceholderResource::class);
                     break;
                 default:
-                    throw new \RuntimeException('Unexpected File Fill Resource configuration "' . $key . '"', 1519788775);
+                    throw new UnknownResourceException('Unexpected File Fill Resource configuration "' . $key . '"', 1519788775);
             }
         }
 
@@ -90,7 +91,7 @@ class RemoteResourceCollectionFactory
                     $configuration[$key] = true;
                     break;
                 default:
-                    throw new \RuntimeException('Unexpected File Fill Resource configuration "' . $key . '"', 1528326468);
+                    throw new UnknownResourceException('Unexpected File Fill Resource configuration "' . $key . '"', 1528326468);
             }
         }
 

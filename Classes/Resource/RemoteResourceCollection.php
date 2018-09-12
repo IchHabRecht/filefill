@@ -15,6 +15,7 @@ namespace IchHabRecht\Filefill\Resource;
  * LICENSE file that was distributed with this source code.
  */
 
+use IchHabRecht\Filefill\Exception\MissingInterfaceException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class RemoteResourceCollection
@@ -38,7 +39,7 @@ class RemoteResourceCollection
     {
         foreach ($this->resources as $remote) {
             if (!$remote instanceof RemoteResourceInterface) {
-                throw new \RuntimeException(
+                throw new MissingInterfaceException(
                     'Remote resource of type ' . get_class($remote) . ' doesn\'t implement IchHabRecht\\Filefill\\Resource\\RemoteResourceInterface',
                     1519680070
                 );

@@ -65,7 +65,13 @@ class PlaceholderResource implements RemoteResourceInterface
                 return false;
             }
             if (!$storage->isWithinProcessingFolder($fileIdentifier)) {
-                $fileObject = $resourceFactory->getFileObjectByStorageAndIdentifier($storage->getUid(), $fileIdentifier);
+                try {
+                    $fileObject = $resourceFactory->getFileObjectByStorageAndIdentifier($storage->getUid(), $fileIdentifier);
+                } catch (\InvalidArgumentException $e) {
+                    static::$fileIdentifierCache[$fileIdentifier] = false;
+
+                    return false;
+                }
             } else {
                 $databaseConnection = $this->getDatabaseConnection();
                 $databaseRow = $databaseConnection->exec_SELECTgetSingleRow(

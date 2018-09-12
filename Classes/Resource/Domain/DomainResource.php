@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 namespace IchHabRecht\Filefill\Resource\Domain;
 
 /*
@@ -43,7 +44,8 @@ class DomainResource implements RemoteResourceInterface
         GeneralUtility::getUrl($this->url . ltrim($filePath, '/'), 2, false, $report);
 
         $isCurlResponse = in_array($report['lib'], ['cURL', 'GuzzleHttp'], true)
-            && ((empty($report['http_code']) && (int)$report['error'] === 200)
+            && (
+                (empty($report['http_code']) && (int)$report['error'] === 200)
                 || (int)$report['http_code'] === 200
             );
         $isSocketResponse = $report['lib'] === 'socket' && $report['error'] === 0;

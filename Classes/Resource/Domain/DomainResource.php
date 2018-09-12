@@ -42,7 +42,13 @@ class DomainResource implements RemoteResourceInterface
         $report = [];
         GeneralUtility::getUrl($this->url . ltrim($filePath, '/'), 2, false, $report);
 
-        return (empty($report['http_code']) && (int)$report['error'] === 200) || (int)$report['http_code'] === 200;
+        $isCurlResponse = in_array($report['lib'], ['cURL', 'GuzzleHttp'], true)
+            && ((empty($report['http_code']) && (int)$report['error'] === 200)
+                || (int)$report['http_code'] === 200
+            );
+        $isSocketResponse = $report['lib'] === 'socket' && $report['error'] === 0;
+
+        return $isCurlResponse || $isSocketResponse;
     }
 
     /**

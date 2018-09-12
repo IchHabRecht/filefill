@@ -15,7 +15,8 @@ namespace IchHabRecht\Filefill\Hooks;
  * LICENSE file that was distributed with this source code.
  */
 
-use TYPO3\CMS\Core\Database\DatabaseConnection;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 
 class ResetMissingFiles
@@ -33,21 +34,16 @@ class ResetMissingFiles
         ) {
             return;
         }
-        $databaseConnection = $this->getDatabaseConnection();
-        $databaseConnection->exec_UPDATEquery(
-            'sys_file',
-            'storage=' . (int)$id . ' AND missing=1',
-            [
-                'missing' => 0,
-            ]
-        );
-    }
-
-    /**
-     * @return DatabaseConnection
-     */
-    protected function getDatabaseConnection()
-    {
-        return $GLOBALS['TYPO3_DB'];
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('sys_file');
+        $expressionBuilder = $queryBuilder->expr();
+        $queryBuilder->update('sys_file')
+            ->where(
+                $expressionBuilder->eq(
+                    'storage',
+                    $queryBuilder->createNamedParameter((int)$id, \PDO::PARAM_INT)
+                )
+            )
+            ->set('missing', 0)
+            ->execute();
     }
 }

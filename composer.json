@@ -19,7 +19,7 @@
         }
     ],
     "require": {
-        "typo3/cms-core": "^7.6 || ^8.7"
+        "typo3/cms-core": "^8.7 || >=9.4 <9.5"
     },
     "autoload": {
         "psr-4": {
@@ -35,6 +35,9 @@
         "bin-dir": ".Build/bin"
     },
     "extra": {
+        "branch-alias": {
+            "dev-master": "2.x-dev"
+        },
         "typo3/cms": {
             "extension-key": "filefill",
             "cms-package-dir": "{$vendor-dir}/typo3/cms",

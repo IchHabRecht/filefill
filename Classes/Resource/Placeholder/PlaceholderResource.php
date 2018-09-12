@@ -16,7 +16,7 @@ namespace IchHabRecht\Filefill\Resource\Placeholder;
  */
 
 use IchHabRecht\Filefill\Resource\RemoteResourceInterface;
-use TYPO3\CMS\Core\Database\DatabaseConnection;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\ProcessedFile;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
@@ -74,13 +74,22 @@ class PlaceholderResource implements RemoteResourceInterface
                     return false;
                 }
             } else {
-                $databaseConnection = $this->getDatabaseConnection();
-                $databaseRow = $databaseConnection->exec_SELECTgetSingleRow(
-                    '*',
-                    'sys_file_processedfile',
-                    'storage = ' . (int)$storage->getUid() .
-                    ' AND identifier = ' . $databaseConnection->fullQuoteStr($fileIdentifier, 'sys_file_processedfile')
-                );
+                $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('sys_file_processedfile');
+                $expressionBuilder = $queryBuilder->expr();
+                $databaseRow = $queryBuilder->select('*')
+                    ->from('sys_file_processedfile')
+                    ->where(
+                        $expressionBuilder->eq(
+                            'storage',
+                            $queryBuilder->createNamedParameter((int)$storage->getUid(), \PDO::PARAM_INT)
+                        ),
+                        $expressionBuilder->eq(
+                            'identifier',
+                            $queryBuilder->createNamedParameter($fileIdentifier, \PDO::PARAM_STR)
+                        )
+                    )
+                    ->execute()
+                    ->fetch(\PDO::FETCH_ASSOC);
                 if (empty($databaseRow)) {
                     static::$fileIdentifierCache[$fileIdentifier] = false;
 
@@ -138,13 +147,5 @@ class PlaceholderResource implements RemoteResourceInterface
         }
 
         return $content;
-    }
-
-    /**
-     * @return DatabaseConnection
-     */
-    protected function getDatabaseConnection()
-    {
-        return $GLOBALS['TYPO3_DB'];
     }
 }

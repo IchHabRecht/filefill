@@ -15,7 +15,7 @@ namespace IchHabRecht\Filefill\UserFunc;
  * LICENSE file that was distributed with this source code.
  */
 
-use TYPO3\CMS\Core\Database\DatabaseConnection;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -24,30 +24,49 @@ use TYPO3\CMS\Lang\LanguageService;
 class CheckMissingFiles
 {
     /**
-     * @param array $parameterArray
+     * @var LanguageService
+     */
+    protected $languageService;
+
+    public function __construct(LanguageService $languageService = null)
+    {
+        $this->languageService = $languageService ?: $GLOBALS['LANG'];
+    }
+
+    /**
      * @return string
      */
     public function render(array $parameterArray)
     {
-        $databaseConnection = $this->getDatabaseConnection();
-        $count = $databaseConnection->exec_SELECTcountRows(
-            '*',
-            'sys_file',
-            'storage=' . (int)$parameterArray['row']['uid'] . ' AND missing=1'
-        );
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('sys_file');
+        $expressionBuilder = $queryBuilder->expr();
+        $count = $queryBuilder->count('*')
+            ->from('sys_file')
+            ->where(
+                $expressionBuilder->eq(
+                    'storage',
+                    $queryBuilder->createNamedParameter((int)$parameterArray['row']['uid'], \PDO::PARAM_INT)
+                ),
+                $expressionBuilder->eq(
+                    'missing',
+                    $queryBuilder->createNamedParameter(1, \PDO::PARAM_INT)
+                )
+            )
+            ->execute()
+            ->fetchColumn(0);
 
         $html = [];
         $html[] = '<div class="form-control-wrap">';
 
         if ($count === 0) {
             $html[] = '<span class="badge badge-success">'
-                . $this->getLanguageService()->sL('LLL:EXT:filefill/Resources/Private/Language/locallang_db.xlf:sys_file_storage.filefill.no_missing')
+                . $this->languageService->sL('LLL:EXT:filefill/Resources/Private/Language/locallang_db.xlf:sys_file_storage.filefill.no_missing')
                 . '</span>';
         } else {
             $iconFactory = GeneralUtility::makeInstance(IconFactory::class);
             $html[] = '<span class="badge badge-danger">'
                 . sprintf(
-                    $this->getLanguageService()->sL('LLL:EXT:filefill/Resources/Private/Language/locallang_db.xlf:sys_file_storage.filefill.missing_files'),
+                    $this->languageService->sL('LLL:EXT:filefill/Resources/Private/Language/locallang_db.xlf:sys_file_storage.filefill.missing_files'),
                     $count
                 )
                 . '</span>';
@@ -55,28 +74,12 @@ class CheckMissingFiles
             $html[] = '<div class="form-control-wrap t3js-module-docheader">';
             $html[] = '<a class="btn btn-default t3js-editform-submitButton" data-name="_save_tx_filefill_missing" data-form="EditDocumentController" data-value="1">';
             $html[] = $iconFactory->getIcon('actions-database-reload', Icon::SIZE_SMALL);
-            $html[] = ' ' . $this->getLanguageService()->sL('LLL:EXT:filefill/Resources/Private/Language/locallang_db.xlf:sys_file_storage.filefill.reset');
+            $html[] = ' ' . $this->languageService->sL('LLL:EXT:filefill/Resources/Private/Language/locallang_db.xlf:sys_file_storage.filefill.reset');
             $html[] = '</a>';
         }
 
         $html[] = '</div>';
 
         return implode('', $html);
-    }
-
-    /**
-     * @return DatabaseConnection
-     */
-    protected function getDatabaseConnection()
-    {
-        return $GLOBALS['TYPO3_DB'];
-    }
-
-    /**
-     * @return LanguageService
-     */
-    protected function getLanguageService()
-    {
-        return $GLOBALS['LANG'];
     }
 }

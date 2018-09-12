@@ -70,6 +70,9 @@ jobs:
   include:
     - stage: test
       php: 7.2
+      env: TYPO3=^9.4
+    - stage: test
+      php: 7.2
       env: TYPO3=^8.7
     - stage: test
       php: 7.1
@@ -77,12 +80,6 @@ jobs:
     - stage: test
       php: 7.0
       env: TYPO3=^8.7
-    - stage: test
-      php: 5.6
-      env: TYPO3=^7.6
-    - stage: test
-      php: 5.5
-      env: TYPO3=^7.6
 
     - stage: 🚢 to ter
       if: tag IS present AND env(TYPO3_ORG_USERNAME) IS present AND env(TYPO3_ORG_PASSWORD) IS present
@@ -122,7 +119,7 @@ jobs:
       script:
         - >
           if [ -d "Tests" ]; then
-            for TYPO3 in "^7.6" "^8.7"; do
+            for TYPO3 in "^8.7" "^9.4"; do
 
               echo;
               echo "Running TYPO3 version $TYPO3";

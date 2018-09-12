@@ -17,13 +17,20 @@ namespace IchHabRecht\Filefill\Resource\Placeholder;
 
 use IchHabRecht\Filefill\Resource\RemoteResourceInterface;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\ProcessedFile;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
+use TYPO3\CMS\Core\Resource\ResourceStorage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class PlaceholderResource implements RemoteResourceInterface
 {
+    /**
+     * @var ResourceFactory
+     */
+    protected $resourceFactory;
+
     /**
      * @var array
      */
@@ -44,6 +51,11 @@ class PlaceholderResource implements RemoteResourceInterface
      */
     protected static $fileIdentifierCache = [];
 
+    public function __construct(ResourceFactory $resourceFactory = null)
+    {
+        $this->resourceFactory = $resourceFactory ?: ResourceFactory::getInstance();
+    }
+
     /**
      * @param string $fileIdentifier
      * @param string $filePath
@@ -57,58 +69,13 @@ class PlaceholderResource implements RemoteResourceInterface
         }
 
         if (!isset(static::$fileIdentifierCache[$fileIdentifier])) {
-            $resourceFactory = ResourceFactory::getInstance();
+            $fileObject = null;
             $localPath = $filePath;
-            $storage = $resourceFactory->getStorageObject(0, [], $localPath);
-            if ($storage->getUid() === 0) {
-                static::$fileIdentifierCache[$fileIdentifier] = false;
-
-                return false;
+            $storage = $this->resourceFactory->getStorageObject(0, [], $localPath);
+            if ($storage->getUid() !== 0) {
+                $fileObject = $this->getFileObjectFromStorage($storage, $fileIdentifier);
             }
-            if (!$storage->isWithinProcessingFolder($fileIdentifier)) {
-                try {
-                    $fileObject = $resourceFactory->getFileObjectByStorageAndIdentifier($storage->getUid(), $fileIdentifier);
-                } catch (\InvalidArgumentException $e) {
-                    static::$fileIdentifierCache[$fileIdentifier] = false;
-
-                    return false;
-                }
-            } else {
-                $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('sys_file_processedfile');
-                $expressionBuilder = $queryBuilder->expr();
-                $databaseRow = $queryBuilder->select('*')
-                    ->from('sys_file_processedfile')
-                    ->where(
-                        $expressionBuilder->eq(
-                            'storage',
-                            $queryBuilder->createNamedParameter((int)$storage->getUid(), \PDO::PARAM_INT)
-                        ),
-                        $expressionBuilder->eq(
-                            'identifier',
-                            $queryBuilder->createNamedParameter($fileIdentifier, \PDO::PARAM_STR)
-                        )
-                    )
-                    ->execute()
-                    ->fetch(\PDO::FETCH_ASSOC);
-                if (empty($databaseRow)) {
-                    static::$fileIdentifierCache[$fileIdentifier] = false;
-
-                    return false;
-                }
-
-                $originalFile = $resourceFactory->getFileObject((int)$databaseRow['original']);
-                $taskType = $databaseRow['task_type'];
-                $configuration = unserialize($databaseRow['configuration'], ['allowed_classes' => false]);
-
-                $fileObject = GeneralUtility::makeInstance(
-                    ProcessedFile::class,
-                    $originalFile,
-                    $taskType,
-                    $configuration,
-                    $databaseRow
-                );
-            }
-            static::$fileIdentifierCache[$fileIdentifier] = $fileObject;
+            static::$fileIdentifierCache[$fileIdentifier] = $fileObject ?? false;
         }
 
         return static::$fileIdentifierCache[$fileIdentifier] !== false;
@@ -147,5 +114,57 @@ class PlaceholderResource implements RemoteResourceInterface
         }
 
         return $content;
+    }
+
+    /**
+     * @param ResourceStorage $storage
+     * @param string $fileIdentifier
+     * @return File|null
+     */
+    protected function getFileObjectFromStorage(ResourceStorage $storage, string $fileIdentifier)
+    {
+        $fileObject = null;
+
+        if (!$storage->isWithinProcessingFolder($fileIdentifier)) {
+            try {
+                $fileObject = $this->resourceFactory->getFileObjectByStorageAndIdentifier($storage->getUid(), $fileIdentifier);
+            } catch (\InvalidArgumentException $e) {
+                return null;
+            }
+        } else {
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('sys_file_processedfile');
+            $expressionBuilder = $queryBuilder->expr();
+            $databaseRow = $queryBuilder->select('*')
+                ->from('sys_file_processedfile')
+                ->where(
+                    $expressionBuilder->eq(
+                        'storage',
+                        $queryBuilder->createNamedParameter((int)$storage->getUid(), \PDO::PARAM_INT)
+                    ),
+                    $expressionBuilder->eq(
+                        'identifier',
+                        $queryBuilder->createNamedParameter($fileIdentifier, \PDO::PARAM_STR)
+                    )
+                )
+                ->execute()
+                ->fetch(\PDO::FETCH_ASSOC);
+            if (empty($databaseRow)) {
+                return null;
+            }
+
+            $originalFile = $this->resourceFactory->getFileObject((int)$databaseRow['original']);
+            $taskType = $databaseRow['task_type'];
+            $configuration = unserialize($databaseRow['configuration'], ['allowed_classes' => false]);
+
+            $fileObject = GeneralUtility::makeInstance(
+                ProcessedFile::class,
+                $originalFile,
+                $taskType,
+                $configuration,
+                $databaseRow
+            );
+        }
+
+        return $fileObject;
     }
 }

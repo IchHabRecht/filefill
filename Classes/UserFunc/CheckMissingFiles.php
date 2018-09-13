@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 namespace IchHabRecht\Filefill\UserFunc;
 
 /*
@@ -15,10 +14,8 @@ namespace IchHabRecht\Filefill\UserFunc;
  * LICENSE file that was distributed with this source code.
  */
 
+use TYPO3\CMS\Backend\Utility\IconUtility;
 use TYPO3\CMS\Core\Database\DatabaseConnection;
-use TYPO3\CMS\Core\Imaging\Icon;
-use TYPO3\CMS\Core\Imaging\IconFactory;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Lang\LanguageService;
 
 class CheckMissingFiles
@@ -36,27 +33,28 @@ class CheckMissingFiles
             'storage=' . (int)$parameterArray['row']['uid'] . ' AND missing=1'
         );
 
-        $html = [];
+        $html = array();
         $html[] = '<div class="form-control-wrap">';
 
         if ($count === 0) {
-            $html[] = '<span class="badge badge-success">'
+            $html[] = '<div class="typo3-message message-ok">'
                 . $this->getLanguageService()->sL('LLL:EXT:filefill/Resources/Private/Language/locallang_db.xlf:sys_file_storage.filefill.no_missing')
-                . '</span>';
+                . '</div>';
         } else {
-            $iconFactory = GeneralUtility::makeInstance(IconFactory::class);
-            $html[] = '<span class="badge badge-danger">'
+            $html[] = '<div class="typo3-message message-error">'
                 . sprintf(
                     $this->getLanguageService()->sL('LLL:EXT:filefill/Resources/Private/Language/locallang_db.xlf:sys_file_storage.filefill.missing_files'),
                     $count
                 )
-                . '</span>';
+                . '</div>';
             $html[] = '</div>';
             $html[] = '<div class="form-control-wrap t3js-module-docheader">';
-            $html[] = '<a class="btn btn-default t3js-editform-submitButton" data-name="_save_tx_filefill_missing" data-form="EditDocumentController" data-value="1">';
-            $html[] = $iconFactory->getIcon('actions-database-reload', Icon::SIZE_SMALL);
+            $html[] = '<div class="t3-form-field-item">';
+            $html[] = '<button class="btn" type="submit" name="_savedok_x" value="filefill">';
+            $html[] = IconUtility::getSpriteIcon('actions-document-save');
             $html[] = ' ' . $this->getLanguageService()->sL('LLL:EXT:filefill/Resources/Private/Language/locallang_db.xlf:sys_file_storage.filefill.reset');
-            $html[] = '</a>';
+            $html[] = '</button>';
+            $html[] = '</div>';
         }
 
         $html[] = '</div>';

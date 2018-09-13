@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 namespace IchHabRecht\Filefill\Slot;
 
 /*
@@ -15,7 +14,6 @@ namespace IchHabRecht\Filefill\Slot;
  * LICENSE file that was distributed with this source code.
  */
 
-use IchHabRecht\Filefill\Resource\Driver\FileFillDriver;
 use IchHabRecht\Filefill\Resource\RemoteResourceCollectionFactory;
 use TYPO3\CMS\Core\Resource\Exception\InvalidConfigurationException;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
@@ -37,7 +35,7 @@ class ResourceFactorySlot
 
         $closure = \Closure::bind(function () use ($resourceStorage) {
             return $resourceStorage->driver;
-        }, null, ResourceStorage::class);
+        }, null, 'TYPO3\\CMS\\Core\\Resource\\ResourceStorage');
         $originalDriverObject = $closure();
 
         if ($isRecordEnabled) {
@@ -51,7 +49,7 @@ class ResourceFactorySlot
         }
 
         $driverObject = GeneralUtility::makeInstance(
-            FileFillDriver::class,
+            'IchHabRecht\\Filefill\\Resource\\Driver\\FileFillDriver',
             $resourceStorage->getConfiguration(),
             $originalDriverObject,
             $remoteResourceCollection

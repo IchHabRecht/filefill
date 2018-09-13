@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 
 /*
  * This file is part of the TYPO3 extension filefill.
@@ -16,34 +15,34 @@ declare(strict_types=1);
 
 defined('TYPO3_MODE') || die();
 
-$tempColumns = [
-    'tx_filefill_enable' => [
+$tempColumns = array(
+    'tx_filefill_enable' => array(
         'label' => 'LLL:EXT:filefill/Resources/Private/Language/locallang_db.xlf:sys_file_storage.filefill.enable',
         'displayCond' => 'FIELD:driver:=:Local',
-        'config' => [
+        'config' => array(
             'type' => 'check',
             'default' => 0,
-        ],
-    ],
-    'tx_filefill_resources' => [
+        ),
+    ),
+    'tx_filefill_resources' => array(
         'label' => 'LLL:EXT:filefill/Resources/Private/Language/locallang_db.xlf:sys_file_storage.filefill.resources',
         'displayCond' => 'FIELD:driver:=:Local',
-        'config' => [
+        'config' => array(
             'type' => 'flex',
-            'ds' => [
+            'ds' => array(
                 'default' => 'FILE:EXT:filefill/Configuration/FlexForms/Resources.xml',
-            ],
-        ],
-    ],
-    'tx_filefill_missing' => [
+            ),
+        ),
+    ),
+    'tx_filefill_missing' => array(
         'label' => 'LLL:EXT:filefill/Resources/Private/Language/locallang_db.xlf:sys_file_storage.filefill.missing',
         'displayCond' => 'FIELD:driver:=:Local',
-        'config' => [
+        'config' => array(
             'type' => 'user',
-            'userFunc' => \IchHabRecht\Filefill\UserFunc\CheckMissingFiles::class . '->render',
-        ],
-    ],
-];
+            'userFunc' => 'IchHabRecht\\Filefill\\UserFunc\\CheckMissingFiles->render',
+        ),
+    ),
+);
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns('sys_file_storage', $tempColumns);
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes(

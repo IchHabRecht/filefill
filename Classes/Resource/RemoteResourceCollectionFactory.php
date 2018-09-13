@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 namespace IchHabRecht\Filefill\Resource;
 
 /*
@@ -15,9 +14,6 @@ namespace IchHabRecht\Filefill\Resource;
  * LICENSE file that was distributed with this source code.
  */
 
-use IchHabRecht\Filefill\Resource\Domain\DomainResource;
-use IchHabRecht\Filefill\Resource\Domain\DomainResourceRepository;
-use IchHabRecht\Filefill\Resource\Placeholder\PlaceholderResource;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class RemoteResourceCollectionFactory
@@ -29,7 +25,7 @@ class RemoteResourceCollectionFactory
      */
     public static function createRemoteResourceCollectionFromConfiguration(array $configuration)
     {
-        $remoteResources = [];
+        $remoteResources = array();
 
         foreach ($configuration as $key => $resource) {
             if (empty($resource)) {
@@ -39,22 +35,22 @@ class RemoteResourceCollectionFactory
             switch ($key) {
                 case 'domain':
                     foreach ($resource as $domain) {
-                        $remoteResources[] = GeneralUtility::makeInstance(DomainResource::class, $domain);
+                        $remoteResources[] = GeneralUtility::makeInstance('IchHabRecht\\Filefill\\Resource\\Domain\\DomainResource', $domain);
                     }
                     break;
                 case 'sys_domain':
-                    $domainResourceRepository = GeneralUtility::makeInstance(DomainResourceRepository::class);
+                    $domainResourceRepository = GeneralUtility::makeInstance('IchHabRecht\\Filefill\\Resource\\Domain\\DomainResourceRepository');
                     $remoteResources = array_merge($remoteResources, $domainResourceRepository->findAll());
                     break;
                 case 'placeholder':
-                    $remoteResources[] = GeneralUtility::makeInstance(PlaceholderResource::class);
+                    $remoteResources[] = GeneralUtility::makeInstance('IchHabRecht\\Filefill\\Resource\\Placeholder\\PlaceholderResource');
                     break;
                 default:
                     throw new \RuntimeException('Unexpected File Fill Resource configuration "' . $key . '"', 1519788775);
             }
         }
 
-        return GeneralUtility::makeInstance(RemoteResourceCollection::class, $remoteResources);
+        return GeneralUtility::makeInstance('IchHabRecht\\Filefill\\Resource\\RemoteResourceCollection', $remoteResources);
     }
 
     /**
@@ -64,7 +60,7 @@ class RemoteResourceCollectionFactory
      */
     public static function createRemoteResourceCollectionFromFlexForm($flexForm)
     {
-        $configuration = [];
+        $configuration = array();
 
         $resourcesConfiguration = GeneralUtility::xml2array($flexForm);
 
@@ -78,11 +74,11 @@ class RemoteResourceCollectionFactory
             switch ($key) {
                 case 'domain':
                     if (empty($configuration[$key])) {
-                        $configuration[$key] = [];
+                        $configuration[$key] = array();
                     }
                     $configuration[$key] = array_merge(
                         $configuration[$key],
-                        [$resource['domain']['el']['domain']['vDEF']]
+                        array($resource['domain']['el']['domain']['vDEF'])
                     );
                     break;
                 case 'sys_domain':

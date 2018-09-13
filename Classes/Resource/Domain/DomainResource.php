@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 namespace IchHabRecht\Filefill\Resource\Domain;
 
 /*
@@ -40,10 +39,10 @@ class DomainResource implements RemoteResourceInterface
      */
     public function hasFile($fileIdentifier, $filePath)
     {
-        $report = [];
+        $report = array();
         GeneralUtility::getUrl($this->url . ltrim($filePath, '/'), 2, false, $report);
 
-        $isCurlResponse = in_array($report['lib'], ['cURL', 'GuzzleHttp'], true)
+        $isCurlResponse = in_array($report['lib'], array('cURL', 'GuzzleHttp'), true)
             && (
                 (empty($report['http_code']) && (int)$report['error'] === 200)
                 || (int)$report['http_code'] === 200

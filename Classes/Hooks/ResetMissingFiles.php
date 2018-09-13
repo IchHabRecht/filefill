@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 namespace IchHabRecht\Filefill\Hooks;
 
 /*
@@ -28,7 +27,8 @@ class ResetMissingFiles
     public function processDatamap_afterDatabaseOperations($status, $table, $id)
     {
         if ($table !== 'sys_file_storage'
-            || empty($_POST['_save_tx_filefill_missing'])
+            || empty($_POST['_savedok_x'])
+            || $_POST['_savedok_x'] !== 'filefill'
             || !MathUtility::canBeInterpretedAsInteger($id)
         ) {
             return;
@@ -37,9 +37,9 @@ class ResetMissingFiles
         $databaseConnection->exec_UPDATEquery(
             'sys_file',
             'storage=' . (int)$id . ' AND missing=1',
-            [
+            array(
                 'missing' => 0,
-            ]
+            )
         );
     }
 

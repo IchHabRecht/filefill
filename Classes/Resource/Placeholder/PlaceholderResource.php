@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 namespace IchHabRecht\Filefill\Resource\Placeholder;
 
 /*
@@ -18,7 +17,6 @@ namespace IchHabRecht\Filefill\Resource\Placeholder;
 use IchHabRecht\Filefill\Resource\RemoteResourceInterface;
 use TYPO3\CMS\Core\Database\DatabaseConnection;
 use TYPO3\CMS\Core\Resource\FileInterface;
-use TYPO3\CMS\Core\Resource\ProcessedFile;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -27,12 +25,12 @@ class PlaceholderResource implements RemoteResourceInterface
     /**
      * @var array
      */
-    protected $allowedFileExtensions = [
+    protected $allowedFileExtensions = array(
         'gif',
         'jpeg',
         'jpg',
         'png',
-    ];
+    );
 
     /**
      * @var string
@@ -42,7 +40,7 @@ class PlaceholderResource implements RemoteResourceInterface
     /**
      * @var FileInterface[]
      */
-    protected static $fileIdentifierCache = [];
+    protected static $fileIdentifierCache = array();
 
     /**
      * @param string $fileIdentifier
@@ -59,7 +57,7 @@ class PlaceholderResource implements RemoteResourceInterface
         if (!isset(static::$fileIdentifierCache[$fileIdentifier])) {
             $resourceFactory = ResourceFactory::getInstance();
             $localPath = $filePath;
-            $storage = $resourceFactory->getStorageObject(0, [], $localPath);
+            $storage = $resourceFactory->getStorageObject(0, array(), $localPath);
             if ($storage->getUid() === 0) {
                 static::$fileIdentifierCache[$fileIdentifier] = false;
 
@@ -89,10 +87,10 @@ class PlaceholderResource implements RemoteResourceInterface
 
                 $originalFile = $resourceFactory->getFileObject((int)$databaseRow['original']);
                 $taskType = $databaseRow['task_type'];
-                $configuration = unserialize($databaseRow['configuration'], ['allowed_classes' => false]);
+                $configuration = unserialize($databaseRow['configuration']);
 
                 $fileObject = GeneralUtility::makeInstance(
-                    ProcessedFile::class,
+                    'TYPO3\\CMS\\Core\\Resource\\ProcessedFile',
                     $originalFile,
                     $taskType,
                     $configuration,

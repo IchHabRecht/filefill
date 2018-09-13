@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 namespace IchHabRecht\Filefill\Resource\Domain;
 
 /*
@@ -26,7 +25,7 @@ class DomainResourceRepository
      */
     public function findAll()
     {
-        $domainResources = [];
+        $domainResources = array();
 
         $databaseConnection = $this->getDatabaseConnection();
 
@@ -49,7 +48,7 @@ class DomainResourceRepository
 
         while ($row = $result->fetch_assoc()) {
             $url = 'http://' . $row['domainName'];
-            $domainResources[] = GeneralUtility::makeInstance(DomainResource::class, $url);
+            $domainResources[] = GeneralUtility::makeInstance('IchHabRecht\\Filefill\\Resource\\Domain\\DomainResource', $url);
         }
 
         return $domainResources;

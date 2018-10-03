@@ -88,6 +88,16 @@ Configuration:
 
 There is no need for multiple usage. This resource can be the last one in the chain but can handle image files only.
 
+## Known issues
+
+### 1509741907 TYPO3Fluid\Fluid\Core\ViewHelper\Exception
+*Folder "[...]" does not exist.*
+
+Filefill tries to fetch the existing file from any resource. However, due to the FAL api the exception cannot be
+prevented nor handled by filefill. Try to reload the page again, the exception (for this specific file) should not occur
+anymore. Please note that there might be a new exception for a new file. In this case you need to reload your page until
+all files were properly created on your current system.
+
 ## Community
 
 - Thanks to [Marcus Schwemer](https://twitter.com/MarcusSchwemer) who wrote about filefill in his blog [TYPO3worx](https://typo3worx.eu/2018/03/eight-typo3-extensions-making-developers-happy/)

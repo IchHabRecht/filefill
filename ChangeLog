@@ -1,3 +1,12 @@
+2018-10-03         [RELEASE] Release of filefill 2.0.0 (Nicole Cordes)
+2018-10-03 954bc67 [TASK] Raise TYPO3 dependencies to include 9.5 (Nicole Cordes)
+2018-10-03 f681f13 [TASK] Update supporting files to EXT:my_skeleton 0.1.5 (Nicole Cordes)
+2018-10-03 53b6dac [FEATURE] Add support for ImageViewHelper "src" usages (Nicole Cordes)
+2018-09-12 4673710 [BUGFIX] Throw dedicated exceptions (Nicole Cordes)
+2018-09-12 b672e6a [BUGFIX] Comment intended fallthrough (Nicole Cordes)
+2018-09-12 0e7e13f [BUGFIX] Simplify PlaceholderResouce and reduce numbers of returns (Nicole Cordes)
+2018-09-12 7887ac8 [FEATURE] Add compatibility to TYPO3 9.4 (Nicole Cordes)
+
 2018-09-12         [RELEASE] Release of filefill 1.3.2 (Nicole Cordes)
 2018-09-12 fb797f5 [TASK] Update supporting files to EXT:my_skeleton 0.1.4 (Nicole Cordes)
 2018-09-12 03ec1b0 [BUGFIX] Handle response from socket correctly (Nicole Cordes)

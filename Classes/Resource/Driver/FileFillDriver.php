@@ -51,6 +51,27 @@ class FileFillDriver extends LocalDriver
     }
 
     /**
+     * Checks if a folder exists.
+     *
+     * @param string $folderIdentifier
+     * @return bool
+     */
+    public function folderExists($folderIdentifier)
+    {
+        if (parent::folderExists($folderIdentifier)) {
+            return true;
+        }
+
+        $folderIdentifier = rtrim($folderIdentifier, '/');
+        $pathinfo = pathinfo($folderIdentifier);
+        if (!empty($pathinfo['basename']) && !empty($pathinfo['extension'])) {
+            $this->ensureFileExists($folderIdentifier);
+        }
+
+        return false;
+    }
+
+    /**
      * @param string $identifier
      * @return string
      */

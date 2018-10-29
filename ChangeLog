@@ -1,3 +1,6 @@
+2018-10-29         [RELEASE] Release of filefill 2.0.1 (Nicole Cordes)
+2018-10-29 6757ce6 [BUGFIX] Always enforce case sensitive file system (Nicole Cordes)
+
 2018-10-03         [RELEASE] Release of filefill 2.0.0 (Nicole Cordes)
 2018-10-03 954bc67 [TASK] Raise TYPO3 dependencies to include 9.5 (Nicole Cordes)
 2018-10-03 f681f13 [TASK] Update supporting files to EXT:my_skeleton 0.1.5 (Nicole Cordes)

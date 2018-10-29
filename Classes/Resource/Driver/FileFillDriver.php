@@ -129,6 +129,14 @@ class FileFillDriver extends LocalDriver
     }
 
     /**
+     * @return bool
+     */
+    public function isCaseSensitiveFileSystem()
+    {
+        return true;
+    }
+
+    /**
      * @param string $fileIdentifier
      * @return bool
      */

@@ -1,3 +1,7 @@
+2018-10-29         [RELEASE] Release of filefill 1.4.1 (Nicole Cordes)
+2018-10-29 0abe965 [BUGFIX] Always enforce case sensitive file system (Nicole Cordes)
+2018-10-29 8f9df36 [BUGFIX] Remove incompatible declare(strict_types) annotation (Nicole Cordes)
+
 2018-10-03         [RELEASE] Release of filefill 1.4.0 (Nicole Cordes)
 2018-10-03 fc0ff35 [FEATURE] Add support for ImageViewHelper "src" usages (Nicole Cordes)
 

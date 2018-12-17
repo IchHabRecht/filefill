@@ -16,6 +16,7 @@ namespace IchHabRecht\Filefill\Resource;
  */
 
 use IchHabRecht\Filefill\Exception\UnknownResourceException;
+use IchHabRecht\Filefill\Resource\RemoteResourceInterface;
 use IchHabRecht\Filefill\Resource\Domain\DomainResource;
 use IchHabRecht\Filefill\Resource\Domain\DomainResourceRepository;
 use IchHabRecht\Filefill\Resource\Placeholder\PlaceholderResource;
@@ -51,8 +52,9 @@ class RemoteResourceCollectionFactory
                     $remoteResources[] = GeneralUtility::makeInstance(PlaceholderResource::class);
                     break;
                 default:
-                    if (self::configuredClassImplementsRequiredInterface($key)) {
-                        $remoteResources[] = GeneralUtility::makeInstance($key);
+                    $remoteResource = self::getConfiguredClassIfSuitable($key);
+                    if ($remoteResource !== null) {
+                        $remoteResources[] = $remoteResource;
                     } else {
                         throw new UnknownResourceException('Unexpected File Fill Resource configuration "' . $key . '"', 1519788775);
                     }
@@ -95,7 +97,8 @@ class RemoteResourceCollectionFactory
                     $configuration[$key] = true;
                     break;
                 default:
-                    if (self::configuredClassImplementsRequiredInterface($key)) {
+                    $remoteResource = self::getConfiguredClassIfSuitable($key);
+                    if ($remoteResource !== null) {
                         $configuration[$key] = true;
                     } else {
                         throw new UnknownResourceException('Unexpected File Fill Resource configuration "' . $key . '"', 1528326468);
@@ -107,20 +110,18 @@ class RemoteResourceCollectionFactory
     }
 
     /**
-     * Check whether the configured class implements the required interface
+     * Returns an object of the given class if it implements the required interface
+     * 
      *
      * @param string $potentialClassName
-     * @return boolean
+     * @return RemoteResourceInterface
      */
-    protected static function configuredClassImplementsRequiredInterface($potentialClassName)
+    protected static function getConfiguredClassIfSuitable($potentialClassName)
     {
-        try {
-            $reflectionClass = new \ReflectionClass((string)$potentialClassName);
-            if ($reflectionClass->implementsInterface(RemoteResourceInterface::class)) {
-                return true;
-            }
-        } catch (\ReflectionException $e) {
-            return false;
+        $remoteResource = GeneralUtility::makeInstance((string)$potentialClassName);
+        if ($remoteResource instanceof RemoteResourceInterface) {
+            return $remoteResource;
         }
+        return null;
     }
 }

@@ -51,7 +51,11 @@ class RemoteResourceCollectionFactory
                     $remoteResources[] = GeneralUtility::makeInstance(PlaceholderResource::class);
                     break;
                 default:
-                    throw new UnknownResourceException('Unexpected File Fill Resource configuration "' . $key . '"', 1519788775);
+                    if (self::configuredClassImplementsRequiredInterface($key)) {
+                        $remoteResources[] = GeneralUtility::makeInstance($key);
+                    } else {
+                        throw new UnknownResourceException('Unexpected File Fill Resource configuration "' . $key . '"', 1519788775);
+                    }
             }
         }
 
@@ -91,10 +95,32 @@ class RemoteResourceCollectionFactory
                     $configuration[$key] = true;
                     break;
                 default:
-                    throw new UnknownResourceException('Unexpected File Fill Resource configuration "' . $key . '"', 1528326468);
+                    if (self::configuredClassImplementsRequiredInterface($key)) {
+                        $configuration[$key] = true;
+                    } else {
+                        throw new UnknownResourceException('Unexpected File Fill Resource configuration "' . $key . '"', 1528326468);
+                    }
             }
         }
 
         return self::createRemoteResourceCollectionFromConfiguration($configuration);
+    }
+
+    /**
+     * Check whether the configured class implements the required interface
+     *
+     * @param string $potentialClassName
+     * @return boolean
+     */
+    protected static function configuredClassImplementsRequiredInterface($potentialClassName)
+    {
+        try {
+            $reflectionClass = new \ReflectionClass((string)$potentialClassName);
+            if ($reflectionClass->implementsInterface(RemoteResourceInterface::class)) {
+                return true;
+            }
+        } catch (\ReflectionException $e) {
+            return false;
+        }
     }
 }

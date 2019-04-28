@@ -16,6 +16,7 @@ namespace IchHabRecht\Filefill\Resource\Domain;
  */
 
 use IchHabRecht\Filefill\Resource\RemoteResourceInterface;
+use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class DomainResource implements RemoteResourceInterface
@@ -36,9 +37,10 @@ class DomainResource implements RemoteResourceInterface
     /**
      * @param string $fileIdentifier
      * @param string $filePath
+     * @param FileInterface|null $fileObject
      * @return bool
      */
-    public function hasFile($fileIdentifier, $filePath)
+    public function hasFile($fileIdentifier, $filePath, FileInterface $fileObject = null)
     {
         $report = [];
         GeneralUtility::getUrl($this->url . ltrim($filePath, '/'), 2, false, $report);
@@ -56,9 +58,10 @@ class DomainResource implements RemoteResourceInterface
     /**
      * @param string $fileIdentifier
      * @param string $filePath
+     * @param FileInterface|null $fileObject
      * @return string
      */
-    public function getFile($fileIdentifier, $filePath)
+    public function getFile($fileIdentifier, $filePath, FileInterface $fileObject = null)
     {
         return GeneralUtility::getUrl($this->url . ltrim($filePath, '/'), 0, false, $report);
     }

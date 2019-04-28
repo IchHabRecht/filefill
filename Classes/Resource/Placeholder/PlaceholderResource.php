@@ -17,7 +17,6 @@ namespace IchHabRecht\Filefill\Resource\Placeholder;
 
 use IchHabRecht\Filefill\Resource\RemoteResourceInterface;
 use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\ProcessedFile;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
@@ -73,16 +72,15 @@ class PlaceholderResource implements RemoteResourceInterface
         }
 
         if (!isset(static::$fileIdentifierCache[$fileIdentifier])) {
-            $fileObject = null;
+            static::$fileIdentifierCache[$fileIdentifier] = null;
             $localPath = $filePath;
             $storage = $this->resourceFactory->getStorageObject(0, [], $localPath);
             if ($storage->getUid() !== 0) {
-                $fileObject = $this->getFileObjectFromStorage($storage, $fileIdentifier);
+                static::$fileIdentifierCache[$fileIdentifier] = $this->getFileObjectFromStorage($storage, $fileIdentifier);
             }
-            static::$fileIdentifierCache[$fileIdentifier] = $fileObject ?? false;
         }
 
-        return static::$fileIdentifierCache[$fileIdentifier] !== false;
+        return static::$fileIdentifierCache[$fileIdentifier] instanceof FileInterface;
     }
 
     /**
@@ -90,14 +88,8 @@ class PlaceholderResource implements RemoteResourceInterface
      * @param string $filePath
      * @return string
      */
-    public function getFile(
-        $fileIdentifier,
-        $filePath
-    ) {
-        if (!isset(static::$fileIdentifierCache[$fileIdentifier]) && !$this->hasFile($fileIdentifier, $filePath)) {
-            return false;
-        }
-
+    public function getFile($fileIdentifier, $filePath)
+    {
         $fileObject = static::$fileIdentifierCache[$fileIdentifier];
         $size = max(1, $fileObject->getProperty('width')) . 'x' . max(1, $fileObject->getProperty('height'));
         $fileExtension = $fileObject->getExtension();
@@ -123,7 +115,7 @@ class PlaceholderResource implements RemoteResourceInterface
     /**
      * @param ResourceStorage $storage
      * @param string $fileIdentifier
-     * @return File|null
+     * @return FileInterface|null
      */
     protected function getFileObjectFromStorage(ResourceStorage $storage, string $fileIdentifier)
     {

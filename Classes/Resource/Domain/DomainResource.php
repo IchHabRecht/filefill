@@ -26,11 +26,11 @@ class DomainResource implements RemoteResourceInterface
     protected $url;
 
     /**
-     * @param string $url
+     * @param string $configuration
      */
-    public function __construct($url)
+    public function __construct($configuration)
     {
-        $this->url = rtrim($url, '/') . '/';
+        $this->url = rtrim((string)$configuration, '/') . '/';
     }
 
     /**

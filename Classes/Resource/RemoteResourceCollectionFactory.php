@@ -15,10 +15,8 @@ namespace IchHabRecht\Filefill\Resource;
  * LICENSE file that was distributed with this source code.
  */
 
+use IchHabRecht\Filefill\Exception\MissingInterfaceException;
 use IchHabRecht\Filefill\Exception\UnknownResourceException;
-use IchHabRecht\Filefill\Resource\Domain\DomainResource;
-use IchHabRecht\Filefill\Resource\Domain\DomainResourceRepository;
-use IchHabRecht\Filefill\Resource\Placeholder\PlaceholderResource;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class RemoteResourceCollectionFactory
@@ -32,27 +30,28 @@ class RemoteResourceCollectionFactory
     {
         $remoteResources = [];
 
-        foreach ($configuration as $key => $resource) {
-            if (empty($resource)) {
+        foreach ($configuration as $resource) {
+            if (empty($resource['identifier'])) {
                 continue;
             }
 
-            switch ($key) {
-                case 'domain':
-                    foreach ($resource as $domain) {
-                        $remoteResources[] = GeneralUtility::makeInstance(DomainResource::class, $domain);
-                    }
-                    break;
-                case 'sys_domain':
-                    $domainResourceRepository = GeneralUtility::makeInstance(DomainResourceRepository::class);
-                    $remoteResources = array_merge($remoteResources, $domainResourceRepository->findAll());
-                    break;
-                case 'placeholder':
-                    $remoteResources[] = GeneralUtility::makeInstance(PlaceholderResource::class);
-                    break;
-                default:
-                    throw new UnknownResourceException('Unexpected File Fill Resource configuration "' . $key . '"', 1519788775);
+            if (!isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['filefill']['resourceHandler'][$resource['identifier']]['handler'])) {
+                throw new UnknownResourceException('Unexpected File Fill Resource configuration "' . $resource['identifier'] . '"', 1519788775);
             }
+
+            $handler = GeneralUtility::makeInstance(
+                $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['filefill']['resourceHandler'][$resource['identifier']]['handler'],
+                $resource['configuration'] ?? null
+            );
+
+            if (!$handler instanceof RemoteResourceInterface) {
+                throw new MissingInterfaceException(
+                    'Resource handler for "' . $resource['identifier'] . '" doesn\'t implement IchHabRecht\\Filefill\\Resource\\RemoteResourceInterface',
+                    1556472885
+                );
+            }
+
+            $remoteResources[] = $handler;
         }
 
         return GeneralUtility::makeInstance(RemoteResourceCollection::class, $remoteResources);
@@ -74,25 +73,16 @@ class RemoteResourceCollectionFactory
                 continue;
             }
 
-            $key = key($resource);
+            $identifier = key($resource);
 
-            switch ($key) {
-                case 'domain':
-                    if (empty($configuration[$key])) {
-                        $configuration[$key] = [];
-                    }
-                    $configuration[$key] = array_merge(
-                        $configuration[$key],
-                        [$resource['domain']['el']['domain']['vDEF']]
-                    );
-                    break;
-                case 'sys_domain':
-                case 'placeholder':
-                    $configuration[$key] = true;
-                    break;
-                default:
-                    throw new UnknownResourceException('Unexpected File Fill Resource configuration "' . $key . '"', 1528326468);
+            if (!isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['filefill']['resourceHandler'][$identifier])) {
+                throw new UnknownResourceException('Unexpected File Fill Resource configuration "' . $identifier . '"', 1528326468);
             }
+
+            $configuration[] = [
+                'identifier' => $identifier,
+                'configuration' => $resource[$identifier]['el'][$identifier]['vDEF'] ?? null,
+            ];
         }
 
         return self::createRemoteResourceCollectionFromConfiguration($configuration);

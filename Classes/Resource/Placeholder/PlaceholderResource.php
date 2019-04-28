@@ -51,7 +51,11 @@ class PlaceholderResource implements RemoteResourceInterface
      */
     protected static $fileIdentifierCache = [];
 
-    public function __construct(ResourceFactory $resourceFactory = null)
+    /**
+     * @param string $configuration
+     * @param ResourceFactory $resourceFactory
+     */
+    public function __construct($configuration, ResourceFactory $resourceFactory = null)
     {
         $this->resourceFactory = $resourceFactory ?: ResourceFactory::getInstance();
     }

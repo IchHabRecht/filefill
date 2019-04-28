@@ -16,9 +16,32 @@ namespace IchHabRecht\Filefill\Resource\Domain;
  */
 
 use IchHabRecht\Filefill\Resource\RemoteResourceInterface;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class SysDomainResource implements RemoteResourceInterface
 {
+    /**
+     * @var DomainResource[]
+     */
+    protected $domainResources;
+
+    /**
+     * @var DomainResource[]
+     */
+    protected static $fileIdentifierCache = [];
+
+    /**
+     * @param string $configuration
+     * @param DomainResourceRepository $domainResourceRepository
+     */
+    public function __construct($configuration, DomainResourceRepository $domainResourceRepository = null)
+    {
+        if ($domainResourceRepository === null) {
+            $domainResourceRepository = GeneralUtility::makeInstance(DomainResourceRepository::class);
+        }
+        $this->domainResources = $domainResourceRepository->findAll();
+    }
+
     /**
      * @param string $fileIdentifier
      * @param string $filePath
@@ -26,7 +49,17 @@ class SysDomainResource implements RemoteResourceInterface
      */
     public function hasFile($fileIdentifier, $filePath)
     {
-        return false;
+        if (!isset(static::$fileIdentifierCache[$fileIdentifier])) {
+            static::$fileIdentifierCache[$fileIdentifier] = null;
+            foreach ($this->domainResources as $domainResource) {
+                if ($domainResource->hasFile($fileIdentifier, $filePath)) {
+                    static::$fileIdentifierCache[$fileIdentifier] = $domainResource;
+                    break;
+                }
+            }
+        }
+
+        return static::$fileIdentifierCache[$fileIdentifier] instanceof DomainResource;
     }
 
     /**
@@ -36,6 +69,6 @@ class SysDomainResource implements RemoteResourceInterface
      */
     public function getFile($fileIdentifier, $filePath)
     {
-        return '';
+        return static::$fileIdentifierCache[$fileIdentifier]->getFile($fileIdentifier, $filePath);
     }
 }

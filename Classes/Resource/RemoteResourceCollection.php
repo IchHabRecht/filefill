@@ -50,7 +50,7 @@ class RemoteResourceCollection
                     continue;
                 }
                 $absoluteFilePath = PATH_site . $filePath;
-                GeneralUtility::mkdir_deep(dirname($absoluteFilePath), '');
+                GeneralUtility::mkdir_deep(dirname($absoluteFilePath));
                 GeneralUtility::writeFile($absoluteFilePath, $fileContent);
 
                 return true;

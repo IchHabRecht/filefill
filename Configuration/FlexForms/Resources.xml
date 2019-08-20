@@ -11,53 +11,7 @@
                         <title />
                         <type>array</type>
                         <section>1</section>
-                        <el>
-                            <domain>
-                                <title>LLL:EXT:filefill/Resources/Private/Language/locallang_db.xlf:sys_file_storage.filefill.domain</title>
-                                <type>array</type>
-                                <el>
-                                    <domain>
-                                        <TCEforms>
-                                            <label>LLL:EXT:filefill/Resources/Private/Language/locallang_db.xlf:sys_file_storage.filefill.url</label>
-                                            <config>
-                                                <type>input</type>
-                                                <eval>required</eval>
-                                            </config>
-                                        </TCEforms>
-                                    </domain>
-                                </el>
-                            </domain>
-                            <sys_domain>
-                                <title>LLL:EXT:filefill/Resources/Private/Language/locallang_db.xlf:sys_file_storage.filefill.sys_domain</title>
-                                <type>array</type>
-                                <el>
-                                    <sys_domain>
-                                        <TCEforms>
-                                            <label>LLL:EXT:filefill/Resources/Private/Language/locallang_db.xlf:sys_file_storage.filefill.sys_domain</label>
-                                            <config>
-                                                <type>check</type>
-                                                <default>1</default>
-                                            </config>
-                                        </TCEforms>
-                                    </sys_domain>
-                                </el>
-                            </sys_domain>
-                            <placeholder>
-                                <title>LLL:EXT:filefill/Resources/Private/Language/locallang_db.xlf:sys_file_storage.filefill.placeholder_com</title>
-                                <type>array</type>
-                                <el>
-                                    <placeholder>
-                                        <TCEforms>
-                                            <label>LLL:EXT:filefill/Resources/Private/Language/locallang_db.xlf:sys_file_storage.filefill.placeholder_com</label>
-                                            <config>
-                                                <type>check</type>
-                                                <default>1</default>
-                                            </config>
-                                        </TCEforms>
-                                    </placeholder>
-                                </el>
-                            </placeholder>
-                        </el>
+                        <el />
                     </resources>
                 </el>
             </ROOT>

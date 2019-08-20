@@ -15,19 +15,23 @@ namespace IchHabRecht\Filefill\Resource;
  * LICENSE file that was distributed with this source code.
  */
 
+use TYPO3\CMS\Core\Resource\FileInterface;
+
 interface RemoteResourceInterface
 {
     /**
      * @param string $fileIdentifier
      * @param string $filePath
+     * @param FileInterface|null $fileObject
      * @return bool
      */
-    public function hasFile($fileIdentifier, $filePath);
+    public function hasFile($fileIdentifier, $filePath, FileInterface $fileObject = null);
 
     /**
      * @param string $fileIdentifier
      * @param string $filePath
+     * @param FileInterface|null $fileObject
      * @return string
      */
-    public function getFile($fileIdentifier, $filePath);
+    public function getFile($fileIdentifier, $filePath, FileInterface $fileObject = null);
 }

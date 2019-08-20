@@ -16,18 +16,35 @@ namespace IchHabRecht\Filefill\Resource;
  */
 
 use IchHabRecht\Filefill\Exception\MissingInterfaceException;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Resource\FileInterface;
+use TYPO3\CMS\Core\Resource\ProcessedFile;
+use TYPO3\CMS\Core\Resource\ResourceFactory;
+use TYPO3\CMS\Core\Resource\ResourceInterface;
+use TYPO3\CMS\Core\Resource\ResourceStorage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class RemoteResourceCollection
 {
     /**
-     * @var array
+     * @var ResourceInterface[]
      */
     protected $resources;
 
-    public function __construct(array $resources)
+    /**
+     * @var ResourceFactory
+     */
+    protected $resourceFactory;
+
+    /**
+     * @var FileInterface[]
+     */
+    protected static $fileIdentifierCache = [];
+
+    public function __construct(array $resources, ResourceFactory $resourceFactory = null)
     {
         $this->resources = $resources;
+        $this->resourceFactory = $resourceFactory ?: ResourceFactory::getInstance();
     }
 
     /**
@@ -37,6 +54,10 @@ class RemoteResourceCollection
      */
     public function save($fileIdentifier, $filePath)
     {
+        if ($this->fileCanBeReProcessed($fileIdentifier, $filePath)) {
+            return false;
+        }
+
         foreach ($this->resources as $remote) {
             if (!$remote instanceof RemoteResourceInterface) {
                 throw new MissingInterfaceException(
@@ -44,13 +65,13 @@ class RemoteResourceCollection
                     1519680070
                 );
             }
-            if ($remote->hasFile($fileIdentifier, $filePath)) {
-                $fileContent = $remote->getFile($fileIdentifier, $filePath);
+            if ($remote->hasFile($fileIdentifier, $filePath, static::$fileIdentifierCache[$fileIdentifier])) {
+                $fileContent = $remote->getFile($fileIdentifier, $filePath, static::$fileIdentifierCache[$fileIdentifier]);
                 if ($fileContent === false) {
                     continue;
                 }
                 $absoluteFilePath = PATH_site . $filePath;
-                GeneralUtility::mkdir_deep(dirname($absoluteFilePath), '');
+                GeneralUtility::mkdir_deep(dirname($absoluteFilePath));
                 GeneralUtility::writeFile($absoluteFilePath, $fileContent);
 
                 return true;
@@ -58,5 +79,77 @@ class RemoteResourceCollection
         }
 
         return false;
+    }
+
+    /**
+     * @param string $fileIdentifier
+     * @param string $filePath
+     * @return bool
+     */
+    protected function fileCanBeReProcessed($fileIdentifier, $filePath)
+    {
+        if (!isset(static::$fileIdentifierCache[$fileIdentifier])) {
+            static::$fileIdentifierCache[$fileIdentifier] = null;
+            $localPath = $filePath;
+            $storage = $this->resourceFactory->getStorageObject(0, [], $localPath);
+            if ($storage->getUid() !== 0) {
+                static::$fileIdentifierCache[$fileIdentifier] = $this->getFileObjectFromStorage($storage, $fileIdentifier);
+            }
+        }
+
+        return static::$fileIdentifierCache[$fileIdentifier] instanceof ProcessedFile
+            && static::$fileIdentifierCache[$fileIdentifier]->getOriginalFile()->exists();
+    }
+
+    /**
+     * @param ResourceStorage $storage
+     * @param string $fileIdentifier
+     * @return FileInterface|null
+     */
+    protected function getFileObjectFromStorage(ResourceStorage $storage, string $fileIdentifier)
+    {
+        $fileObject = null;
+
+        if (!$storage->isWithinProcessingFolder($fileIdentifier)) {
+            try {
+                $fileObject = $this->resourceFactory->getFileObjectByStorageAndIdentifier($storage->getUid(), $fileIdentifier);
+            } catch (\InvalidArgumentException $e) {
+                return null;
+            }
+        } else {
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('sys_file_processedfile');
+            $expressionBuilder = $queryBuilder->expr();
+            $databaseRow = $queryBuilder->select('*')
+                ->from('sys_file_processedfile')
+                ->where(
+                    $expressionBuilder->eq(
+                        'storage',
+                        $queryBuilder->createNamedParameter((int)$storage->getUid(), \PDO::PARAM_INT)
+                    ),
+                    $expressionBuilder->eq(
+                        'identifier',
+                        $queryBuilder->createNamedParameter($fileIdentifier, \PDO::PARAM_STR)
+                    )
+                )
+                ->execute()
+                ->fetch(\PDO::FETCH_ASSOC);
+            if (empty($databaseRow)) {
+                return null;
+            }
+
+            $originalFile = $this->resourceFactory->getFileObject((int)$databaseRow['original']);
+            $taskType = $databaseRow['task_type'];
+            $configuration = unserialize($databaseRow['configuration'], ['allowed_classes' => false]);
+
+            $fileObject = GeneralUtility::makeInstance(
+                ProcessedFile::class,
+                $originalFile,
+                $taskType,
+                $configuration,
+                $databaseRow
+            );
+        }
+
+        return $fileObject;
     }
 }

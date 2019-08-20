@@ -19,6 +19,8 @@ folder (e.g. fileadmin). You can re-run filefill at any time by deleting the loc
 
 Simply install the extension with Composer or the Extension Manager.
 
+`composer require ichhabrecht/filefill`
+
 ## Usage
 
 You only need to configure one or more existing "File Storage" records
@@ -39,12 +41,20 @@ You only need to configure one or more existing "File Storage" records
 
 ```php
 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['filefill']['storages'][1] = [
-    'domain' => [
-        'https://example.com',
-        'https://example.org',
+    [
+        'identifier' => 'domain',
+        'configuration' => 'https://example.com',
     ],
-    'sys_domain' => true,
-    'placeholder' => true,
+    [
+        'identifier' => 'domain',
+        'configuration' => 'https://example.org',
+    ],
+    [
+        'identifier' => 'sys_domain',
+    ],
+    [
+        'identifier' => 'placeholder',
+    ],
 ];
 ```
 
@@ -53,7 +63,7 @@ $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['filefill']['storages'][1] = [
 
 ## Resources
 
-Resources define the places (url / services) were filefill tries to fetch missing files from. You can use multiple
+Resources define the places (url / services) where filefill tries to fetch missing files from. You can use multiple
 resources to build some kind of fallback chain.
 
 ### Single domain
@@ -88,6 +98,51 @@ Configuration:
 
 There is no need for multiple usage. This resource can be the last one in the chain but can handle image files only.
 
+## Additional resources
+
+You can add own resource handlers to fetch files from additional services.
+
+### Registration
+
+```
+$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['filefill']['resourceHandler']['identifierName'] = [
+    'title' => 'Name of the resource',
+    'handler' => \Vendor\Extension\Resource\ResourceHandler::class,
+    'config' => [
+        'label' => 'Name of the resource',
+        'config' => [
+            'type' => 'check',
+            'default' => 1,
+        ],
+    ],
+];
+```
+
+- title: name of the resource that is taken as backend (flex) button label
+- handler: name of the class that handels the actual implementation
+- config: TCA configuration for the backend (flex) field
+
+### Handler
+
+```
+namespace Vendor\Extension\Resource;
+class ResourceHandler implements \IchHabRecht\Filefill\Resource\RemoteResourceInterface
+{
+    public function hasFile($fileIdentifier, $filePath, FileInterface $fileObject = null)
+    {
+        return true;
+    }
+    
+    public function getFile($fileIdentifier, $filePath, FileInterface $fileObject = null)
+    {
+        return 'file content';
+    }
+}
+```
+
+The handler needs to implement the interface `\IchHabRecht\Filefill\Resource\RemoteResourceInterface` and therefore has to
+add both functions `hasFile` and 'getFile'.
+
 ## Known issues
 
 ### 1509741907 TYPO3Fluid\Fluid\Core\ViewHelper\Exception
@@ -101,3 +156,4 @@ all files were properly created on your current system.
 ## Community
 
 - Thanks to [Marcus Schwemer](https://twitter.com/MarcusSchwemer) who wrote about filefill in his blog [TYPO3worx](https://typo3worx.eu/2018/03/eight-typo3-extensions-making-developers-happy/)
+- Thanks to [Thomas Löffler](https://spooner-web.de) for his ongoing support as [Patron](https://www.patreon.com/IchHabRecht)

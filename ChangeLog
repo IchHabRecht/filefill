@@ -1,3 +1,13 @@
+2019-08-20         [RELEASE] Release of filefill 3.0.0 (Nicole Cordes)
+2019-08-20 b62a18c [TASK] Update supporting files to EXT:my_skeleton 0.2.1 (Nicole Cordes)
+2019-08-20 6bc9c0a [TASK] Update README.md (Nicole Cordes)
+2019-04-28 a1eae59 [FEATURE] Allow global reprocessing of existing ProcessedFile (Nicole Cordes)
+2019-04-28 25b5d27 [TASK] Streamline PlaceholderResource (Nicole Cordes)
+2019-04-28 ed65f5f [BUGFIX] Remove deprecated argument in GeneralUtility::mkdir_deep (Nicole Cordes)
+2019-04-28 96dd0d5 [FEATURE] Adjust existing resource handler to new configuration (Nicole Cordes)
+2019-04-28 d95218c [FEATURE] Move resource configuration to $TYPO3_CONF_VARS (Nicole Cordes)
+2019-04-28 e276780 [TASK] Raise extension version to 3.x (Nicole Cordes)
+
 2018-10-29         [RELEASE] Release of filefill 2.0.1 (Nicole Cordes)
 2018-10-29 6757ce6 [BUGFIX] Always enforce case sensitive file system (Nicole Cordes)
 

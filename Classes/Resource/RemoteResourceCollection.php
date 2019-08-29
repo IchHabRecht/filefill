@@ -54,7 +54,8 @@ class RemoteResourceCollection
      */
     public function save($fileIdentifier, $filePath)
     {
-        if ($this->fileCanBeReProcessed($fileIdentifier, $filePath)) {
+        // Do not try to download files that can be either processed or are not available in sys_file
+        if ($this->fileCanBeReProcessed($fileIdentifier, $filePath) || static::$fileIdentifierCache[$fileIdentifier] === null) {
             return false;
         }
 
@@ -88,7 +89,7 @@ class RemoteResourceCollection
      */
     protected function fileCanBeReProcessed($fileIdentifier, $filePath)
     {
-        if (!isset(static::$fileIdentifierCache[$fileIdentifier])) {
+        if (!array_key_exists($fileIdentifier, static::$fileIdentifierCache)) {
             static::$fileIdentifierCache[$fileIdentifier] = null;
             $localPath = $filePath;
             $storage = $this->resourceFactory->getStorageObject(0, [], $localPath);

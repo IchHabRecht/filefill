@@ -42,6 +42,18 @@ class FileFillDriver extends LocalDriver
 
     /**
      * @param string $fileIdentifier
+     * @param array $propertiesToExtract
+     * @return array
+     */
+    public function getFileInfoByIdentifier($fileIdentifier, array $propertiesToExtract = [])
+    {
+        $this->ensureFileExists($fileIdentifier);
+
+        return parent::getFileInfoByIdentifier($fileIdentifier, $propertiesToExtract);
+    }
+
+    /**
+     * @param string $fileIdentifier
      * @return bool
      */
     public function fileExists($fileIdentifier)

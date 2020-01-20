@@ -46,6 +46,10 @@ $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['filefill']['storages'][1] = [
         'configuration' => 'https://example.com',
     ],
     [
+        'identifier' => 'domain',
+        'configuration' => 'https://another-example.com',
+    ],
+    [
         'identifier' => 'sys_domain',
     ],
     [

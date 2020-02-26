@@ -141,7 +141,7 @@ class FileFillDriver extends LocalDriver
      */
     protected function ensureFileExists($fileIdentifier)
     {
-        $absoluteFilePath = $this->getAbsolutePath($fileIdentifier);
+        $absoluteFilePath = $this->getAbsolutePath($fileIdentifier, false);
         if (empty($absoluteFilePath) || file_exists($absoluteFilePath)) {
             return true;
         }
@@ -154,5 +154,33 @@ class FileFillDriver extends LocalDriver
         $filePath = PathUtility::getRelativePath(PATH_site, dirname($absoluteFilePath)) . $fileName;
 
         return $this->remoteResourceCollection->save($fileIdentifier, $filePath);
+    }
+
+    /**
+     * Returns the absolute path of a file or folder.
+     *
+     * @param string $fileIdentifier
+     * @param bool $callOriginalDriver
+     * @return string
+     */
+    protected function getAbsolutePath($fileIdentifier, $callOriginalDriver = true)
+    {
+        $relativeFilePath = ltrim($this->canonicalizeAndCheckFileIdentifier($fileIdentifier, $callOriginalDriver), '/');
+
+        return $this->absoluteBasePath . $relativeFilePath;
+    }
+
+    /**
+     * Makes sure the Path given as parameter is valid
+     *
+     * @param string $fileIdentifier The file path (including the file name!)
+     * @param bool $callOriginalDriver
+     * @return string
+     */
+    protected function canonicalizeAndCheckFileIdentifier($fileIdentifier, $callOriginalDriver = true)
+    {
+        return $callOriginalDriver
+            ? $this->originalDriverObject->canonicalizeAndCheckFileIdentifier($fileIdentifier)
+            : parent::canonicalizeAndCheckFileIdentifier($fileIdentifier);
     }
 }

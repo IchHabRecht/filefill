@@ -1,3 +1,6 @@
+2020-02-26         [RELEASE] Release of filefill 2.0.2 (Nicole Cordes)
+2020-02-26 01713c9 [BUGFIX] Use correct identifier canonicalization (Nicole Cordes)
+
 2018-10-29         [RELEASE] Release of filefill 2.0.1 (Nicole Cordes)
 2018-10-29 6757ce6 [BUGFIX] Always enforce case sensitive file system (Nicole Cordes)
 

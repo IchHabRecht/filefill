@@ -1,3 +1,8 @@
+2020-02-26         [RELEASE] Release of filefill 3.0.2 (Nicole Cordes)
+2020-02-26 17c557d [BUGFIX] Use correct identifier canonicalization (Nicole Cordes)
+2020-01-20 964c455 Add a better example (Harry Glatz)
+2020-01-17 7f7dcd0 Remove duplicate entry in example (Harry Glatz)
+
 2019-08-29         [RELEASE] Release of filefill 3.0.1 (Nicole Cordes)
 2019-08-29 9e773f5 [BUGFIX] Do not try to download files not present in sys_file (Helmut Hummel)
 

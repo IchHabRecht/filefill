@@ -1,3 +1,6 @@
+2020-02-26         [RELEASE] Release of filefill 1.4.2 (Nicole Cordes)
+2020-02-26 a58828b [BUGFIX] Use correct identifier canonicalization (Nicole Cordes)
+
 2018-10-29         [RELEASE] Release of filefill 1.4.1 (Nicole Cordes)
 2018-10-29 0abe965 [BUGFIX] Always enforce case sensitive file system (Nicole Cordes)
 2018-10-29 8f9df36 [BUGFIX] Remove incompatible declare(strict_types) annotation (Nicole Cordes)

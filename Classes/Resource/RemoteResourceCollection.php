@@ -71,9 +71,15 @@ class RemoteResourceCollection
                 if ($fileContent === false) {
                     continue;
                 }
+
                 $absoluteFilePath = PATH_site . $filePath;
                 GeneralUtility::mkdir_deep(dirname($absoluteFilePath));
-                GeneralUtility::writeFile($absoluteFilePath, $fileContent);
+
+                if (filter_var($fileContent, FILTER_VALIDATE_URL)) {
+                    file_put_contents($absoluteFilePath, fopen($fileContent, 'r'));
+                } else {
+                    GeneralUtility::writeFile($absoluteFilePath, $fileContent);
+                }
 
                 return true;
             }

@@ -16,6 +16,7 @@ namespace IchHabRecht\Filefill\Resource;
  */
 
 use IchHabRecht\Filefill\Exception\MissingInterfaceException;
+use IchHabRecht\Filefill\Exception\UnknownResourceException;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\ProcessedFile;
@@ -71,9 +72,20 @@ class RemoteResourceCollection
                 if ($fileContent === false) {
                     continue;
                 }
+                if (is_resource($fileContent) && get_resource_type($fileContent) !== 'stream') {
+                    throw new UnknownResourceException(
+                        'Cannot handle resource type "' . get_resource_type($fileContent) . '" as file content',
+                        1583421958
+                    );
+                }
+
                 $absoluteFilePath = PATH_site . $filePath;
                 GeneralUtility::mkdir_deep(dirname($absoluteFilePath));
-                GeneralUtility::writeFile($absoluteFilePath, $fileContent);
+                file_put_contents($absoluteFilePath, $fileContent);
+
+                if (is_resource($fileContent) && get_resource_type($fileContent) === 'stream') {
+                    fclose($fileContent);
+                }
 
                 return true;
             }

@@ -63,7 +63,7 @@ class PlaceholderResource implements RemoteResourceInterface
      */
     public function hasFile($fileIdentifier, $filePath)
     {
-        $fileExtension = pathinfo($filePath, PATHINFO_EXTENSION);
+        $fileExtension = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
         if (!in_array($fileExtension, $this->allowedFileExtensions, true)) {
             return false;
         }
@@ -86,10 +86,7 @@ class PlaceholderResource implements RemoteResourceInterface
      * @param string $filePath
      * @return string
      */
-    public function getFile(
-        $fileIdentifier,
-        $filePath
-    ) {
+    public function getFile($fileIdentifier, $filePath) {
         if (!isset(static::$fileIdentifierCache[$fileIdentifier]) && !$this->hasFile($fileIdentifier, $filePath)) {
             return false;
         }

@@ -1,3 +1,6 @@
+2020-03-05         [RELEASE] Release of filefill 3.0.3 (Nicole Cordes)
+2020-03-05 2e4c06f [BUGFIX] Enforce lower file extension for comparison (Nicole Cordes)
+
 2020-02-26         [RELEASE] Release of filefill 3.0.2 (Nicole Cordes)
 2020-02-26 17c557d [BUGFIX] Use correct identifier canonicalization (Nicole Cordes)
 2020-01-20 964c455 Add a better example (Harry Glatz)

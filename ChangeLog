@@ -1,3 +1,10 @@
+2020-03-10         [RELEASE] Release of filefill 3.1.0 (Nicole Cordes)
+2020-03-10 5740bb0 [TASK] Add TYPO3 10.3 to extension constraints and Travis CI (Nicole Cordes)
+2020-03-10 d56c3db [TASK] Update supporting files to EXT:my_skeleton 0.3.0 (Nicole Cordes)
+2020-03-10 f6193aa [TASK] Use own form element for missing file infomation (Nicole Cordes)
+2020-03-10 8f6f254 [TASK] Move file handling to driver (Nicole Cordes)
+2020-03-05 b788f67 [FEATURE] Allow streaming of files (Nicole Cordes)
+
 2020-03-05         [RELEASE] Release of filefill 3.0.3 (Nicole Cordes)
 2020-03-05 2e4c06f [BUGFIX] Enforce lower file extension for comparison (Nicole Cordes)
 

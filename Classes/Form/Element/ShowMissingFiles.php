@@ -1,6 +1,6 @@
 <?php
 declare(strict_types = 1);
-namespace IchHabRecht\Filefill\UserFunc;
+namespace IchHabRecht\Filefill\Form\Element;
 
 /*
  * This file is part of the TYPO3 extension filefill.
@@ -15,29 +15,42 @@ namespace IchHabRecht\Filefill\UserFunc;
  * LICENSE file that was distributed with this source code.
  */
 
+use TYPO3\CMS\Backend\Form\Element\AbstractFormElement;
+use TYPO3\CMS\Backend\Form\NodeFactory;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Imaging\IconFactory;
+use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Lang\LanguageService;
 
-class CheckMissingFiles
+class ShowMissingFiles extends AbstractFormElement
 {
     /**
      * @var LanguageService
      */
     protected $languageService;
 
-    public function __construct(LanguageService $languageService = null)
+    /**
+     * Container objects give $nodeFactory down to other containers.
+     *
+     * @param NodeFactory $nodeFactory
+     * @param array $data
+     * @param LanguageService|null $languageService
+     * @throws \InvalidArgumentException
+     */
+    public function __construct(NodeFactory $nodeFactory, array $data, $languageService = null)
     {
+        parent::__construct($nodeFactory, $data);
         $this->languageService = $languageService ?: $GLOBALS['LANG'];
     }
 
     /**
-     * @return string
+     * @return array
      */
-    public function render(array $parameterArray)
+    public function render()
     {
+        $result = $this->initializeResultArray();
+
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('sys_file');
         $expressionBuilder = $queryBuilder->expr();
         $count = $queryBuilder->count('*')
@@ -45,7 +58,7 @@ class CheckMissingFiles
             ->where(
                 $expressionBuilder->eq(
                     'storage',
-                    $queryBuilder->createNamedParameter((int)$parameterArray['row']['uid'], \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter($this->data['vanillaUid'], \PDO::PARAM_INT)
                 ),
                 $expressionBuilder->eq(
                     'missing',
@@ -80,6 +93,8 @@ class CheckMissingFiles
 
         $html[] = '</div>';
 
-        return implode('', $html);
+        $result['html'] = implode('', $html);
+
+        return $result;
     }
 }

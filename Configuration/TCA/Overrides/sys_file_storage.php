@@ -40,7 +40,7 @@ $tempColumns = [
         'displayCond' => 'FIELD:driver:=:Local',
         'config' => [
             'type' => 'user',
-            'userFunc' => \IchHabRecht\Filefill\UserFunc\CheckMissingFiles::class . '->render',
+            'renderType' => 'showMissingFiles',
         ],
     ],
 ];

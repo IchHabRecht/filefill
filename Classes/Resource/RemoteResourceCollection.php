@@ -47,9 +47,20 @@ class RemoteResourceCollection
                 if ($fileContent === false) {
                     continue;
                 }
+                if (is_resource($fileContent) && get_resource_type($fileContent) !== 'stream') {
+                    throw new \RuntimeException(
+                        'Cannot handle resource type "' . get_resource_type($fileContent) . '" as file content',
+                        1583421958
+                    );
+                }
+
                 $absoluteFilePath = PATH_site . $filePath;
-                GeneralUtility::mkdir_deep(dirname($absoluteFilePath), '');
-                GeneralUtility::writeFile($absoluteFilePath, $fileContent);
+                GeneralUtility::mkdir_deep(dirname($absoluteFilePath));
+                file_put_contents($absoluteFilePath, $fileContent);
+
+                if (is_resource($fileContent) && get_resource_type($fileContent) === 'stream') {
+                    fclose($fileContent);
+                }
 
                 return true;
             }

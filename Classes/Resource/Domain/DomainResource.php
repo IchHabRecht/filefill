@@ -55,10 +55,12 @@ class DomainResource implements RemoteResourceInterface
     /**
      * @param string $fileIdentifier
      * @param string $filePath
-     * @return string
+     * @return resource|string
      */
     public function getFile($fileIdentifier, $filePath)
     {
-        return GeneralUtility::getUrl($this->url . ltrim($filePath, '/'), 0, false, $report);
+        $fileName = $this->url . ltrim($filePath, '/');
+
+        return @fopen($fileName, 'r') ?: GeneralUtility::getUrl($fileName, 0, false);
     }
 }

@@ -71,13 +71,22 @@ jobs:
                     echo;
                     find . -name \*.php ! -path "./.Build/*" | parallel --gnu php -d display_errors=stderr -l {} > /dev/null \;;
             php: 7.4
+            env: TYPO3=~10.3.0
+        -   <<: *tests
+            php: 7.4
             env: TYPO3=^9.5
+        -   <<: *tests
+            php: 7.3
+            env: TYPO3=~10.3.0
         -   <<: *tests
             php: 7.3
             env: TYPO3=^9.5
         -   <<: *tests
             php: 7.3
             env: TYPO3=^8.7
+        -   <<: *tests
+            php: 7.2
+            env: TYPO3=~10.3.0
         -   <<: *tests
             php: 7.2
             env: TYPO3=^9.5
@@ -115,7 +124,7 @@ jobs:
             git:
                 depth: false
             php: 7.2
-            env: TYPO3="^8.7 ^9.5"
+            env: TYPO3="^8.7 ^9.5 ~10.3.0"
             before_script:
                 - mkdir -p .Log/coverage/ .Log/junit/
                 - export TYPO3_PATH_WEB=$PWD/.Build/public

@@ -18,7 +18,7 @@ namespace IchHabRecht\Filefill\Resource\Driver;
 use IchHabRecht\Filefill\Resource\RemoteResourceCollection;
 use TYPO3\CMS\Core\Resource\Driver\DriverInterface;
 use TYPO3\CMS\Core\Resource\Driver\LocalDriver;
-use TYPO3\CMS\Core\Utility\PathUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class FileFillDriver extends LocalDriver
 {
@@ -152,9 +152,20 @@ class FileFillDriver extends LocalDriver
             return true;
         }
 
-        $filePath = PathUtility::getRelativePath(PATH_site, dirname($absoluteFilePath)) . $fileName;
+        $filePath = $this->originalDriverObject->getPublicUrl($fileIdentifier);
 
-        return $this->remoteResourceCollection->save($fileIdentifier, $filePath);
+        $fileContent = $this->remoteResourceCollection->get($fileIdentifier, $filePath);
+        if ($fileContent !== null) {
+            $absoluteFilePath = $this->getAbsolutePath($fileIdentifier);
+            GeneralUtility::mkdir_deep(dirname($absoluteFilePath));
+            file_put_contents($absoluteFilePath, $fileContent);
+
+            if (is_resource($fileContent) && get_resource_type($fileContent) === 'stream') {
+                fclose($fileContent);
+            }
+        }
+
+        return true;
     }
 
     /**

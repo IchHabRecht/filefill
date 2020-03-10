@@ -51,13 +51,13 @@ class RemoteResourceCollection
     /**
      * @param string $fileIdentifier
      * @param string $filePath
-     * @return bool
+     * @return resource|string|null
      */
-    public function save($fileIdentifier, $filePath)
+    public function get($fileIdentifier, $filePath)
     {
         // Do not try to download files that can be either processed or are not available in sys_file
         if ($this->fileCanBeReProcessed($fileIdentifier, $filePath) || static::$fileIdentifierCache[$fileIdentifier] === null) {
-            return false;
+            return null;
         }
 
         foreach ($this->resources as $remote) {
@@ -79,19 +79,11 @@ class RemoteResourceCollection
                     );
                 }
 
-                $absoluteFilePath = PATH_site . $filePath;
-                GeneralUtility::mkdir_deep(dirname($absoluteFilePath));
-                file_put_contents($absoluteFilePath, $fileContent);
-
-                if (is_resource($fileContent) && get_resource_type($fileContent) === 'stream') {
-                    fclose($fileContent);
-                }
-
-                return true;
+                return $fileContent;
             }
         }
 
-        return false;
+        return null;
     }
 
     /**

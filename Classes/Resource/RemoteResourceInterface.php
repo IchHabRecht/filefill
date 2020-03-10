@@ -31,7 +31,7 @@ interface RemoteResourceInterface
      * @param string $fileIdentifier
      * @param string $filePath
      * @param FileInterface|null $fileObject
-     * @return string
+     * @return resource|string
      */
     public function getFile($fileIdentifier, $filePath, FileInterface $fileObject = null);
 }

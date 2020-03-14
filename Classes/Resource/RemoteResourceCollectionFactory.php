@@ -51,7 +51,10 @@ class RemoteResourceCollectionFactory
                 );
             }
 
-            $remoteResources[] = $handler;
+            $remoteResources[] = [
+                'identifier' => $resource['identifier'],
+                'handler' => $handler,
+            ];
         }
 
         return GeneralUtility::makeInstance(RemoteResourceCollection::class, $remoteResources);

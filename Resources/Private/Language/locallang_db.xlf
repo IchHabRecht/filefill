@@ -36,6 +36,15 @@
             <trans-unit id="sys_file_storage.filefill.reset">
                 <source>Reset missing files</source>
             </trans-unit>
+            <trans-unit id="sys_file_storage.filefill.delete">
+                <source>Delete files</source>
+            </trans-unit>
+            <trans-unit id="sys_file_storage.filefill.no_delete">
+                <source>No files found!</source>
+            </trans-unit>
+            <trans-unit id="sys_file_storage.filefill.delete_files">
+                <source>Delete %1$d file(s) from "%2$s" resource</source>
+            </trans-unit>
         </body>
     </file>
 </xliff>

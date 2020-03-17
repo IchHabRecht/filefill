@@ -95,7 +95,7 @@ class RemoteResourceCollection
                     );
                 }
 
-                $this->fileRepository->setIdentifier($file, $resource['identifier']);
+                $this->fileRepository->updateIdentifier($file, $resource['identifier']);
 
                 return $fileContent;
             }

@@ -16,8 +16,6 @@ namespace IchHabRecht\Filefill\Hooks;
  */
 
 use IchHabRecht\Filefill\Repository\FileRepository;
-use TYPO3\CMS\Core\Resource\ProcessedFileRepository;
-use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 
@@ -28,24 +26,10 @@ class DeleteFiles
      */
     protected $fileRepository;
 
-    /**
-     * @var ProcessedFileRepository
-     */
-    protected $processedFileRepository;
-
-    /**
-     * @var ResourceFactory
-     */
-    protected $resourceFactory;
-
     public function __construct(
-        FileRepository $fileRepository = null,
-        ProcessedFileRepository $processedFileRepository = null,
-        ResourceFactory $resourceFactory = null
+        FileRepository $fileRepository = null
     ) {
         $this->fileRepository = $fileRepository ?: GeneralUtility::makeInstance(FileRepository::class);
-        $this->processedFileRepository = $processedFileRepository ?: GeneralUtility::makeInstance(ProcessedFileRepository::class);
-        $this->resourceFactory = $resourceFactory ?: GeneralUtility::makeInstance(ResourceFactory::class);
     }
 
     /**
@@ -62,26 +46,6 @@ class DeleteFiles
             return;
         }
 
-        $rows = $this->fileRepository->findByIdentifier($_POST['_save_tx_filefill_delete'], $id);
-        foreach ($rows as $row) {
-            try {
-                $file = $this->resourceFactory->getFileObjectByStorageAndIdentifier($row['storage'], $row['identifier']);
-
-                // First delete all processed files, because file_exists is called on driver
-                foreach ($this->processedFileRepository->findAllByOriginalFile($file) as $processedFile) {
-                    if ($processedFile->exists()) {
-                        $processedFile->delete(true);
-                    }
-                }
-
-                // Use read-only absolute path to delete original file
-                $absolutePath = $file->getForLocalProcessing(false);
-                if (@unlink($absolutePath)) {
-                    $this->fileRepository->setIdentifier($file, '');
-                }
-            } catch (\InvalidArgumentException $e) {
-                continue;
-            }
-        }
+        $this->fileRepository->deleteByIdentifier($_POST['_save_tx_filefill_delete'], $id);
     }
 }

@@ -18,6 +18,8 @@ namespace IchHabRecht\Filefill\Repository;
 use Doctrine\DBAL\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Resource\FileInterface;
+use TYPO3\CMS\Core\Resource\ProcessedFileRepository;
+use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class FileRepository
@@ -27,9 +29,24 @@ class FileRepository
      */
     protected $connection;
 
-    public function __construct(Connection $connection = null)
-    {
+    /**
+     * @var ProcessedFileRepository
+     */
+    protected $processedFileRepository;
+
+    /**
+     * @var ResourceFactory
+     */
+    protected $resourceFactory;
+
+    public function __construct(
+        Connection $connection = null,
+        ProcessedFileRepository $processedFileRepository = null,
+        ResourceFactory $resourceFactory = null
+    ) {
         $this->connection = $connection ?: GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('sys_file');
+        $this->processedFileRepository = $processedFileRepository ?: GeneralUtility::makeInstance(ProcessedFileRepository::class);
+        $this->resourceFactory = $resourceFactory ?: GeneralUtility::makeInstance(ResourceFactory::class);
     }
 
     public function countByIdentifier($storage = null): array
@@ -86,7 +103,7 @@ class FileRepository
             ->fetchAll();
     }
 
-    public function setIdentifier(FileInterface $file, string $identifier)
+    public function updateIdentifier(FileInterface $file, string $identifier)
     {
         $queryBuilder = $this->connection->createQueryBuilder();
         $queryBuilder->update('sys_file')
@@ -98,5 +115,32 @@ class FileRepository
             )
             ->set('tx_filefill_identifier', $identifier)
             ->execute();
+    }
+
+    public function deleteByIdentifier(string $identifier, $storage = null): int
+    {
+        $rows = $this->findByIdentifier($identifier, $storage);
+        foreach ($rows as $row) {
+            try {
+                $file = $this->resourceFactory->getFileObjectByStorageAndIdentifier($row['storage'], $row['identifier']);
+
+                // First delete all processed files, because file_exists is called on driver
+                foreach ($this->processedFileRepository->findAllByOriginalFile($file) as $processedFile) {
+                    if ($processedFile->exists()) {
+                        $processedFile->delete(true);
+                    }
+                }
+
+                // Use read-only absolute path to delete original file
+                $absolutePath = $file->getForLocalProcessing(false);
+                if (@unlink($absolutePath)) {
+                    $this->updateIdentifier($file, '');
+                }
+            } catch (\InvalidArgumentException $e) {
+                continue;
+            }
+        }
+
+        return count($rows);
     }
 }

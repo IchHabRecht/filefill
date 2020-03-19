@@ -17,6 +17,7 @@ namespace IchHabRecht\Filefill\Resource;
 
 use IchHabRecht\Filefill\Exception\MissingInterfaceException;
 use IchHabRecht\Filefill\Exception\UnknownResourceException;
+use IchHabRecht\Filefill\Repository\FileRepository;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\ProcessedFile;
@@ -27,6 +28,11 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class RemoteResourceCollection
 {
+    /**
+     * @var FileRepository
+     */
+    protected $fileRepository;
+
     /**
      * @var ResourceInterface[]
      */
@@ -42,10 +48,18 @@ class RemoteResourceCollection
      */
     protected static $fileIdentifierCache = [];
 
-    public function __construct(array $resources, ResourceFactory $resourceFactory = null)
+    /**
+     * RemoteResourceCollection constructor.
+     *
+     * @param array $resources
+     * @param ResourceFactory|null $resourceFactory
+     * @param FileRepository|null $fileRepository
+     */
+    public function __construct(array $resources, ResourceFactory $resourceFactory = null, FileRepository $fileRepository = null)
     {
         $this->resources = $resources;
-        $this->resourceFactory = $resourceFactory ?: ResourceFactory::getInstance();
+        $this->resourceFactory = $resourceFactory ?: GeneralUtility::makeInstance(ResourceFactory::class);
+        $this->fileRepository = $fileRepository ?: GeneralUtility::makeInstance(FileRepository::class);
     }
 
     /**
@@ -60,15 +74,17 @@ class RemoteResourceCollection
             return null;
         }
 
-        foreach ($this->resources as $remote) {
-            if (!$remote instanceof RemoteResourceInterface) {
+        foreach ($this->resources as $resource) {
+            if (!$resource['handler'] instanceof RemoteResourceInterface) {
                 throw new MissingInterfaceException(
-                    'Remote resource of type ' . get_class($remote) . ' doesn\'t implement IchHabRecht\\Filefill\\Resource\\RemoteResourceInterface',
+                    'Remote resource of type ' . get_class($resource['handler']) . ' doesn\'t implement IchHabRecht\\Filefill\\Resource\\RemoteResourceInterface',
                     1519680070
                 );
             }
-            if ($remote->hasFile($fileIdentifier, $filePath, static::$fileIdentifierCache[$fileIdentifier])) {
-                $fileContent = $remote->getFile($fileIdentifier, $filePath, static::$fileIdentifierCache[$fileIdentifier]);
+
+            $file = static::$fileIdentifierCache[$fileIdentifier];
+            if ($resource['handler']->hasFile($fileIdentifier, $filePath, $file)) {
+                $fileContent = $resource['handler']->getFile($fileIdentifier, $filePath, $file);
                 if ($fileContent === false) {
                     continue;
                 }
@@ -78,6 +94,8 @@ class RemoteResourceCollection
                         1583421958
                     );
                 }
+
+                $this->fileRepository->updateIdentifier($file, $resource['identifier']);
 
                 return $fileContent;
             }

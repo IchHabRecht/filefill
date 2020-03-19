@@ -5,13 +5,22 @@ call_user_func(function () {
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][\TYPO3\CMS\Core\Configuration\FlexForm\FlexFormTools::class]['flexParsing']['filefill'] =
         \IchHabRecht\Filefill\Hooks\FlexFormToolsHook::class;
 
-    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass']['filefill'] =
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass']['filefill_missing'] =
         \IchHabRecht\Filefill\Hooks\ResetMissingFiles::class;
+
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass']['filefill_delete'] =
+        \IchHabRecht\Filefill\Hooks\DeleteFiles::class;
 
     $GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['nodeRegistry'][1583747569] = [
         'nodeName' => 'showMissingFiles',
         'priority' => 40,
         'class' => \IchHabRecht\Filefill\Form\Element\ShowMissingFiles::class,
+    ];
+
+    $GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['nodeRegistry'][1583933371] = [
+        'nodeName' => 'showDeleteFiles',
+        'priority' => 40,
+        'class' => \IchHabRecht\Filefill\Form\Element\ShowDeleteFiles::class,
     ];
 
     $dispatcher = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(TYPO3\CMS\Extbase\SignalSlot\Dispatcher::class);

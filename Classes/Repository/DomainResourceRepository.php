@@ -1,6 +1,6 @@
 <?php
 declare(strict_types = 1);
-namespace IchHabRecht\Filefill\Resource\Domain;
+namespace IchHabRecht\Filefill\Repository;
 
 /*
  * This file is part of the TYPO3 extension filefill.
@@ -15,8 +15,10 @@ namespace IchHabRecht\Filefill\Resource\Domain;
  * LICENSE file that was distributed with this source code.
  */
 
+use IchHabRecht\Filefill\Resource\Domain\DomainResource;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryHelper;
+use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class DomainResourceRepository
@@ -25,6 +27,15 @@ class DomainResourceRepository
      * @return DomainResource[]
      */
     public function findAll()
+    {
+        if (version_compare(TYPO3_version, '<', '10')) {
+            return $this->findAllBySysDomainRecords();
+        }
+
+        return $this->findAllBySiteConfiguration();
+    }
+
+    protected function findAllBySysDomainRecords(): array
     {
         $domainResources = [];
 
@@ -59,8 +70,34 @@ class DomainResourceRepository
         $result = $queryBuilder->execute();
 
         while ($row = $result->fetch(\PDO::FETCH_ASSOC)) {
-            $url = 'http://' . $row['domainName'];
-            $domainResources[] = GeneralUtility::makeInstance(DomainResource::class, $url);
+            $urlParts = parse_url($row['domainName']);
+            $url = ($urlParts['scheme'] ?? $_SERVER['REQUEST_SCHEME']) . '://' . $urlParts['host'];
+            if (!isset($domainResources[$url])) {
+                $domainResources[$url] = GeneralUtility::makeInstance(DomainResource::class, $url);
+            }
+        }
+
+        return $domainResources;
+    }
+
+    protected function findAllBySiteConfiguration(): array
+    {
+        $domainResources = [];
+
+        $sites = GeneralUtility::makeInstance(SiteFinder::class)->getAllSites();
+        foreach ($sites as $site) {
+            $url = ($site->getBase()->getScheme() ?: $_SERVER['REQUEST_SCHEME']) . '://' . $site->getBase()->getHost();
+            if (!isset($domainResources[$url])) {
+                $domainResources[$url] = GeneralUtility::makeInstance(DomainResource::class, $url);
+            }
+
+            foreach ($site->getConfiguration()['baseVariants'] ?? [] as $variant) {
+                $urlParts = parse_url($variant['base']);
+                $url = ($urlParts['scheme'] ?? $_SERVER['REQUEST_SCHEME']) . '://' . $urlParts['host'];
+                if (!isset($domainResources[$url])) {
+                    $domainResources[$url] = GeneralUtility::makeInstance(DomainResource::class, $url);
+                }
+            }
         }
 
         return $domainResources;

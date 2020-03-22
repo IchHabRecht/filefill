@@ -15,6 +15,7 @@ namespace IchHabRecht\Filefill\Resource\Domain;
  * LICENSE file that was distributed with this source code.
  */
 
+use IchHabRecht\Filefill\Repository\DomainResourceRepository;
 use IchHabRecht\Filefill\Resource\RemoteResourceInterface;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;

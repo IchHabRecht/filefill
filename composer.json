@@ -21,9 +21,17 @@
     "require": {
         "typo3/cms-core": "^7.6 || ^8.7"
     },
+    "require-dev": {
+        "nimut/testing-framework": "2.x-dev || 4.x-dev"
+    },
     "autoload": {
         "psr-4": {
             "IchHabRecht\\Filefill\\": "Classes/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "IchHabRecht\\Filefill\\Tests\\": "Tests/"
         }
     },
     "replace": {

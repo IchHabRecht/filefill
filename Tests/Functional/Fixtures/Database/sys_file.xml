@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dataset>
+    <sys_file>
+        <uid>1</uid>
+        <pid>0</pid>
+        <storage>1</storage>
+        <type>2</type>
+        <identifier>/commons/5/58/Logo_TYPO3.svg</identifier>
+        <identifier_hash>1db3cb089195454e829773e5c172f47c04fb2528</identifier_hash>
+        <folder_hash>30b04618dc677eaa27f9620c49be41645c87da3a</folder_hash>
+        <extension>svg</extension>
+        <mime_type>image/svg+xml</mime_type>
+        <name>Logo_TYPO3.svg</name>
+        <sha1>b59467d41833232a76b8122d5952611beaa11a0d</sha1>
+        <size>3334</size>
+    </sys_file>
+    <sys_file>
+        <uid>2</uid>
+        <pid>0</pid>
+        <storage>1</storage>
+        <type>2</type>
+        <identifier>/Logo_TYPO3.png</identifier>
+        <identifier_hash>4bf2fbd6c3f88fa363814159911f5a2c2a977068</identifier_hash>
+        <folder_hash>42099b4af021e53fd8fd4e056c2568d7c2e3ffa8</folder_hash>
+        <extension>png</extension>
+        <mime_type>image/png</mime_type>
+        <name>Logo_TYPO3.png</name>
+        <sha1>1df801ff43a1c382ad4ed4f33eb3481cf77b6781</sha1>
+        <size>1641</size>
+    </sys_file>
+</dataset>

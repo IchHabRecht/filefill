@@ -6,7 +6,7 @@
     convertWarningsToExceptions="true"
     forceCoversAnnotation="false"
     ignoreDeprecatedCodeUnitsFromCodeCoverage="true"
-    processIsolation="false"
+    processIsolation="true"
     stopOnError="false"
     stopOnFailure="false"
     stopOnIncomplete="false"

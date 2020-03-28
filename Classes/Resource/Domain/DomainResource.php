@@ -18,6 +18,7 @@ namespace IchHabRecht\Filefill\Resource\Domain;
 use IchHabRecht\Filefill\Resource\RemoteResourceInterface;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\HttpUtility;
 
 class DomainResource implements RemoteResourceInterface
 {
@@ -31,7 +32,9 @@ class DomainResource implements RemoteResourceInterface
      */
     public function __construct($configuration)
     {
-        $this->url = rtrim((string)$configuration, '/') . '/';
+        $urlParts = parse_url((string)$configuration);
+        $urlParts['scheme'] = $urlParts['scheme'] ?? $_SERVER['REQUEST_SCHEME'];
+        $this->url = HttpUtility::buildUrl($urlParts) . '/';
     }
 
     /**

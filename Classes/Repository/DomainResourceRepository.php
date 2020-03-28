@@ -70,10 +70,8 @@ class DomainResourceRepository
         $result = $queryBuilder->execute();
 
         while ($row = $result->fetch(\PDO::FETCH_ASSOC)) {
-            $urlParts = parse_url($row['domainName']);
-            $url = ($urlParts['scheme'] ?? $_SERVER['REQUEST_SCHEME']) . '://' . $urlParts['host'];
-            if (!isset($domainResources[$url])) {
-                $domainResources[$url] = GeneralUtility::makeInstance(DomainResource::class, $url);
+            if (!isset($domainResources[$row['domainName']])) {
+                $domainResources[$row['domainName']] = GeneralUtility::makeInstance(DomainResource::class, $row['domainName']);
             }
         }
 
@@ -86,16 +84,14 @@ class DomainResourceRepository
 
         $sites = GeneralUtility::makeInstance(SiteFinder::class)->getAllSites();
         foreach ($sites as $site) {
-            $url = ($site->getBase()->getScheme() ?: $_SERVER['REQUEST_SCHEME']) . '://' . $site->getBase()->getHost();
+            $url = $site->getBase()->__toString();
             if (!isset($domainResources[$url])) {
                 $domainResources[$url] = GeneralUtility::makeInstance(DomainResource::class, $url);
             }
 
             foreach ($site->getConfiguration()['baseVariants'] ?? [] as $variant) {
-                $urlParts = parse_url($variant['base']);
-                $url = ($urlParts['scheme'] ?? $_SERVER['REQUEST_SCHEME']) . '://' . $urlParts['host'];
-                if (!isset($domainResources[$url])) {
-                    $domainResources[$url] = GeneralUtility::makeInstance(DomainResource::class, $url);
+                if (!isset($domainResources[$variant['base']])) {
+                    $domainResources[$variant['base']] = GeneralUtility::makeInstance(DomainResource::class, $variant['base']);
                 }
             }
         }

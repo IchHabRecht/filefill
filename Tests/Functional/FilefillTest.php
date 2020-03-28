@@ -14,11 +14,17 @@ namespace IchHabRecht\Filefill\Tests\Functional;
  * LICENSE file that was distributed with this source code.
  */
 
+use IchHabRecht\Filefill\Repository\FileRepository;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class FilefillTest extends AbstractFunctionalTestCase
 {
+    /**
+     * @var FileRepository
+     */
+    protected $fileRepository;
+
     /**
      * @var ResourceFactory
      */
@@ -38,6 +44,7 @@ class FilefillTest extends AbstractFunctionalTestCase
     {
         parent::setUp();
 
+        $this->fileRepository = new FileRepository();
         $this->resourceFactory = GeneralUtility::makeInstance(ResourceFactory::class);
     }
 
@@ -50,6 +57,9 @@ class FilefillTest extends AbstractFunctionalTestCase
         $file->exists();
 
         $this->assertFileExists($this->getInstancePath() . $this->domainResourcePath);
+
+        $rows = $this->fileRepository->findByIdentifier('domain', 1);
+        $this->assertCount(1, $rows);
     }
 
     /**
@@ -61,5 +71,8 @@ class FilefillTest extends AbstractFunctionalTestCase
         $file->exists();
 
         $this->assertFileExists($this->getInstancePath() . $this->placeholderResourcePath);
+
+        $rows = $this->fileRepository->findByIdentifier('placeholder', 1);
+        $this->assertCount(1, $rows);
     }
 }

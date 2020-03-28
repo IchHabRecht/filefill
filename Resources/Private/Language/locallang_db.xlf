@@ -24,7 +24,7 @@
             <trans-unit id="sys_file_storage.filefill.sys_domain">
                 <source>Domain records</source>
             </trans-unit>
-            <trans-unit id="sys_file_storage.filefill.placeholder_com">
+            <trans-unit id="sys_file_storage.filefill.placeholder">
                 <source>Placeholder.com</source>
             </trans-unit>
             <trans-unit id="sys_file_storage.filefill.no_missing">
@@ -35,6 +35,15 @@
             </trans-unit>
             <trans-unit id="sys_file_storage.filefill.reset">
                 <source>Reset missing files</source>
+            </trans-unit>
+            <trans-unit id="sys_file_storage.filefill.delete">
+                <source>Delete files</source>
+            </trans-unit>
+            <trans-unit id="sys_file_storage.filefill.no_delete">
+                <source>No files found!</source>
+            </trans-unit>
+            <trans-unit id="sys_file_storage.filefill.delete_files">
+                <source>Delete %1$d file(s) from "%2$s" resource</source>
             </trans-unit>
         </body>
     </file>

@@ -38,15 +38,27 @@ class RemoteResourceCollectionFactory
             switch ($key) {
                 case 'domain':
                     foreach ($resource as $domain) {
-                        $remoteResources[] = GeneralUtility::makeInstance(DomainResource::class, $domain);
+                        $remoteResources[] = [
+                            'identifier' => 'domain',
+                            'handler' => GeneralUtility::makeInstance(DomainResource::class, $domain),
+                        ];
                     }
                     break;
                 case 'sys_domain':
                     $domainResourceRepository = GeneralUtility::makeInstance(DomainResourceRepository::class);
-                    $remoteResources = array_merge($remoteResources, $domainResourceRepository->findAll());
+                    $domainResources = $domainResourceRepository->findAll();
+                    $remoteResources = array_merge($remoteResources, array_values(array_map(function ($resource) {
+                        return [
+                            'identifier' => 'sys_domain',
+                            'handler' => $resource,
+                        ];
+                    }, $domainResources)));
                     break;
                 case 'placeholder':
-                    $remoteResources[] = GeneralUtility::makeInstance(PlaceholderResource::class);
+                    $remoteResources[] = [
+                        'identifier' => 'placeholder',
+                        'handler' => GeneralUtility::makeInstance(PlaceholderResource::class),
+                    ];
                     break;
                 default:
                     throw new \RuntimeException('Unexpected File Fill Resource configuration "' . $key . '"', 1519788775);

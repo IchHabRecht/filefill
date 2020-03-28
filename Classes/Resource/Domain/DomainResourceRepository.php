@@ -47,8 +47,9 @@ class DomainResourceRepository
         );
 
         while ($row = $result->fetch_assoc()) {
-            $url = 'http://' . $row['domainName'];
-            $domainResources[] = GeneralUtility::makeInstance(DomainResource::class, $url);
+            if (!isset($domainResources[$row['domainName']])) {
+                $domainResources[$row['domainName']] = GeneralUtility::makeInstance(DomainResource::class, $row['domainName']);
+            }
         }
 
         return $domainResources;

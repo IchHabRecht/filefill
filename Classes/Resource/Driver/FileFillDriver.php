@@ -106,6 +106,18 @@ class FileFillDriver extends LocalDriver
     }
 
     /**
+     * @param string $fileIdentifier
+     * @param array $propertiesToExtract
+     * @return array
+     */
+    public function getFileInfoByIdentifier($fileIdentifier, array $propertiesToExtract = [])
+    {
+        $this->ensureFileExists($fileIdentifier);
+
+        return $this->originalDriverObject->getFileInfoByIdentifier($fileIdentifier, $propertiesToExtract);
+    }
+
+    /**
      * @param string $identifier
      * @return array
      */

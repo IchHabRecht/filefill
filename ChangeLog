@@ -1,3 +1,10 @@
+2020-04-02         [RELEASE] Release of filefill 1.6.0 (Nicole Cordes)
+2020-04-02 50912c1 [FEATURE] Override also LocalDriver->getFileInfoByIdentifier() (Nicole Cordes)
+2020-03-28 4a702af [FEATURE] Delete files fetched by a resource handler (Nicole Cordes)
+2020-03-28 ed4f899 [TASK] Use own form element for missing file information (Nicole Cordes)
+2020-03-22 3eb543c [FEATURE] Add functional tests (Nicole Cordes)
+2020-03-12 015cf77 [BUGFIX] Remove deprecated replace entry (Nicole Cordes)
+
 2020-03-10         [RELEASE] Release of filefill 1.5.0 (Nicole Cordes)
 2020-03-10 9627790 [FEATURE] Allow streaming of files (Nicole Cordes)
 

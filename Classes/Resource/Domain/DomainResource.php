@@ -15,7 +15,9 @@ namespace IchHabRecht\Filefill\Resource\Domain;
  * LICENSE file that was distributed with this source code.
  */
 
+use GuzzleHttp\Exception\RequestException;
 use IchHabRecht\Filefill\Resource\RemoteResourceInterface;
+use TYPO3\CMS\Core\Http\RequestFactory;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\HttpUtility;
@@ -23,15 +25,22 @@ use TYPO3\CMS\Core\Utility\HttpUtility;
 class DomainResource implements RemoteResourceInterface
 {
     /**
+     * @var RequestFactory
+     */
+    protected $requestFactory;
+
+    /**
      * @var string
      */
     protected $url;
 
     /**
      * @param string $configuration
+     * @param RequestFactory $requestFactory
      */
-    public function __construct($configuration)
+    public function __construct($configuration, RequestFactory $requestFactory = null)
     {
+        $this->requestFactory = $requestFactory ?: GeneralUtility::makeInstance(RequestFactory::class);
         $urlParts = parse_url((string)$configuration);
         $urlParts['scheme'] = $urlParts['scheme'] ?? $_SERVER['REQUEST_SCHEME'];
         $this->url = HttpUtility::buildUrl($urlParts) . '/';
@@ -45,17 +54,13 @@ class DomainResource implements RemoteResourceInterface
      */
     public function hasFile($fileIdentifier, $filePath, FileInterface $fileObject = null)
     {
-        $report = [];
-        GeneralUtility::getUrl($this->url . ltrim($filePath, '/'), 2, false, $report);
+        try {
+            $response = $this->requestFactory->request($this->url . ltrim($filePath, '/'), 'HEAD');
 
-        $isCurlResponse = in_array($report['lib'], ['cURL', 'GuzzleHttp'], true)
-            && (
-                (empty($report['http_code']) && (int)$report['error'] === 200)
-                || (int)$report['http_code'] === 200
-            );
-        $isSocketResponse = $report['lib'] === 'socket' && $report['error'] === 0;
-
-        return $isCurlResponse || $isSocketResponse;
+            return $response->getStatusCode() === 200;
+        } catch (RequestException $e) {
+            return false;
+        }
     }
 
     /**
@@ -66,8 +71,12 @@ class DomainResource implements RemoteResourceInterface
      */
     public function getFile($fileIdentifier, $filePath, FileInterface $fileObject = null)
     {
-        $fileName = $this->url . ltrim($filePath, '/');
+        try {
+            $fileName = $this->url . ltrim($filePath, '/');
 
-        return @fopen($fileName, 'r') ?: GeneralUtility::getUrl($fileName, 0, false);
+            return @fopen($fileName, 'r') ?: $this->requestFactory->request($fileName)->getBody()->getContents();
+        } catch (RequestException $e) {
+            return false;
+        }
     }
 }

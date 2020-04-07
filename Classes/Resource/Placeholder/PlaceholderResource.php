@@ -15,7 +15,9 @@ namespace IchHabRecht\Filefill\Resource\Placeholder;
  * LICENSE file that was distributed with this source code.
  */
 
+use GuzzleHttp\Exception\RequestException;
 use IchHabRecht\Filefill\Resource\RemoteResourceInterface;
+use TYPO3\CMS\Core\Http\RequestFactory;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -32,9 +34,19 @@ class PlaceholderResource implements RemoteResourceInterface
     ];
 
     /**
+     * @var RequestFactory
+     */
+    protected $requestFactory;
+
+    /**
      * @var string
      */
     protected $url = 'http://via.placeholder.com/';
+
+    public function __construct($_, RequestFactory $requestFactory = null)
+    {
+        $this->requestFactory = $requestFactory ?: GeneralUtility::makeInstance(RequestFactory::class);
+    }
 
     /**
      * @param string $fileIdentifier
@@ -56,24 +68,28 @@ class PlaceholderResource implements RemoteResourceInterface
      */
     public function getFile($fileIdentifier, $filePath, FileInterface $fileObject = null)
     {
-        $fileExtension = $fileObject->getExtension();
-        $size = max(1, $fileObject->getProperty('width'))
-            . 'x' . max(1, $fileObject->getProperty('height'))
-            . $fileExtension;
+        try {
+            $fileExtension = $fileObject->getExtension();
+            $size = max(1, $fileObject->getProperty('width'))
+                . 'x' . max(1, $fileObject->getProperty('height'))
+                . $fileExtension;
+            $response = $this->requestFactory->request($this->url . $size);
+            $content = $response->getBody()->getContents();
 
-        $content = GeneralUtility::getUrl($this->url . $size, 0, false, $report);
+            // Currently the API sends PNG images instead of GIF
+            // Check for PNG image and convert to GIF manually
+            if ($fileExtension === 'gif' && substr(bin2hex($content), 0, 16) === '89504e470d0a1a0a') {
+                $image = imagecreatefromstring($content);
+                ob_start();
+                imagegif($image);
+                $content = ob_get_contents();
+                imagedestroy($image);
+                ob_end_clean();
+            }
 
-        // Currently the API sends PNG images instead of GIF
-        // Check for PNG image and convert to GIF manually
-        if ($fileExtension === 'gif' && substr(bin2hex($content), 0, 16) === '89504e470d0a1a0a') {
-            $image = imagecreatefromstring($content);
-            ob_start();
-            imagegif($image);
-            $content = ob_get_contents();
-            imagedestroy($image);
-            ob_end_clean();
+            return $content;
+        } catch (RequestException $e) {
+            return false;
         }
-
-        return $content;
     }
 }

@@ -1,3 +1,7 @@
+2020-04-22         [RELEASE] Release of filefill 3.2.1 (Nicole Cordes)
+2020-04-22 c9296ac [TASK] Raise compatibility to TYPO3 10.4 (Nicole Cordes)
+2020-04-07 d1d483f [BUGFIX] Use RequestFactory for http requests (Nicole Cordes)
+
 2020-04-02         [RELEASE] Release of filefill 3.2.0 (Nicole Cordes)
 2020-03-28 f19bf2e [BUGFIX] Streamline url handling in DomainResource (Nicole Cordes)
 2020-03-22 6dad456 [BUGFIX] Use site configurations for sys_domain resource (Nicole Cordes)

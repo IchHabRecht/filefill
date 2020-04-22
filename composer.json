@@ -19,7 +19,7 @@
         }
     ],
     "require": {
-        "typo3/cms-core": "^8.7 || ^9.5 || ~10.3.0"
+        "typo3/cms-core": "^8.7 || ^9.5 || ^10.4"
     },
     "require-dev": {
         "nimut/testing-framework": "5.x-dev"

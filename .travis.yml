@@ -26,6 +26,8 @@ jobs:
         -   if: type != cron
             env: TYPO3=dev-master
         -   if: type != cron
+            env: TYPO3=10.4.x-dev
+        -   if: type != cron
             env: TYPO3=9.5.x-dev
         -   if: type != cron
             env: TYPO3=8.7.x-dev
@@ -71,13 +73,13 @@ jobs:
                     echo;
                     find . -name \*.php ! -path "./.Build/*" | parallel --gnu php -d display_errors=stderr -l {} > /dev/null \;;
             php: 7.4
-            env: TYPO3=~10.3.0
+            env: TYPO3=^10.4
         -   <<: *tests
             php: 7.4
             env: TYPO3=^9.5
         -   <<: *tests
             php: 7.3
-            env: TYPO3=~10.3.0
+            env: TYPO3=^10.4
         -   <<: *tests
             php: 7.3
             env: TYPO3=^9.5
@@ -86,7 +88,7 @@ jobs:
             env: TYPO3=^8.7
         -   <<: *tests
             php: 7.2
-            env: TYPO3=~10.3.0
+            env: TYPO3=^10.4
         -   <<: *tests
             php: 7.2
             env: TYPO3=^9.5
@@ -124,7 +126,7 @@ jobs:
             git:
                 depth: false
             php: 7.2
-            env: TYPO3="^8.7 ^9.5 ~10.3.0"
+            env: TYPO3="^8.7 ^9.5 ^10.4"
             before_script:
                 - mkdir -p .Log/coverage/ .Log/junit/
                 - export TYPO3_PATH_WEB=$PWD/.Build/public
@@ -232,6 +234,9 @@ jobs:
             env: TYPO3=dev-master
         -   <<: *lowest-tests
             php: 7.4
+            env: TYPO3=10.4.x-dev
+        -   <<: *lowest-tests
+            php: 7.4
             env: TYPO3=^9.5
         -   <<: *lowest-tests
             php: 7.4
@@ -239,6 +244,9 @@ jobs:
         -   <<: *lowest-tests
             php: 7.3
             env: TYPO3=dev-master
+        -   <<: *lowest-tests
+            php: 7.3
+            env: TYPO3=10.4.x-dev
         -   <<: *lowest-tests
             php: 7.3
             env: TYPO3=^9.5
@@ -254,6 +262,9 @@ jobs:
         -   <<: *lowest-tests
             php: 7.2
             env: TYPO3=dev-master
+        -   <<: *lowest-tests
+            php: 7.2
+            env: TYPO3=10.4.x-dev
         -   <<: *lowest-tests
             php: 7.2
             env: TYPO3=^9.5

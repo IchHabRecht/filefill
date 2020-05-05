@@ -101,5 +101,7 @@ class ResetCommand extends AbstractCommand
                 $row['storage']
             ));
         }
+
+        return 0;
     }
 }

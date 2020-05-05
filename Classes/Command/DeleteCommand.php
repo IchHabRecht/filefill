@@ -94,5 +94,7 @@ class DeleteCommand extends AbstractCommand
                 }
             }
         }
+
+        return 0;
     }
 }

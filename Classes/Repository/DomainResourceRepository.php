@@ -56,7 +56,7 @@ class DomainResourceRepository
                     $queryBuilder->createNamedParameter(GeneralUtility::getIndpEnv('TYPO3_HOST_ONLY'), \PDO::PARAM_STR)
                 )
             );
-        if (version_compare(TYPO3_version, '<', '9')) {
+        if (version_compare(TYPO3_version, '9', '<')) {
             $queryBuilder->andWhere(
                 $expressionBuilder->eq(
                     'redirectTo',

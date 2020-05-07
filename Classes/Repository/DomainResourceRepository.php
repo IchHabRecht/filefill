@@ -28,7 +28,7 @@ class DomainResourceRepository
      */
     public function findAll()
     {
-        if (version_compare(TYPO3_version, '<', '10')) {
+        if (version_compare(TYPO3_version, '10', '<')) {
             return $this->findAllBySysDomainRecords();
         }
 

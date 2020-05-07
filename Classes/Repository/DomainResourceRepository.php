@@ -28,7 +28,7 @@ class DomainResourceRepository
      */
     public function findAll()
     {
-        if (version_compare(TYPO3_version, '<', '10')) {
+        if (version_compare(TYPO3_version, '10', '<')) {
             return $this->findAllBySysDomainRecords();
         }
 
@@ -56,7 +56,7 @@ class DomainResourceRepository
                     $queryBuilder->createNamedParameter(GeneralUtility::getIndpEnv('TYPO3_HOST_ONLY'), \PDO::PARAM_STR)
                 )
             );
-        if (version_compare(TYPO3_version, '<', '9')) {
+        if (version_compare(TYPO3_version, '9', '<')) {
             $queryBuilder->andWhere(
                 $expressionBuilder->eq(
                     'redirectTo',

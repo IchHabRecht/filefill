@@ -1,3 +1,7 @@
+2020-05-07         [RELEASE] Release of filefill 3.2.3 (Nicole Cordes)
+2020-05-07 8d2a50d [BUGFIX] Correct the order of parameters (Julian Hofmann)
+2020-05-07 da5bb4a [BUGFIX] Correct the order of parameters (Julian Hofmann)
+
 2020-05-05         [RELEASE] Release of filefill 3.2.2 (Nicole Cordes)
 2020-05-05 9c7769b [TASK] Use proper return value in symfony commands (Björn Fromme)
 

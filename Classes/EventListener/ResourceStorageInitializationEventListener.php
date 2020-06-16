@@ -1,6 +1,6 @@
 <?php
 declare(strict_types = 1);
-namespace IchHabRecht\Filefill\Slot;
+namespace IchHabRecht\Filefill\EventListener;
 
 /*
  * This file is part of the TYPO3 extension filefill.
@@ -17,26 +17,27 @@ namespace IchHabRecht\Filefill\Slot;
 
 use IchHabRecht\Filefill\Resource\Driver\FileFillDriver;
 use IchHabRecht\Filefill\Resource\RemoteResourceCollectionFactory;
+use TYPO3\CMS\Core\Resource\Event\AfterResourceStorageInitializationEvent;
 use TYPO3\CMS\Core\Resource\Exception\InvalidConfigurationException;
-use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Resource\ResourceStorage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-class ResourceFactorySlot
+class ResourceStorageInitializationEventListener
 {
-    public function initializeResourceStorage(ResourceFactory $resourceFactory, ResourceStorage $resourceStorage)
+    public function __invoke(AfterResourceStorageInitializationEvent $event)
     {
-        $storageRecord = $resourceStorage->getStorageRecord();
+        $storage = $event->getStorage();
+        $storageRecord = $storage->getStorageRecord();
         $isLocalDriver = $storageRecord['driver'] === 'Local';
         $isRecordEnabled = !empty($storageRecord['tx_filefill_enable']) && !empty($storageRecord['tx_filefill_resources']);
-        $isStorageConfigured = !empty($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['filefill']['storages'][$resourceStorage->getUid()]);
+        $isStorageConfigured = !empty($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['filefill']['storages'][$storage->getUid()]);
 
         if (!$isLocalDriver || (!$isRecordEnabled && !$isStorageConfigured)) {
             return;
         }
 
-        $closure = \Closure::bind(function () use ($resourceStorage) {
-            return $resourceStorage->driver;
+        $closure = \Closure::bind(function () use ($storage) {
+            return $storage->driver;
         }, null, ResourceStorage::class);
         $originalDriverObject = $closure();
 
@@ -46,18 +47,18 @@ class ResourceFactorySlot
             );
         } else {
             $remoteResourceCollection = RemoteResourceCollectionFactory::createRemoteResourceCollectionFromConfiguration(
-                $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['filefill']['storages'][$resourceStorage->getUid()]
+                $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['filefill']['storages'][$storage->getUid()]
             );
         }
 
         $driverObject = GeneralUtility::makeInstance(
             FileFillDriver::class,
-            $resourceStorage->getConfiguration(),
+            $storage->getConfiguration(),
             $originalDriverObject,
             $remoteResourceCollection
         );
         $driverObject->setStorageUid($storageRecord['uid']);
-        $driverObject->mergeConfigurationCapabilities($resourceStorage->getCapabilities());
+        $driverObject->mergeConfigurationCapabilities($storage->getCapabilities());
         try {
             $driverObject->processConfiguration();
         } catch (InvalidConfigurationException $e) {
@@ -65,6 +66,6 @@ class ResourceFactorySlot
         }
         $driverObject->initialize();
 
-        $resourceStorage->setDriver($driverObject);
+        $storage->setDriver($driverObject);
     }
 }

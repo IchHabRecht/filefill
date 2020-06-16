@@ -1,6 +1,6 @@
 <?php
 declare(strict_types = 1);
-namespace IchHabRecht\Filefill\Slot;
+namespace IchHabRecht\Filefill\EventListener;
 
 /*
  * This file is part of the TYPO3 extension filefill.
@@ -15,17 +15,17 @@ namespace IchHabRecht\Filefill\Slot;
  * LICENSE file that was distributed with this source code.
  */
 
-use TYPO3\CMS\Core\Resource\Driver\DriverInterface;
-use TYPO3\CMS\Core\Resource\File;
-use TYPO3\CMS\Core\Resource\ProcessedFile;
-use TYPO3\CMS\Core\Resource\Service\FileProcessingService;
+use TYPO3\CMS\Core\Resource\Event\BeforeFileProcessingEvent;
 
-class FileProcessingServiceSlot
+class FileProcessingEventEventListener
 {
-    public function ensureOriginalFileExists(FileProcessingService $fileProcessingService, DriverInterface $driver, ProcessedFile $processedFile, File $file)
+    public function __invoke(BeforeFileProcessingEvent $event)
     {
         // Call exists() function to ensure driver fetches missing files
+        $processedFile = $event->getProcessedFile();
         $processedFile->exists();
+
+        $file = $event->getFile();
         $file->exists();
     }
 }

@@ -1,0 +1,12 @@
+services:
+    IchHabRecht\Filefill\EventListener\ResourceStorageInitializationEventListener:
+        tags:
+            -   name: event.listener
+                identifier: 'filefillResourceStorageInitializationEventListener'
+                event: TYPO3\CMS\Core\Resource\Event\AfterResourceStorageInitializationEvent
+
+    IchHabRecht\Filefill\EventListener\FileProcessingEventEventListener:
+        tags:
+            -   name: event.listener
+                identifier: 'filefillFileProcessingEventEventListener'
+                event: TYPO3\CMS\Core\Resource\Event\BeforeFileProcessingEvent

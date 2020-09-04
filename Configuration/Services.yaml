@@ -1,6 +1,12 @@
 services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
     IchHabRecht\Filefill\EventListener\ResourceStorageInitializationEventListener:
         tags:
+            -   name: psr.logger_aware
             -   name: event.listener
                 identifier: 'filefillResourceStorageInitializationEventListener'
                 event: TYPO3\CMS\Core\Resource\Event\AfterResourceStorageInitializationEvent

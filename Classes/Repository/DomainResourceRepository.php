@@ -18,8 +18,6 @@ namespace IchHabRecht\Filefill\Repository;
  */
 
 use IchHabRecht\Filefill\Resource\Domain\DomainResource;
-use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Database\Query\QueryHelper;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -29,58 +27,6 @@ class DomainResourceRepository
      * @return DomainResource[]
      */
     public function findAll()
-    {
-        if (version_compare(TYPO3_version, '10', '<')) {
-            return $this->findAllBySysDomainRecords();
-        }
-
-        return $this->findAllBySiteConfiguration();
-    }
-
-    protected function findAllBySysDomainRecords(): array
-    {
-        $domainResources = [];
-
-        $orderBy = [];
-        if (!empty($GLOBALS['TCA']['sys_domain']['ctrl']['sortby'])) {
-            $orderBy = [[$GLOBALS['TCA']['sys_domain']['ctrl']['sortby'], 'ASC']];
-        } elseif (!empty($GLOBALS['TCA']['sys_domain']['ctrl']['default_sortby'])) {
-            $orderBy = QueryHelper::parseOrderBy($GLOBALS['TCA']['sys_domain']['ctrl']['default_sortby']);
-        }
-
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('sys_domain');
-        $expressionBuilder = $queryBuilder->expr();
-        $queryBuilder->select('domainName')
-            ->from('sys_domain')
-            ->where(
-                $expressionBuilder->neq(
-                    'domainName',
-                    $queryBuilder->createNamedParameter(GeneralUtility::getIndpEnv('TYPO3_HOST_ONLY'), \PDO::PARAM_STR)
-                )
-            );
-        if (version_compare(TYPO3_version, '9', '<')) {
-            $queryBuilder->andWhere(
-                $expressionBuilder->eq(
-                    'redirectTo',
-                    $queryBuilder->createNamedParameter('', \PDO::PARAM_STR)
-                )
-            );
-        }
-        foreach ($orderBy as $orderByAndDirection) {
-            $queryBuilder->addOrderBy(...$orderByAndDirection);
-        }
-        $result = $queryBuilder->execute();
-
-        while ($row = $result->fetch(\PDO::FETCH_ASSOC)) {
-            if (!isset($domainResources[$row['domainName']])) {
-                $domainResources[$row['domainName']] = GeneralUtility::makeInstance(DomainResource::class, $row['domainName']);
-            }
-        }
-
-        return $domainResources;
-    }
-
-    protected function findAllBySiteConfiguration(): array
     {
         $domainResources = [];
 

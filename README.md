@@ -78,14 +78,14 @@ You can use multiple single domains within one resources configuration.
 
 ### Domain records
 
-Fetch missing files from an available Domain record. Filefill runs through all Domain records as long as the file can be
-fetched or all records are processed.
+Fetch missing files from all available site configurations. Filefill runs through all base and variant urls as long as
+the file can be fetched or all domains are processed.
 
 Configuration:
 
 - no configuration required (the checkbox is just a field placeholder)
 
-There is no need for multiple usage. All Domain records are used by default.
+There is no need for multiple usage. All domains are used by default.
 
 ### Placeholder.com
 
@@ -132,7 +132,7 @@ class ResourceHandler implements \IchHabRecht\Filefill\Resource\RemoteResourceIn
     {
         return true;
     }
-    
+
     public function getFile($fileIdentifier, $filePath, FileInterface $fileObject = null)
     {
         return 'file content';

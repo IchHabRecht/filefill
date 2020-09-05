@@ -61,6 +61,21 @@ $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['filefill']['storages'][1] = [
 - you don't need to configure resources that you don't want to use
 - the ordering in your configuration defines the ordering of processing
 
+## Using the site configuration in TYPO3 10 up
+
+As of version 3.2.0 the [site configutation](https://docs.typo3.org/m/typo3/reference-coreapi/master/en-us/ApiOverview/SiteHandling/Index.html) gets respected. If you whish to use your site configuration just use 'sys_domain' as the only identifyer i.e.:
+
+```php
+$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['filefill']['storages'][1] = [
+    [
+        'identifier' => 'sys_domain',
+    ],
+];
+```
+*Please note: even though the site configuration was introduces with TYPO3 9 filefill only respects it in TYPO3 10 and up´.*
+
+All base variants are added to the domains to be searched. 
+
 ## Resources
 
 Resources define the places (url / services) where filefill tries to fetch missing files from. You can use multiple

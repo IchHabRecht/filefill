@@ -1,5 +1,7 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
+
 namespace IchHabRecht\Filefill\Form\Element;
 
 /*
@@ -75,10 +77,10 @@ class ShowDeleteFiles extends AbstractFormElement
                 $html[] = '<a class="btn btn-default t3js-editform-submitButton" data-name="_save_tx_filefill_delete" data-form="EditDocumentController" data-value="' . $row['tx_filefill_identifier'] . '">';
                 $html[] = $iconFactory->getIcon('actions-edit-delete', Icon::SIZE_SMALL);
                 $html[] = ' ' . sprintf(
-                        $this->languageService->sL('LLL:EXT:filefill/Resources/Private/Language/locallang_db.xlf:sys_file_storage.filefill.delete_files'),
-                        $row['count'],
-                        $this->languageService->sL($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['filefill']['resourceHandler'][$row['tx_filefill_identifier']]['title'])
-                    );
+                    $this->languageService->sL('LLL:EXT:filefill/Resources/Private/Language/locallang_db.xlf:sys_file_storage.filefill.delete_files'),
+                    $row['count'],
+                    $this->languageService->sL($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['filefill']['resourceHandler'][$row['tx_filefill_identifier']]['title'])
+                );
                 $html[] = '</a>';
             }
         }

@@ -78,6 +78,9 @@ jobs:
             php: 7.4
             env: TYPO3=^9.5
         -   <<: *tests
+            php: 7.4
+            env: TYPO3=^8.7
+        -   <<: *tests
             php: 7.3
             env: TYPO3=^10.4
         -   <<: *tests
@@ -196,10 +199,19 @@ jobs:
             env: TYPO3=dev-master
         -   <<: *dev-tests
             php: 7.4
+            env: TYPO3=10.4.x-dev
+        -   <<: *dev-tests
+            php: 7.4
             env: TYPO3=9.5.x-dev
+        -   <<: *dev-tests
+            php: 7.4
+            env: TYPO3=8.7.x-dev
         -   <<: *dev-tests
             php: 7.3
             env: TYPO3=dev-master
+        -   <<: *dev-tests
+            php: 7.3
+            env: TYPO3=10.4.x-dev
         -   <<: *dev-tests
             php: 7.3
             env: TYPO3=9.5.x-dev
@@ -209,6 +221,9 @@ jobs:
         -   <<: *dev-tests
             php: 7.2
             env: TYPO3=dev-master
+        -   <<: *dev-tests
+            php: 7.2
+            env: TYPO3=10.4.x-dev
         -   <<: *dev-tests
             php: 7.2
             env: TYPO3=9.5.x-dev
@@ -234,6 +249,9 @@ jobs:
             env: TYPO3=dev-master
         -   <<: *lowest-tests
             php: 7.4
+            env: TYPO3=^10.4
+        -   <<: *lowest-tests
+            php: 7.4
             env: TYPO3=10.4.x-dev
         -   <<: *lowest-tests
             php: 7.4
@@ -242,8 +260,17 @@ jobs:
             php: 7.4
             env: TYPO3=9.5.x-dev
         -   <<: *lowest-tests
+            php: 7.4
+            env: TYPO3=^8.7
+        -   <<: *lowest-tests
+            php: 7.4
+            env: TYPO3=8.7.x-dev
+        -   <<: *lowest-tests
             php: 7.3
             env: TYPO3=dev-master
+        -   <<: *lowest-tests
+            php: 7.3
+            env: TYPO3=^10.4
         -   <<: *lowest-tests
             php: 7.3
             env: TYPO3=10.4.x-dev
@@ -262,6 +289,9 @@ jobs:
         -   <<: *lowest-tests
             php: 7.2
             env: TYPO3=dev-master
+        -   <<: *lowest-tests
+            php: 7.2
+            env: TYPO3=^10.4
         -   <<: *lowest-tests
             php: 7.2
             env: TYPO3=10.4.x-dev

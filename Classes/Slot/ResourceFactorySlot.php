@@ -42,6 +42,11 @@ class ResourceFactorySlot
         }, null, ResourceStorage::class);
         $originalDriverObject = $closure();
 
+        // TYPO3 initializes storage records multiple times
+        // Filefill need to prevent recursive initialization here
+        if ($originalDriverObject instanceof FileFillDriver) {
+            return;
+        }
         if ($isRecordEnabled) {
             $remoteResourceCollection = RemoteResourceCollectionFactory::createRemoteResourceCollectionFromFlexForm(
                 $storageRecord['tx_filefill_resources']

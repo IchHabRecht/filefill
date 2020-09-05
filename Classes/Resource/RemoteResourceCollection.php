@@ -20,6 +20,8 @@ namespace IchHabRecht\Filefill\Resource;
 use IchHabRecht\Filefill\Exception\MissingInterfaceException;
 use IchHabRecht\Filefill\Exception\UnknownResourceException;
 use IchHabRecht\Filefill\Repository\FileRepository;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\ProcessedFile;
@@ -28,8 +30,10 @@ use TYPO3\CMS\Core\Resource\ResourceInterface;
 use TYPO3\CMS\Core\Resource\ResourceStorage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-class RemoteResourceCollection
+class RemoteResourceCollection implements LoggerAwareInterface
 {
+    use LoggerAwareTrait;
+
     /**
      * @var FileRepository
      */
@@ -76,6 +80,13 @@ class RemoteResourceCollection
             return null;
         }
 
+        $this->logger->debug(
+            sprintf('Fetching file "%s" (%s)', $filePath, $fileIdentifier),
+            array_map(function ($resource) {
+                return $resource['identifier'];
+            }, $this->resources)
+        );
+
         foreach ($this->resources as $resource) {
             if (!$resource['handler'] instanceof RemoteResourceInterface) {
                 throw new MissingInterfaceException(
@@ -88,6 +99,13 @@ class RemoteResourceCollection
             if ($resource['handler']->hasFile($fileIdentifier, $filePath, $file)) {
                 $fileContent = $resource['handler']->getFile($fileIdentifier, $filePath, $file);
                 if ($fileContent === false) {
+                    $this->logger->debug(
+                        sprintf('Resource "%s" returned empty content', $resource['identifier']),
+                        [
+                            'fileIdentifier' => $fileIdentifier,
+                            'filePath' => $filePath,
+                        ]
+                    );
                     continue;
                 }
                 if (is_resource($fileContent) && get_resource_type($fileContent) !== 'stream') {
@@ -98,9 +116,23 @@ class RemoteResourceCollection
                 }
 
                 $this->fileRepository->updateIdentifier($file, $resource['identifier']);
+                $this->logger->debug(
+                    sprintf('Resource "%s" found file', $resource['identifier']),
+                    [
+                        'fileIdentifier' => $fileIdentifier,
+                        'filePath' => $filePath,
+                    ]
+                );
 
                 return $fileContent;
             }
+            $this->logger->debug(
+                sprintf('Resource "%s" couldn\'t handle file', $resource['identifier']),
+                [
+                        'fileIdentifier' => $fileIdentifier,
+                        'filePath' => $filePath,
+                    ]
+            );
         }
 
         return null;

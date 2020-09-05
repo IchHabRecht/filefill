@@ -19,13 +19,17 @@ namespace IchHabRecht\Filefill\EventListener;
 
 use IchHabRecht\Filefill\Resource\Driver\FileFillDriver;
 use IchHabRecht\Filefill\Resource\RemoteResourceCollectionFactory;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
 use TYPO3\CMS\Core\Resource\Event\AfterResourceStorageInitializationEvent;
 use TYPO3\CMS\Core\Resource\Exception\InvalidConfigurationException;
 use TYPO3\CMS\Core\Resource\ResourceStorage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-class ResourceStorageInitializationEventListener
+class ResourceStorageInitializationEventListener implements LoggerAwareInterface
 {
+    use LoggerAwareTrait;
+
     public function __invoke(AfterResourceStorageInitializationEvent $event)
     {
         $storage = $event->getStorage();
@@ -35,6 +39,17 @@ class ResourceStorageInitializationEventListener
         $isStorageConfigured = !empty($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['filefill']['storages'][$storage->getUid()]);
 
         if (!$isLocalDriver || (!$isRecordEnabled && !$isStorageConfigured)) {
+            if ($storage->getUid() > 0) {
+                $this->logger->info(
+                    sprintf('No filefill support for storage %s (%d) configured', $storage->getName(), $storage->getUid()),
+                    [
+                        'isLocalDriver' => $isLocalDriver,
+                        'isRecordEnabled' => $isRecordEnabled,
+                        'isStorageConfigured' => $isStorageConfigured,
+                    ]
+                );
+            }
+
             return;
         }
 

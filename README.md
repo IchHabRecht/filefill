@@ -143,6 +143,22 @@ class ResourceHandler implements \IchHabRecht\Filefill\Resource\RemoteResourceIn
 The handler needs to implement the interface `\IchHabRecht\Filefill\Resource\RemoteResourceInterface` and therefore has to
 add both functions `hasFile` and 'getFile'.
 
+## Debugging
+
+You can enable additional log information by configuring a filefill logger.
+
+```
+$GLOBALS['TYPO3_CONF_VARS']['LOG']['IchHabRecht']['Filefill'] => [
+    'writerConfiguration' => [
+        \TYPO3\CMS\Core\Log\LogLevel::DEBUG => [
+            \TYPO3\CMS\Core\Log\Writer\FileWriter::class => [
+                'logFileInfix' => 'filefill',
+            ],
+        ],
+    ],
+];
+```
+
 ## Known issues
 
 ### 1509741907 TYPO3Fluid\Fluid\Core\ViewHelper\Exception

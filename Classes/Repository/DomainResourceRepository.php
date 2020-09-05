@@ -30,11 +30,15 @@ class DomainResourceRepository
      */
     public function findAll()
     {
-        if (version_compare(TYPO3_version, '10', '<')) {
+        $sites = [];
+        if (class_exists('TYPO3\\CMS\\Core\\Site\\SiteFinder')) {
+            $sites = GeneralUtility::makeInstance(SiteFinder::class)->getAllSites();
+        }
+        if (empty($sites)) {
             return $this->findAllBySysDomainRecords();
         }
 
-        return $this->findAllBySiteConfiguration();
+        return $this->findAllBySiteConfiguration($sites);
     }
 
     protected function findAllBySysDomainRecords(): array
@@ -80,11 +84,10 @@ class DomainResourceRepository
         return $domainResources;
     }
 
-    protected function findAllBySiteConfiguration(): array
+    protected function findAllBySiteConfiguration(array $sites): array
     {
         $domainResources = [];
 
-        $sites = GeneralUtility::makeInstance(SiteFinder::class)->getAllSites();
         foreach ($sites as $site) {
             $url = $site->getBase()->__toString();
             if (!isset($domainResources[$url])) {

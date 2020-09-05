@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace IchHabRecht\Filefill\Command;
 
 use Doctrine\DBAL\Connection;

@@ -45,7 +45,7 @@ class DomainResource implements RemoteResourceInterface
         $this->requestFactory = $requestFactory ?: GeneralUtility::makeInstance(RequestFactory::class);
         $urlParts = parse_url((string)$configuration);
         $urlParts['scheme'] = $urlParts['scheme'] ?? $_SERVER['REQUEST_SCHEME'];
-        $this->url = HttpUtility::buildUrl($urlParts) . '/';
+        $this->url = rtrim(HttpUtility::buildUrl($urlParts), '/') . '/';
     }
 
     /**

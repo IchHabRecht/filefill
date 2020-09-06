@@ -19,13 +19,25 @@ namespace IchHabRecht\Filefill\Slot;
 
 use IchHabRecht\Filefill\Resource\Driver\FileFillDriver;
 use IchHabRecht\Filefill\Resource\RemoteResourceCollectionFactory;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
+use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Resource\Exception\InvalidConfigurationException;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Resource\ResourceStorage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-class ResourceFactorySlot
+class ResourceFactorySlot implements LoggerAwareInterface
 {
+    use LoggerAwareTrait;
+
+    public function __construct()
+    {
+        if (version_compare(TYPO3_version, '9.0', '<')) {
+            $this->setLogger(GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__));
+        }
+    }
+
     public function initializeResourceStorage(ResourceFactory $resourceFactory, ResourceStorage $resourceStorage)
     {
         $storageRecord = $resourceStorage->getStorageRecord();
@@ -34,6 +46,17 @@ class ResourceFactorySlot
         $isStorageConfigured = !empty($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['filefill']['storages'][$resourceStorage->getUid()]);
 
         if (!$isLocalDriver || (!$isRecordEnabled && !$isStorageConfigured)) {
+            if ($resourceStorage->getUid() > 0) {
+                $this->logger->info(
+                    sprintf('No filefill support for storage %s (%d) configured', $resourceStorage->getName(), $resourceStorage->getUid()),
+                    [
+                        'isLocalDriver' => $isLocalDriver,
+                        'isRecordEnabled' => $isRecordEnabled,
+                        'isStorageConfigured' => $isStorageConfigured,
+                    ]
+                );
+            }
+
             return;
         }
 

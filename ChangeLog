@@ -1,3 +1,10 @@
+2020-09-06         [RELEASE] Release of filefill 3.3.0 (Nicole Cordes)
+2020-09-06 95d3913 Merge pull request #29 from IchHabRecht/add-logger (Nicole Cordes)
+2020-09-05 87fbbb3 [BUGFIX] Improve support for site configurations (Nicole Cordes)
+2020-09-05 db1f484 [BUGFIX] Prevent double slashes on domain urls (Nicole Cordes)
+2020-09-05 6a61d14 [BUGFIX] Prevent driver recursion (Nicole Cordes)
+2020-09-05 15306f3 [TASK] Update supporting files to EXT:my_skeleton 0.4.0 (Nicole Cordes)
+
 2020-05-07         [RELEASE] Release of filefill 3.2.3 (Nicole Cordes)
 2020-05-07 8d2a50d [BUGFIX] Correct the order of parameters (Julian Hofmann)
 2020-05-07 da5bb4a [BUGFIX] Correct the order of parameters (Julian Hofmann)

@@ -23,9 +23,11 @@ Simply install the extension with Composer or the Extension Manager.
 
 ## Usage
 
-You only need to configure one or more existing "File Storage" records
+You need to configure resources for one or more existing file storages.
 
 *Prerequisite: Only storages with a "Local filesystem" driver are currently supported.*
+
+Resources for file storages can be configured using one of the two following options where the database record configuration is preferred if set. If not set, the `TYPO3_CONF_VARS` configuration is used.
 
 ### Database record configuration
 
@@ -141,7 +143,7 @@ class ResourceHandler implements \IchHabRecht\Filefill\Resource\RemoteResourceIn
 ```
 
 The handler needs to implement the interface `\IchHabRecht\Filefill\Resource\RemoteResourceInterface` and therefore has to
-add both functions `hasFile` and 'getFile'.
+add both functions `hasFile` and `getFile`.
 
 ## Debugging
 

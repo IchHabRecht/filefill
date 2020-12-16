@@ -32,12 +32,13 @@ class DomainResourceRepository
 
         $sites = GeneralUtility::makeInstance(SiteFinder::class)->getAllSites();
         foreach ($sites as $site) {
-            $url = $site->getBase()->__toString();
+            $siteConfiguration = $site->getConfiguration();
+            $url = $siteConfiguration['base'];
             if (!isset($domainResources[$url])) {
                 $domainResources[$url] = GeneralUtility::makeInstance(DomainResource::class, $url);
             }
 
-            foreach ($site->getConfiguration()['baseVariants'] ?? [] as $variant) {
+            foreach ($siteConfiguration['baseVariants'] ?? [] as $variant) {
                 if (!isset($domainResources[$variant['base']])) {
                     $domainResources[$variant['base']] = GeneralUtility::makeInstance(DomainResource::class, $variant['base']);
                 }

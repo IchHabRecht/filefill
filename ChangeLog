@@ -1,3 +1,9 @@
+2020-12-16         [RELEASE] Release of filefill 3.3.1 (Nicole Cordes)
+2020-12-16 e4c4d30 [BUGFIX] Use baseUrl from configuration in DomainResourceRepository (Nicole Cordes)
+2020-12-16 8288829 [TASK] Update supporting files to EXT:my_skeleton 0.4.2 (Nicole Cordes)
+2020-11-27 bf286f6 [TASK] Clarify mutual exclusive configuration (Mathias Brodala)
+2020-11-03 dc6ffaa [TASK] Update supporting files to EXT:my_skeleton 0.4.1 (Nicole Cordes)
+
 2020-09-06         [RELEASE] Release of filefill 3.3.0 (Nicole Cordes)
 2020-09-06 95d3913 Merge pull request #29 from IchHabRecht/add-logger (Nicole Cordes)
 2020-09-05 87fbbb3 [BUGFIX] Improve support for site configurations (Nicole Cordes)

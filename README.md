@@ -150,7 +150,7 @@ add both functions `hasFile` and `getFile`.
 You can enable additional log information by configuring a filefill logger.
 
 ```
-$GLOBALS['TYPO3_CONF_VARS']['LOG']['IchHabRecht']['Filefill'] => [
+$GLOBALS['TYPO3_CONF_VARS']['LOG']['IchHabRecht']['Filefill'] = [
     'writerConfiguration' => [
         \TYPO3\CMS\Core\Log\LogLevel::DEBUG => [
             \TYPO3\CMS\Core\Log\Writer\FileWriter::class => [

@@ -76,7 +76,7 @@ class ResourceFactorySlot implements LoggerAwareInterface
             );
         } else {
             $remoteResourceCollection = RemoteResourceCollectionFactory::createRemoteResourceCollectionFromConfiguration(
-                $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['filefill']['storages'][$resourceStorage->getUid()]
+                $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['filefill']['storages']
             );
         }
 

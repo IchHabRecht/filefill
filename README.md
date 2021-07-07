@@ -12,6 +12,8 @@ Ever run into the problem that a local file was missing?
 Filefill fetches missing files from one or multiple remote servers to ensure you have all the files you need for the
 new system.
 
+Once the configuration is setup, fetching can be triggered by loading a page with missing files in the frontend.
+
 The extension requires the usage of FAL api to fetch missing files. Files are stored directly in the (local) storage
 folder (e.g. fileadmin). You can re-run filefill at any time by deleting the local files in the storage folder.
 

@@ -100,7 +100,16 @@ Configuration:
 
 - no configuration required (the checkbox is just a field placeholder)
 
-There is no need for multiple usage. This resource can be the last one in the chain but can handle image files only.
+### Picsum.photos
+
+Fetch a missing image from the [Lorem Picsum](https://picsum.photos) service.
+This will reuse the same image from the pool of images of Lorem Picsum.
+
+Configuration:
+
+- no configuration required (the checkbox is just a field placeholder)
+
+This resource can be the last one in the chain but can handle image files only.
 
 ## Additional resources
 

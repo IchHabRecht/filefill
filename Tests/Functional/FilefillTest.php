@@ -43,7 +43,7 @@ class FilefillTest extends AbstractFunctionalTestCase
      */
     protected $placeholderResourcePath = 'wikipedia/Logo_TYPO3.png';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

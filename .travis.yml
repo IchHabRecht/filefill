@@ -25,13 +25,15 @@ jobs:
     allow_failures:
         -   env: TYPO3=dev-master
         -   if: type != cron
-            env: TYPO3=11.0.x-dev
+            env: TYPO3=11.5.x-dev
         -   if: type != cron
             env: TYPO3=10.4.x-dev
     include:
         - &tests
             stage: 🏃 tests
             before_install:
+                - sudo sed 's/mozilla.DST_Root_CA_X3.crt/!mozilla\/DST_Root_CA_X3.crt/' -i /etc/ca-certificates.conf
+                - sudo update-ca-certificates
                 - if php -i | grep -v TRAVIS_CMD | grep -q xdebug; then phpenv config-rm xdebug.ini; fi
             install:
                 - composer require --no-progress --no-suggest --no-update nimut/typo3-complete:"$TYPO3"
@@ -71,6 +73,9 @@ jobs:
                     echo;
                     find . -name \*.php ! -path "./.Build/*" | parallel --gnu php -d display_errors=stderr -l {} > /dev/null \;;
             php: 7.4
+            env: TYPO3=^11.5
+        -   <<: *tests
+            php: 7.4
             env: TYPO3=^10.4
         -   <<: *tests
             php: 7.3
@@ -81,14 +86,17 @@ jobs:
 
         -   stage: 🚢 to ter
             if: tag IS present AND env(TYPO3_ORG_USERNAME) IS present AND env(TYPO3_ORG_PASSWORD) IS present
-            php: 7.0
+            php: 7.4
+            before_install:
+                - sudo sed 's/mozilla.DST_Root_CA_X3.crt/!mozilla\/DST_Root_CA_X3.crt/' -i /etc/ca-certificates.conf
+                - sudo update-ca-certificates
             script:
                 - >
                     echo;
                     echo "Preparing upload of release ${TRAVIS_TAG} to TER";
                     echo;
                     echo;
-                    composer global require helhum/ter-client;
+                    composer global require typo3/tailor;
 
                 - >
                     TAG_MESSAGE=`git tag -n10 -l $TRAVIS_TAG | sed 's/^[0-9.]*[ ]*//g'`;
@@ -96,14 +104,18 @@ jobs:
                     echo "Uploading release ${TRAVIS_TAG} to TER";
                     echo;
                     echo;
-                    $HOME/.config/composer/vendor/bin/ter-client upload filefill . -u "$TYPO3_ORG_USERNAME" -p "$TYPO3_ORG_PASSWORD" -m "$TAG_MESSAGE";
+                    PATH=$PATH:$(composer global config bin-dir --absolute --quiet);
+                    TYPO3_API_USERNAME="$TYPO3_ORG_USERNAME" TYPO3_API_PASSWORD="$TYPO3_ORG_PASSWORD" tailor ter:publish --comment "$TAG_MESSAGE" ${TRAVIS_TAG} filefill;
 
         -   stage: ✔ with sonarqube scanner
             if: type = push AND branch IN (master, pre-merge) AND env(SONAR_TOKEN) IS present AND fork = false
             git:
                 depth: false
-            php: 7.2
-            env: TYPO3="^10.4"
+            php: 7.4
+            env: TYPO3="^10.4 ^11.5"
+            before_install:
+                - sudo sed 's/mozilla.DST_Root_CA_X3.crt/!mozilla\/DST_Root_CA_X3.crt/' -i /etc/ca-certificates.conf
+                - sudo update-ca-certificates
             before_script:
                 - mkdir -p .Log/coverage/ .Log/junit/
                 - export TYPO3_PATH_WEB=$PWD/.Build/public
@@ -167,6 +179,8 @@ jobs:
             <<: *tests
             stage: 🏃 dev tests
             before_install:
+                - sudo sed 's/mozilla.DST_Root_CA_X3.crt/!mozilla\/DST_Root_CA_X3.crt/' -i /etc/ca-certificates.conf
+                - sudo update-ca-certificates
                 - if php -i | grep -v TRAVIS_CMD | grep -q xdebug; then phpenv config-rm xdebug.ini; fi
                 - composer config minimum-stability dev
                 - composer config prefer-stable true
@@ -175,7 +189,7 @@ jobs:
             env: TYPO3=dev-master
         -   <<: *dev-tests
             php: 7.4
-            env: TYPO3=11.0.x-dev
+            env: TYPO3=11.5.x-dev
         -   <<: *dev-tests
             php: 7.4
             env: TYPO3=10.4.x-dev
@@ -198,7 +212,10 @@ jobs:
             env: TYPO3=dev-master
         -   <<: *lowest-tests
             php: 7.4
-            env: TYPO3=11.0.x-dev
+            env: TYPO3=^11.5
+        -   <<: *lowest-tests
+            php: 7.4
+            env: TYPO3=11.5.x-dev
         -   <<: *lowest-tests
             php: 7.4
             env: TYPO3=^10.4

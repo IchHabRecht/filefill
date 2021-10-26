@@ -1,3 +1,6 @@
+2021-10-26         [RELEASE] Release of filefill 4.0.1 (Nicole Cordes)
+2021-10-26 50c7a0f [BUGFIX] Set correct TYPO3 dependency in ext_emconf.php (Nicole Cordes)
+
 2021-10-25         [RELEASE] Release of filefill 4.0.0 (Nicole Cordes)
 2021-10-25 20f1caf [TASK] Raise PHP compatibility to 8.0 (Nicole Cordes)
 2021-10-25 66cc838 [TASK] Raise compatibility to TYPO3 11.5 (Nicole Cordes)

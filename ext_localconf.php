@@ -62,6 +62,17 @@ call_user_func(function () {
                 ],
                 'handler' => \IchHabRecht\Filefill\Resource\Placeholder\PlaceholderResource::class,
             ],
+            'ascii' => [
+                'title' => 'LLL:EXT:filefill/Resources/Private/Language/locallang_db.xlf:sys_file_storage.filefill.ascii',
+                'config' => [
+                    'label' => 'LLL:EXT:filefill/Resources/Private/Language/locallang_db.xlf:sys_file_storage.filefill.ascii',
+                    'config' => [
+                        'type' => 'check',
+                        'default' => '1',
+                    ],
+                ],
+                'handler' => \IchHabRecht\Filefill\Resource\Ascii\AsciiResource::class,
+            ],
         ],
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['filefill']['resourceHandler']
     );

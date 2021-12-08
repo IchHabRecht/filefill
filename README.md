@@ -59,6 +59,13 @@ $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['filefill']['storages'][1] = [
     [
         'identifier' => 'placeholder',
     ],
+    [
+        'identifier' => 'ascii',
+        'configuration' => [
+            'youtube'  => 'dQw4w9WgXcQ',
+            'vimeo'    => '148751763',
+        ],
+    ],
 ];
 ```
 

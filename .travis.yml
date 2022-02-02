@@ -75,6 +75,9 @@ jobs:
             php: 8.0
             env: TYPO3=^11.5
         -   <<: *tests
+            php: 8.1
+            env: TYPO3=^11.5
+        -   <<: *tests
             php: 7.4
             env: TYPO3=^11.5
         -   <<: *tests
@@ -191,6 +194,9 @@ jobs:
             php: 8.0
             env: TYPO3=dev-master
         -   <<: *dev-tests
+            php: 8.1
+            env: TYPO3=11.5.x-dev
+        -   <<: *dev-tests
             php: 8.0
             env: TYPO3=11.5.x-dev
         -   <<: *dev-tests
@@ -219,6 +225,9 @@ jobs:
                 - git checkout composer.json
             php: 8.0
             env: TYPO3=dev-master
+        -   <<: *lowest-tests
+            php: 8.1
+            env: TYPO3=^11.5
         -   <<: *lowest-tests
             php: 8.0
             env: TYPO3=^11.5

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace IchHabRecht\Filefill\Resource\Domain;
+namespace IchHabRecht\Filefill\Resource\Handler;
 
 /*
  * This file is part of the TYPO3 extension filefill.

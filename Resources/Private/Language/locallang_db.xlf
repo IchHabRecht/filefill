@@ -27,6 +27,9 @@
             <trans-unit id="sys_file_storage.filefill.placeholder_com">
                 <source>Placeholder.com</source>
             </trans-unit>
+            <trans-unit id="sys_file_storage.filefill.static">
+                <source>Static file</source>
+            </trans-unit>
             <trans-unit id="sys_file_storage.filefill.no_missing">
                 <source>No missing files found!</source>
             </trans-unit>

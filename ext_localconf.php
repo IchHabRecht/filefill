@@ -38,7 +38,7 @@ call_user_func(function () {
                         'eval' => 'required',
                     ],
                 ],
-                'handler' => \IchHabRecht\Filefill\Resource\Domain\DomainResource::class,
+                'handler' => \IchHabRecht\Filefill\Resource\Handler\DomainResource::class,
             ],
             'sys_domain' => [
                 'title' => 'LLL:EXT:filefill/Resources/Private/Language/locallang_db.xlf:sys_file_storage.filefill.sys_domain',
@@ -49,7 +49,7 @@ call_user_func(function () {
                         'default' => '1',
                     ],
                 ],
-                'handler' => \IchHabRecht\Filefill\Resource\Domain\SysDomainResource::class,
+                'handler' => \IchHabRecht\Filefill\Resource\Handler\SysDomainResource::class,
             ],
             'placeholder' => [
                 'title' => 'LLL:EXT:filefill/Resources/Private/Language/locallang_db.xlf:sys_file_storage.filefill.placeholder_com',
@@ -60,7 +60,19 @@ call_user_func(function () {
                         'default' => '1',
                     ],
                 ],
-                'handler' => \IchHabRecht\Filefill\Resource\Placeholder\PlaceholderResource::class,
+                'handler' => \IchHabRecht\Filefill\Resource\Handler\PlaceholderResource::class,
+            ],
+            'static' => [
+                'title' => 'LLL:EXT:filefill/Resources/Private/Language/locallang_db.xlf:sys_file_storage.filefill.static',
+                'config' => [
+                    'label' => 'LLL:EXT:filefill/Resources/Private/Language/locallang_db.xlf:sys_file_storage.filefill.static',
+                    'config' => [
+                        'type' => 'text',
+                        'rows' => 5,
+                        'cols' => 30,
+                    ],
+                ],
+                'handler' => \IchHabRecht\Filefill\Resource\Handler\StaticFileResource::class,
             ],
         ],
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['filefill']['resourceHandler']

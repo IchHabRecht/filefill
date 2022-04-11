@@ -19,6 +19,7 @@ namespace IchHabRecht\Filefill\Resource\Handler;
 
 use IchHabRecht\Filefill\Resource\RemoteResourceInterface;
 use TYPO3\CMS\Core\Resource\FileInterface;
+use TYPO3\CMS\Core\TypoScript\Parser\TypoScriptParser;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class StaticFileResource implements RemoteResourceInterface
@@ -28,9 +29,27 @@ class StaticFileResource implements RemoteResourceInterface
      */
     protected $configuration;
 
-    public function __construct(array $configuration)
+    protected $tsReplaceConfiguration = [
+        [
+            '*',
+            '/',
+        ],
+        [
+            '\\asterisk',
+            '\\slash',
+        ],
+    ];
+
+    public function __construct($configuration)
     {
-        $this->configuration = $configuration;
+        if (!is_array($configuration)) {
+            $configuration = str_replace($this->tsReplaceConfiguration[0], $this->tsReplaceConfiguration[1], $configuration);
+            $parser = GeneralUtility::makeInstance(TypoScriptParser::class);
+            $parser->parse($configuration);
+            $configuration = $parser->setup;
+        }
+
+        $this->configuration = $this->prepareConfiguration($configuration);
     }
 
     public function hasFile($fileIdentifier, $filePath, FileInterface $fileObject = null)
@@ -67,7 +86,7 @@ class StaticFileResource implements RemoteResourceInterface
             while (empty($content) && !empty($dirnames)) {
                 $dirname = '/' . implode('/', $dirnames) . '/';
                 if (isset($configuration[$dirname])) {
-                    $newFilePath = implode('/', array_reverse($unusedDirnames));
+                    $newFilePath = '/' . implode('/', array_reverse($unusedDirnames));
                     $content = is_array($configuration[$dirname]) ? $this->getFileContent($newFilePath, $configuration[$dirname]) : $configuration[$dirname];
                 }
                 $unusedDirnames[] = array_pop($dirnames);
@@ -91,5 +110,27 @@ class StaticFileResource implements RemoteResourceInterface
         }
 
         return $content;
+    }
+
+    protected function prepareConfiguration(array $configuration): array
+    {
+        $finalConfiguration = [];
+        foreach ($configuration as $key => $value) {
+            // Restore replacements in TypoScript configuration
+            $key = str_replace($this->tsReplaceConfiguration[1], $this->tsReplaceConfiguration[0], $key);
+            if (is_array($value)) {
+                // Directory configuration need to be surrounded with slashes
+                $key = '/' . trim($key, '/.') . '/';
+                $value = $this->prepareConfiguration($value);
+            } else {
+                $value = str_replace($this->tsReplaceConfiguration[1], $this->tsReplaceConfiguration[0], $value);
+                if (strpos($key, '/')) {
+                    $key = '/' . ltrim($key, '/');
+                }
+            }
+            $finalConfiguration[$key] = $value;
+        }
+
+        return $finalConfiguration;
     }
 }

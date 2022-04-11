@@ -23,28 +23,34 @@ use Nimut\TestingFramework\TestCase\UnitTestCase;
 class StaticFileResourceTest extends UnitTestCase
 {
     protected $configuration = [
-        '/path/to/example/file.txt' => 'Hello world!',
-        '/another/' => [
-            '/path/' => [
-                '/to/' => [
+        'path/to/example/file.txt' => 'Hello world!',
+        'another' => [
+            'path' => [
+                'to' => [
                     'anotherFile.txt' => 'Lorem ipsum',
                     '*.youtube' => 'yiJjpKzCVE4',
                 ],
-                '*' => 'This file was found in /another/path/to folder.',
+                '*' => 'This file was found in /another/path folder.',
             ],
         ],
         '*.vimeo' => '143018597',
         '*' => 'This is some static text for all other files.',
     ];
 
-    /** @var StaticFileResource */
-    protected $subject;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->subject = new StaticFileResource($this->configuration);
+    protected $tsConfiguration = <<< EOT
+path/to/example/file\.txt = Hello world!
+another {
+    path {
+        to {
+            anotherFile\.txt = Lorem ipsum
+            *\.youtube = yiJjpKzCVE4
+        }
+        * = This file was found in /another/path folder.
     }
+}
+*\.vimeo = 143018597
+* = This is some static text for all other files.
+EOT;
 
     public function getFileReturnsContentDataProvider(): array
     {
@@ -63,7 +69,11 @@ class StaticFileResourceTest extends UnitTestCase
             ],
             'nested path to default file' => [
                 '/another/path/to/example/file.txt',
-                'This file was found in /another/path/to folder.',
+                'This file was found in /another/path folder.',
+            ],
+            'nested path to default file (parent folder)' => [
+                '/another/path/example/file.txt',
+                'This file was found in /another/path folder.',
             ],
             'default file extension' => [
                 '/example/path/to/file.vimeo',
@@ -80,8 +90,19 @@ class StaticFileResourceTest extends UnitTestCase
      * @test
      * @dataProvider getFileReturnsContentDataProvider
      */
-    public function getFileReturnsContent(string $filePath, string $expectation)
+    public function getFileReturnsContentForArrayConfiguration(string $filePath, string $expectation)
     {
-        $this->assertEquals($expectation, $this->subject->getFile($filePath, $filePath));
+        $subject = new StaticFileResource($this->configuration);
+        $this->assertEquals($expectation, $subject->getFile($filePath, $filePath));
+    }
+
+    /**
+     * @test
+     * @dataProvider getFileReturnsContentDataProvider
+     */
+    public function getFileReturnsContentForTypoScriptConfiguration(string $filePath, string $expectation)
+    {
+        $subject = new StaticFileResource($this->tsConfiguration);
+        $this->assertEquals($expectation, $subject->getFile($filePath, $filePath));
     }
 }

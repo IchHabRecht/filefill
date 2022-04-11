@@ -67,8 +67,9 @@ call_user_func(function () {
                 'config' => [
                     'label' => 'LLL:EXT:filefill/Resources/Private/Language/locallang_db.xlf:sys_file_storage.filefill.static',
                     'config' => [
-                        'type' => 'check',
-                        'default' => '1',
+                        'type' => 'text',
+                        'rows' => 5,
+                        'cols' => 30,
                     ],
                 ],
                 'handler' => \IchHabRecht\Filefill\Resource\Handler\StaticFileResource::class,

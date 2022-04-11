@@ -62,14 +62,14 @@ $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['filefill']['storages'][1] = [
     [
         'identifier' => 'static',
         'configuration' => [
-            '/path/to/example/file.txt' => 'Hello world!',
-            '/another/' => [
-                '/path/' => [
-                    '/to/' => [
+            'path/to/example/file.txt' => 'Hello world!',
+            'another' => [
+                'path' => [
+                    'to' => [
                         'anotherFile.txt' => 'Lorem ipsum',
                         '*.youtube' => 'yiJjpKzCVE4',
                     ],
-                    '*' => 'This file was found in /another/path/to folder.',
+                    '*' => 'This file was found in /another/path folder.',
                 ],
             ],
             '*.vimeo' => '143018597',
@@ -121,8 +121,28 @@ There is no need for multiple usage. This resource can be the last one in the ch
 
 ### Static file
 
-Ensure missing files will be available. You can configure the content of a file by its path or extension. If nothing is
-defined an empty file will be created.
+Ensure missing files will be available. By default, an empty file will be created.
+
+Configuration:
+
+- You can configure the content of a file by its path or extension
+
+Please use *TypoScript syntax* for **record configuration**.
+
+```
+path/to/example/file.txt = Hello world!
+another {
+    path {
+        to {
+            anotherFile\.txt = Lorem ipsum
+            *\.youtube => yiJjpKzCVE4
+        }
+        * = This file was found in /another/path folder.
+    }
+}
+*\.vimeo = 143018597
+* = This is some static text for all other files.
+```
 
 ## Additional resources
 

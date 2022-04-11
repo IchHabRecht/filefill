@@ -1,3 +1,14 @@
+2022-04-11         [RELEASE] Release of filefill 4.1.0 (Nicole Cordes)
+2022-04-11 d09f519 [FEATURE] Handle TypoScript configuration for StaticFileResource (Nicole Cordes)
+2022-02-17 e99b09a [FEATURE] Add static file handling as resource target (Nicole Cordes)
+2022-02-17 b01207b [TASK] Move resource handler to proper folder (Nicole Cordes)
+2022-03-16 0ace821 [TASK] Raise TYPO3 10.4 dependency (Nicole Cordes)
+2022-03-15 6a32307 Change TYPO3_MODE to TYPO3 (Thomas Löffler)
+2022-03-15 022dcbe Change TYPO3_MODE to TYPO3 (Thomas Löffler)
+2022-02-17 bbcacb5 [TASK] Adjust PHP and Travis CI dependency (Nicole Cordes)
+2022-02-02 b59ed09 [TASK] Support PHP 8.1 (Georg Ringer)
+2021-11-03 522d29a [TASK] Change branch alias in composer.json (Nicole Cordes)
+
 2021-10-26         [RELEASE] Release of filefill 4.0.1 (Nicole Cordes)
 2021-10-26 50c7a0f [BUGFIX] Set correct TYPO3 dependency in ext_emconf.php (Nicole Cordes)
 

@@ -1,8 +1,8 @@
 # TYPO3 Extension filefill
 
 [![Latest Stable Version](https://img.shields.io/packagist/v/ichhabrecht/filefill.svg)](https://packagist.org/packages/ichhabrecht/filefill)
-[![Build Status](https://img.shields.io/travis/IchHabRecht/filefill/master.svg)](https://travis-ci.org/IchHabRecht/filefill)
-[![StyleCI](https://styleci.io/repos/123628122/shield?branch=master)](https://styleci.io/repos/123628122)
+[![Build Status](https://img.shields.io/travis/IchHabRecht/filefill/main.svg)](https://travis-ci.org/IchHabRecht/filefill)
+[![StyleCI](https://styleci.io/repos/123628122/shield?branch=main)](https://styleci.io/repos/123628122)
 
 Find and fetch missing local files from different remotes.
 

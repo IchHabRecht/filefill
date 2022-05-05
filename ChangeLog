@@ -1,3 +1,8 @@
+2022-05-05         [RELEASE] Release of filefill 4.1.1 (Nicole Cordes)
+2022-05-05 35f26c2 [TASK] Update supporting files to EXT:my_skeleton 0.7.1 (Nicole Cordes)
+2022-05-05 f749705 [BUGFIX] Use correct namespace for DomainResource (Nicole Cordes)
+2022-04-11 04d6f1b [TASK] Use correct branch name in README.md (Nicole Cordes)
+
 2022-04-11         [RELEASE] Release of filefill 4.1.0 (Nicole Cordes)
 2022-04-11 d09f519 [FEATURE] Handle TypoScript configuration for StaticFileResource (Nicole Cordes)
 2022-02-17 e99b09a [FEATURE] Add static file handling as resource target (Nicole Cordes)

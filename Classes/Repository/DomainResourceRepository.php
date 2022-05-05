@@ -17,7 +17,7 @@ namespace IchHabRecht\Filefill\Repository;
  * LICENSE file that was distributed with this source code.
  */
 
-use IchHabRecht\Filefill\Resource\Domain\DomainResource;
+use IchHabRecht\Filefill\Resource\Handler\DomainResource;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 

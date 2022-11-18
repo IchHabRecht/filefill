@@ -27,6 +27,12 @@
             <trans-unit id="sys_file_storage.filefill.placeholder_com">
                 <source>Placeholder.com</source>
             </trans-unit>
+            <trans-unit id="sys_file_storage.filefill.imagebuilder">
+                <source>Image builder</source>
+            </trans-unit>
+            <trans-unit id="sys_file_storage.filefill.colors">
+                <source>Background color, text color</source>
+            </trans-unit>
             <trans-unit id="sys_file_storage.filefill.static">
                 <source>Static file</source>
             </trans-unit>

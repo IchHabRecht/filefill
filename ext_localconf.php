@@ -51,6 +51,18 @@ call_user_func(function () {
                 ],
                 'handler' => \IchHabRecht\Filefill\Resource\Handler\SysDomainResource::class,
             ],
+            'imagebuilder' => [
+                'title' => 'LLL:EXT:filefill/Resources/Private/Language/locallang_db.xlf:sys_file_storage.filefill.imagebuilder',
+                'config' => [
+                    'label' => 'LLL:EXT:filefill/Resources/Private/Language/locallang_db.xlf:sys_file_storage.filefill.colors',
+                    'config' => [
+                        'type' => 'input',
+                        'eval' => 'required',
+                        'default' => '#FFFFFF, #000000',
+                    ],
+                ],
+                'handler' => \IchHabRecht\Filefill\Resource\Handler\ImageBuilderResource::class,
+            ],
             'placeholder' => [
                 'title' => 'LLL:EXT:filefill/Resources/Private/Language/locallang_db.xlf:sys_file_storage.filefill.placeholder_com',
                 'config' => [

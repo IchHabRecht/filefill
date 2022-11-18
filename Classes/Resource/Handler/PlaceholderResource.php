@@ -43,7 +43,7 @@ class PlaceholderResource implements RemoteResourceInterface
     /**
      * @var string
      */
-    protected $url = 'http://via.placeholder.com/';
+    protected $url = 'https://via.placeholder.com/';
 
     public function __construct($_, RequestFactory $requestFactory = null)
     {
@@ -72,9 +72,12 @@ class PlaceholderResource implements RemoteResourceInterface
     {
         try {
             $fileExtension = $fileObject->getExtension();
-            $size = max(1, $fileObject->getProperty('width'))
-                . 'x' . max(1, $fileObject->getProperty('height'))
-                . $fileExtension;
+            $size = sprintf(
+                '%dx%d.%s',
+                max(1, $fileObject->getProperty('width')),
+                max(1, $fileObject->getProperty('height')),
+                $fileExtension
+            );
             $response = $this->requestFactory->request($this->url . $size);
             $content = $response->getBody()->getContents();
 

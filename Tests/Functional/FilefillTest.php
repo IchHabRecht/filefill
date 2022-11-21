@@ -33,16 +33,6 @@ class FilefillTest extends AbstractFunctionalTestCase
      */
     protected $resourceFactory;
 
-    /**
-     * @var string
-     */
-    protected $domainResourcePath = 'wikipedia/commons/5/58/Logo_TYPO3.svg';
-
-    /**
-     * @var string
-     */
-    protected $placeholderResourcePath = 'wikipedia/Logo_TYPO3.png';
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -56,10 +46,12 @@ class FilefillTest extends AbstractFunctionalTestCase
      */
     public function fileExistsWithDomainResource()
     {
-        $file = $this->resourceFactory->getFileObjectFromCombinedIdentifier($this->domainResourcePath);
+        $domainResourcePath = self::STORAGE_FOLDER . '/commons/5/58/Logo_TYPO3.svg';
+
+        $file = $this->resourceFactory->getFileObjectFromCombinedIdentifier($domainResourcePath);
         $file->exists();
 
-        $this->assertFileExists($this->getInstancePath() . $this->domainResourcePath);
+        $this->assertFileExists($this->getInstancePath() . $domainResourcePath);
 
         $rows = $this->fileRepository->findByIdentifier('domain', 1);
         $this->assertCount(1, $rows);
@@ -70,12 +62,62 @@ class FilefillTest extends AbstractFunctionalTestCase
      */
     public function fileExistsWithPlaceholderResource()
     {
-        $file = $this->resourceFactory->getFileObjectFromCombinedIdentifier($this->placeholderResourcePath);
+        $placeholderResourcePath = self::STORAGE_FOLDER . '/Logo_TYPO3.png';
+
+        $file = $this->resourceFactory->getFileObjectFromCombinedIdentifier($placeholderResourcePath);
         $file->exists();
 
-        $this->assertFileExists($this->getInstancePath() . $this->placeholderResourcePath);
+        $this->assertFileExists($this->getInstancePath() . $placeholderResourcePath);
 
         $rows = $this->fileRepository->findByIdentifier('placeholder', 1);
         $this->assertCount(1, $rows);
+    }
+
+    public function fileExistsWithStaticResourceDataProvider()
+    {
+        return [
+            'path/to/example/file.txt' => [
+                'path/to/example/file.txt',
+                'Hello world!',
+            ],
+            'another/path/to/anotherFile.txt' => [
+                'another/path/to/anotherFile.txt',
+                'Lorem ipsum',
+            ],
+            'another/path/to/typo3_-_still_here.youtube' => [
+                'another/path/to/typo3_-_still_here.youtube',
+                'yiJjpKzCVE4',
+            ],
+            'another/path/lorem.pdf' => [
+                'another/path/lorem.pdf',
+                'This file was found in /another/path folder.',
+            ],
+            'path/to/typo3_-_still_here.vimeo' => [
+                'path/to/typo3_-_still_here.vimeo',
+                '143018597',
+            ],
+            'just/another/path/to/file.zip' => [
+                'just/another/path/to/file.zip',
+                'This is some static text for all other files.',
+            ],
+        ];
+    }
+
+    /**
+     * @test
+     * @dataProvider fileExistsWithStaticResourceDataProvider
+     * @param string $fileName
+     * @param string $content
+     */
+    public function fileExistsWithStaticResource(string $fileName, string $content)
+    {
+        $fileResourcePath = self::STORAGE_FOLDER . '/' . $fileName;
+
+        $file = $this->resourceFactory->getFileObjectFromCombinedIdentifier($fileResourcePath);
+        $file->exists();
+
+        $this->assertFileExists($this->getInstancePath() . $fileResourcePath);
+
+        $this->assertStringEqualsFile($this->getInstancePath() . $fileResourcePath, $content);
     }
 }

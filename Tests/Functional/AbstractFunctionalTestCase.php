@@ -21,8 +21,10 @@ use Nimut\TestingFramework\TestCase\FunctionalTestCase;
 
 class AbstractFunctionalTestCase extends FunctionalTestCase
 {
+    protected const STORAGE_FOLDER = 'wikipedia';
+
     protected $additionalFoldersToCreate = [
-        'wikipedia',
+        self::STORAGE_FOLDER,
     ];
 
     protected $configurationToUseInTestInstance = [
@@ -36,6 +38,23 @@ class AbstractFunctionalTestCase extends FunctionalTestCase
                         ],
                         [
                             'identifier' => 'placeholder',
+                        ],
+                        [
+                            'identifier' => 'static',
+                            'configuration' => [
+                                'path/to/example/file.txt' => 'Hello world!',
+                                'another' => [
+                                    'path' => [
+                                        'to' => [
+                                            'anotherFile.txt' => 'Lorem ipsum',
+                                            '*.youtube' => 'yiJjpKzCVE4',
+                                        ],
+                                        '*' => 'This file was found in /another/path folder.',
+                                    ],
+                                ],
+                                '*.vimeo' => '143018597',
+                                '*' => 'This is some static text for all other files.',
+                            ],
                         ],
                     ],
                 ],

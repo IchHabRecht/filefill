@@ -18,6 +18,7 @@ namespace IchHabRecht\Filefill\Tests\Functional;
  */
 
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class AbstractFunctionalTestCase extends FunctionalTestCase
 {
@@ -73,7 +74,18 @@ class AbstractFunctionalTestCase extends FunctionalTestCase
         $fixturePath = ORIGINAL_ROOT . 'typo3conf/ext/filefill/Tests/Functional/Fixtures/Database/';
         $this->importDataSet($fixturePath . 'sys_file_storage.xml');
         $this->importDataSet($fixturePath . 'sys_file.xml');
+        $this->importDataSet($fixturePath . 'sys_file_metadata.xml');
 
         $this->setUpBackendUserFromFixture(1);
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+
+        foreach ($this->additionalFoldersToCreate as $folder) {
+            GeneralUtility::rmdir($this->getInstancePath() . $folder, true);
+            GeneralUtility::mkdir($this->getInstancePath() . $folder);
+        }
     }
 }

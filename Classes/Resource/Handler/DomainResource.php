@@ -18,6 +18,7 @@ namespace IchHabRecht\Filefill\Resource\Handler;
  */
 
 use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Exception\TransferException;
 use IchHabRecht\Filefill\Resource\RemoteResourceInterface;
 use TYPO3\CMS\Core\Http\RequestFactory;
 use TYPO3\CMS\Core\Resource\FileInterface;
@@ -60,7 +61,7 @@ class DomainResource implements RemoteResourceInterface
             $response = $this->requestFactory->request($this->url . ltrim($filePath, '/'), 'HEAD');
 
             return $response->getStatusCode() === 200;
-        } catch (RequestException $e) {
+        } catch (TransferException $e) {
             return false;
         }
     }

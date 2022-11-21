@@ -77,6 +77,34 @@ class FilefillTest extends AbstractFunctionalTestCase
         $this->assertCount(1, $rows);
     }
 
+    public function fileExistsWithImageBuilderResourceDataProvider()
+    {
+        return [
+            'Logo_TYPO3.png' => [
+                'Logo_TYPO3.png',
+            ],
+            'introduction/images/typo3-book-backend-login.png' => [
+                'introduction/images/typo3-book-backend-login.png',
+            ],
+        ];
+    }
+
+    /**
+     * @test
+     * @dataProvider fileExistsWithImageBuilderResourceDataProvider
+     * @param string $fileName
+     */
+    public function fileExistsWithImageBuilderResource(string $fileName)
+    {
+        $fileResourcePath = self::STORAGE_FOLDER . '/' . $fileName;
+
+        $file = $this->resourceFactory->getFileObjectFromCombinedIdentifier($fileResourcePath);
+        $file->exists();
+
+        $this->assertFileExists($this->getAbsoluteFilePath($fileResourcePath));
+        $this->assertStringNotEqualsFile($this->getAbsoluteFilePath($fileResourcePath), '');
+    }
+
     public function fileExistsWithStaticResourceDataProvider()
     {
         return [

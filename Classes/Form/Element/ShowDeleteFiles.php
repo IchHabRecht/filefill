@@ -79,7 +79,7 @@ class ShowDeleteFiles extends AbstractFormElement
                 $html[] = ' ' . sprintf(
                     $this->languageService->sL('LLL:EXT:filefill/Resources/Private/Language/locallang_db.xlf:sys_file_storage.filefill.delete_files'),
                     $row['count'],
-                    $this->languageService->sL($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['filefill']['resourceHandler'][$row['tx_filefill_identifier']]['title'])
+                    $this->languageService->sL($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['filefill']['resourceHandler'][$row['tx_filefill_identifier']]['title'] ?? $row['tx_filefill_identifier'])
                 );
                 $html[] = '</a>';
             }

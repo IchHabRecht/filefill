@@ -150,7 +150,7 @@ class RemoteResourceCollection implements LoggerAwareInterface
             $localPath = $filePath;
             $storage = $this->resourceFactory->getStorageObject(0, [], $localPath);
             if ($storage->getUid() !== 0) {
-                static::$fileIdentifierCache[$fileIdentifier] = $this->getFileObjectFromStorage($storage, $fileIdentifier);
+                static::$fileIdentifierCache[$fileIdentifier] = $this->getFileObjectFromStorage($storage, $localPath);
             }
         }
 
@@ -160,16 +160,16 @@ class RemoteResourceCollection implements LoggerAwareInterface
 
     /**
      * @param ResourceStorage $storage
-     * @param string $fileIdentifier
+     * @param string $localPath
      * @return FileInterface|null
      */
-    protected function getFileObjectFromStorage(ResourceStorage $storage, string $fileIdentifier)
+    protected function getFileObjectFromStorage(ResourceStorage $storage, string $localPath)
     {
         $fileObject = null;
 
-        if (!$storage->isWithinProcessingFolder($fileIdentifier)) {
+        if (!$storage->isWithinProcessingFolder($localPath)) {
             try {
-                $fileObject = $this->resourceFactory->getFileObjectByStorageAndIdentifier($storage->getUid(), $fileIdentifier);
+                $fileObject = $this->resourceFactory->getFileObjectByStorageAndIdentifier($storage->getUid(), $localPath);
             } catch (\InvalidArgumentException $e) {
                 return null;
             }
@@ -185,7 +185,7 @@ class RemoteResourceCollection implements LoggerAwareInterface
                     ),
                     $expressionBuilder->eq(
                         'identifier',
-                        $queryBuilder->createNamedParameter($fileIdentifier, \PDO::PARAM_STR)
+                        $queryBuilder->createNamedParameter($localPath, \PDO::PARAM_STR)
                     )
                 )
                 ->execute()

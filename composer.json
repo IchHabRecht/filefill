@@ -23,7 +23,7 @@
         "typo3/cms-core": "^10.4.11 || ^11.5"
     },
     "require-dev": {
-        "nimut/testing-framework": "6.x-dev"
+        "typo3/testing-framework": "^6.16"
     },
     "autoload": {
         "psr-4": {

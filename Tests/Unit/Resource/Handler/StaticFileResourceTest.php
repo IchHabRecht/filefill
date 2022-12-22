@@ -18,7 +18,7 @@ namespace IchHabRecht\Filefill\Tests\Unit\Resource\Handler;
  */
 
 use IchHabRecht\Filefill\Resource\Handler\StaticFileResource;
-use Nimut\TestingFramework\TestCase\UnitTestCase;
+use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 class StaticFileResourceTest extends UnitTestCase
 {

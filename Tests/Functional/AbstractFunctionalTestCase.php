@@ -17,75 +17,80 @@ namespace IchHabRecht\Filefill\Tests\Functional;
  * LICENSE file that was distributed with this source code.
  */
 
-use Nimut\TestingFramework\TestCase\FunctionalTestCase;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 class AbstractFunctionalTestCase extends FunctionalTestCase
 {
     protected const STORAGE_FOLDER = 'wikipedia';
 
-    protected $additionalFoldersToCreate = [
-        self::STORAGE_FOLDER,
-    ];
+    public function __construct(?string $name = null, array $data = [], $dataName = '')
+    {
+        $this->additionalFoldersToCreate = [
+            self::STORAGE_FOLDER,
+        ];
 
-    protected $configurationToUseInTestInstance = [
-        'EXTCONF' => [
-            'filefill' => [
-                'storages' => [
-                    1 => [
-                        [
-                            'identifier' => 'domain',
-                            'configuration' => 'https://upload.wikimedia.org',
-                        ],
-                        [
-                            'identifier' => 'placeholder',
-                        ],
-                        [
-                            'identifier' => 'static',
-                            'configuration' => [
-                                'path/to/example/file.txt' => 'Hello world!',
-                                'another' => [
-                                    'path' => [
-                                        'to' => [
-                                            'anotherFile.txt' => 'Lorem ipsum',
-                                            '*.youtube' => 'yiJjpKzCVE4',
+        $this->configurationToUseInTestInstance = [
+            'EXTCONF' => [
+                'filefill' => [
+                    'storages' => [
+                        1 => [
+                            [
+                                'identifier' => 'domain',
+                                'configuration' => 'https://upload.wikimedia.org',
+                            ],
+                            [
+                                'identifier' => 'placeholder',
+                            ],
+                            [
+                                'identifier' => 'static',
+                                'configuration' => [
+                                    'path/to/example/file.txt' => 'Hello world!',
+                                    'another' => [
+                                        'path' => [
+                                            'to' => [
+                                                'anotherFile.txt' => 'Lorem ipsum',
+                                                '*.youtube' => 'yiJjpKzCVE4',
+                                            ],
+                                            '*' => 'This file was found in /another/path folder.',
                                         ],
-                                        '*' => 'This file was found in /another/path folder.',
                                     ],
+                                    '*.vimeo' => '143018597',
+                                    '*' => 'This is some static text for all other files.',
                                 ],
-                                '*.vimeo' => '143018597',
-                                '*' => 'This is some static text for all other files.',
                             ],
                         ],
                     ],
                 ],
             ],
-        ],
-    ];
+        ];
 
-    protected $testExtensionsToLoad = [
-        'typo3conf/ext/filefill',
-    ];
+        $this->testExtensionsToLoad = [
+            'typo3conf/ext/filefill',
+        ];
+
+        parent::__construct($name, $data, $dataName);
+    }
 
     protected function setUp(): void
     {
         parent::setUp();
 
         $fixturePath = ORIGINAL_ROOT . 'typo3conf/ext/filefill/Tests/Functional/Fixtures/Database/';
-        $this->importDataSet($fixturePath . 'sys_file_storage.xml');
-        $this->importDataSet($fixturePath . 'sys_file.xml');
-        $this->importDataSet($fixturePath . 'sys_file_metadata.xml');
+        $this->importCSVDataSet($fixturePath . 'be_users.csv');
+        $this->importCSVDataSet($fixturePath . 'sys_file_storage.csv');
+        $this->importCSVDataSet($fixturePath . 'sys_file.csv');
+        $this->importCSVDataSet($fixturePath . 'sys_file_metadata.csv');
 
-        $this->setUpBackendUserFromFixture(1);
+        $this->setUpBackendUser(1);
     }
 
     protected function tearDown(): void
     {
-        parent::tearDown();
-
         foreach ($this->additionalFoldersToCreate as $folder) {
-            GeneralUtility::rmdir($this->getInstancePath() . $folder, true);
-            GeneralUtility::mkdir($this->getInstancePath() . $folder);
+            GeneralUtility::rmdir(self::getInstancePath() . $folder, true);
+            GeneralUtility::mkdir(self::getInstancePath() . $folder);
         }
+        parent::tearDown();
     }
 }

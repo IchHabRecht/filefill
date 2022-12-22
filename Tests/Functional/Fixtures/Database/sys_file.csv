@@ -1,0 +1,10 @@
+sys_file,,,,,,,,,,,,
+,uid,pid,storage,type,identifier,identifier_hash,folder_hash,extension,mime_type,name,sha1,size
+,1,0,1,2,/commons/5/58/Logo_TYPO3.svg,1db3cb089195454e829773e5c172f47c04fb2528,30b04618dc677eaa27f9620c49be41645c87da3a,svg,image/svg+xml,Logo_TYPO3.svg,b59467d41833232a76b8122d5952611beaa11a0d,3334
+,2,0,1,2,/Logo_TYPO3.png,4bf2fbd6c3f88fa363814159911f5a2c2a977068,42099b4af021e53fd8fd4e056c2568d7c2e3ffa8,png,image/png,Logo_TYPO3.png,1df801ff43a1c382ad4ed4f33eb3481cf77b6781,1641
+,3,0,1,1,/path/to/example/file.txt,aa59cd549d721319c97c1c0dfc35c5ded99b4040,9ead3fd095adf855c1b0cff14bfa2e8a0057cebe,txt,text/plain,file.txt,da39a3ee5e6b4b0d3255bfef95601890afd80709,4269
+,4,0,1,1,/another/path/to/anotherFile.txt,edf882d00d2186cd3324bc8cddcc37fcc13c18a4,7ecaa3c11e089bbe88ec5c8f2bbf35000416d11a,txt,text/plain,anotherFile.txt,da39a3ee5e6b4b0d3255bfef95601890afd80709,4269
+,5,0,1,4,/another/path/to/typo3_-_still_here.youtube,c31a6afc41f7e738ff72b00f51ee1da35cb18418,7ecaa3c11e089bbe88ec5c8f2bbf35000416d11a,youtube,video/youtube,typo3_-_still_here.youtube,6780574930783902cacfde7352df8ca83055be4e,11
+,6,0,1,5,/another/path/lorem.pdf,9337031682405bcd4bf42f0afaf6cd737af24477,afed0398a60ad9549b3cff00835765c4ff6f1f6d,pdf,application/pdf,lorem.pdf,3e1223cb33da7e35382f97a2f598b5d06eef22bf,1746
+,7,0,1,4,/path/to/typo3_-_still_here.vimeo,4e9e1a605b104f15ba95460c3b50b9f92526dd9b,26a89159bcdbcde2968d022c12469859cf6f709e,vimeo,video/vimeo,typo3_-_still_here.vimeo,838adc17683816f783c64bc42b689b068addea0a,9
+,8,0,1,5,/just/another/path/to/file.zip,4f2b12a3a774f9f97e920aa9a7cdd5eef6c86bce,4a6057e1842147d46db50f3a9d58e2a7812e2ccc,zip,application/zip,file.zip,b04f3ee8f5e43fa3b162981b50bb72fe1acabb33,22

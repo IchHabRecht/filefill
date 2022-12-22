@@ -51,9 +51,9 @@ class FilefillTest extends AbstractFunctionalTestCase
         $file = $this->resourceFactory->getFileObjectFromCombinedIdentifier($domainResourcePath);
         $file->exists();
 
-        $this->assertFileExists($this->getInstancePath() . $domainResourcePath);
+        $this->assertFileExists($this->getAbsoluteFilePath($domainResourcePath));
 
-        $this->assertStringNotEqualsFile($this->getInstancePath() . $domainResourcePath, '');
+        $this->assertStringNotEqualsFile($this->getAbsoluteFilePath($domainResourcePath), '');
 
         $rows = $this->fileRepository->findByIdentifier('domain', 1);
         $this->assertCount(1, $rows);
@@ -69,9 +69,9 @@ class FilefillTest extends AbstractFunctionalTestCase
         $file = $this->resourceFactory->getFileObjectFromCombinedIdentifier($placeholderResourcePath);
         $file->exists();
 
-        $this->assertFileExists($this->getInstancePath() . $placeholderResourcePath);
+        $this->assertFileExists($this->getAbsoluteFilePath($placeholderResourcePath));
 
-        $this->assertStringNotEqualsFile($this->getInstancePath() . $placeholderResourcePath, '');
+        $this->assertStringNotEqualsFile($this->getAbsoluteFilePath($placeholderResourcePath), '');
 
         $rows = $this->fileRepository->findByIdentifier('placeholder', 1);
         $this->assertCount(1, $rows);
@@ -120,8 +120,23 @@ class FilefillTest extends AbstractFunctionalTestCase
         $file = $this->resourceFactory->getFileObjectFromCombinedIdentifier($fileResourcePath);
         $file->exists();
 
-        $this->assertFileExists($this->getInstancePath() . $fileResourcePath);
+        $this->assertFileExists($this->getAbsoluteFilePath($fileResourcePath));
 
-        $this->assertStringEqualsFile($this->getInstancePath() . $fileResourcePath, $content);
+        $this->assertStringEqualsFile($this->getAbsoluteFilePath($fileResourcePath), $content);
+    }
+
+    /**
+     * @param string $filePath
+     * @return string
+     */
+    protected function getAbsoluteFilePath(string $filePath)
+    {
+        return implode(
+            '/',
+            [
+                rtrim(self::getInstancePath(), '\\/'),
+                ltrim($filePath, '\\/'),
+            ]
+        );
     }
 }

@@ -124,19 +124,4 @@ class FilefillTest extends AbstractFunctionalTestCase
 
         $this->assertStringEqualsFile($this->getAbsoluteFilePath($fileResourcePath), $content);
     }
-
-    /**
-     * @param string $filePath
-     * @return string
-     */
-    protected function getAbsoluteFilePath(string $filePath)
-    {
-        return implode(
-            '/',
-            [
-                rtrim(self::getInstancePath(), '\\/'),
-                ltrim($filePath, '\\/'),
-            ]
-        );
-    }
 }

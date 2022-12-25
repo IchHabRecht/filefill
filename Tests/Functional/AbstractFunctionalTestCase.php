@@ -88,9 +88,25 @@ class AbstractFunctionalTestCase extends FunctionalTestCase
     protected function tearDown(): void
     {
         foreach ($this->additionalFoldersToCreate as $folder) {
-            GeneralUtility::rmdir(self::getInstancePath() . $folder, true);
-            GeneralUtility::mkdir(self::getInstancePath() . $folder);
+            $absoluteFolderPath = $this->getAbsoluteFilePath($folder);
+            GeneralUtility::rmdir($absoluteFolderPath, true);
+            GeneralUtility::mkdir($absoluteFolderPath);
         }
         parent::tearDown();
+    }
+
+    /**
+     * @param string $filePath
+     * @return string
+     */
+    protected function getAbsoluteFilePath(string $filePath)
+    {
+        return implode(
+            '/',
+            [
+                rtrim(self::getInstancePath(), '\\/'),
+                ltrim($filePath, '\\/'),
+            ]
+        );
     }
 }

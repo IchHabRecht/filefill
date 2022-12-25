@@ -8,3 +8,4 @@ sys_file,,,,,,,,,,,,
 ,6,0,1,5,/another/path/lorem.pdf,9337031682405bcd4bf42f0afaf6cd737af24477,afed0398a60ad9549b3cff00835765c4ff6f1f6d,pdf,application/pdf,lorem.pdf,3e1223cb33da7e35382f97a2f598b5d06eef22bf,1746
 ,7,0,1,4,/path/to/typo3_-_still_here.vimeo,4e9e1a605b104f15ba95460c3b50b9f92526dd9b,26a89159bcdbcde2968d022c12469859cf6f709e,vimeo,video/vimeo,typo3_-_still_here.vimeo,838adc17683816f783c64bc42b689b068addea0a,9
 ,8,0,1,5,/just/another/path/to/file.zip,4f2b12a3a774f9f97e920aa9a7cdd5eef6c86bce,4a6057e1842147d46db50f3a9d58e2a7812e2ccc,zip,application/zip,file.zip,b04f3ee8f5e43fa3b162981b50bb72fe1acabb33,22
+,9,0,1,2,/introduction/images/typo3-book-backend-login.png,01242ba34d7590b5be9dbc145a543c2b3ad62e13,e1500cfc74aa6405848b1f4f4acfe1e7fa4120a8,png,image/png,typo3-book-backend-login.png,115d94bdbab0847307a8b8979d75fb5709fee247,204314

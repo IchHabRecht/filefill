@@ -60,6 +60,13 @@ $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['filefill']['storages'][1] = [
         'identifier' => 'placeholder',
     ],
     [
+        'identifier' => 'imagebuilder',
+        'configuration' => [
+            'backgroundColor' => '#FFFFFF',
+            'textColor' => '#000000',
+        ],
+    ],
+    [
         'identifier' => 'static',
         'configuration' => [
             'path/to/example/file.txt' => 'Hello world!',
@@ -118,6 +125,15 @@ Configuration:
 - no configuration required (the checkbox is just a field placeholder)
 
 There is no need for multiple usage. This resource can be the last one in the chain but can handle image files only.
+
+### Image builder
+
+Create an empty image with the correct resolution of the original file. The height and width is added as a text layer.
+
+Configuration:
+
+- Background color: Enter a valid hex code as background color
+- Text color: Enter a valid hex code as text color
 
 ### Static file
 

@@ -76,7 +76,7 @@ class RemoteResourceCollection implements LoggerAwareInterface
     public function get($fileIdentifier, $filePath)
     {
         // Do not try to download files that can be either processed or are not available in sys_file
-        if ($this->fileCanBeReProcessed($fileIdentifier, $filePath) || static::$fileIdentifierCache[$fileIdentifier] === null) {
+        if ($this->fileCanBeReProcessed($fileIdentifier, $filePath) || static::$fileIdentifierCache[$filePath] === null) {
             return null;
         }
 
@@ -95,7 +95,7 @@ class RemoteResourceCollection implements LoggerAwareInterface
                 );
             }
 
-            $file = static::$fileIdentifierCache[$fileIdentifier];
+            $file = static::$fileIdentifierCache[$filePath];
             if ($resource['handler']->hasFile($fileIdentifier, $filePath, $file)) {
                 $fileContent = $resource['handler']->getFile($fileIdentifier, $filePath, $file);
                 if ($fileContent === false) {
@@ -145,17 +145,17 @@ class RemoteResourceCollection implements LoggerAwareInterface
      */
     protected function fileCanBeReProcessed($fileIdentifier, $filePath)
     {
-        if (!array_key_exists($fileIdentifier, static::$fileIdentifierCache)) {
-            static::$fileIdentifierCache[$fileIdentifier] = null;
+        if (!array_key_exists($filePath, static::$fileIdentifierCache)) {
+            static::$fileIdentifierCache[$filePath] = null;
             $localPath = $filePath;
             $storage = $this->resourceFactory->getStorageObject(0, [], $localPath);
             if ($storage->getUid() !== 0) {
-                static::$fileIdentifierCache[$fileIdentifier] = $this->getFileObjectFromStorage($storage, $fileIdentifier);
+                static::$fileIdentifierCache[$filePath] = $this->getFileObjectFromStorage($storage, $fileIdentifier);
             }
         }
 
-        return static::$fileIdentifierCache[$fileIdentifier] instanceof ProcessedFile
-            && static::$fileIdentifierCache[$fileIdentifier]->getOriginalFile()->exists();
+        return static::$fileIdentifierCache[$filePath] instanceof ProcessedFile
+            && static::$fileIdentifierCache[$filePath]->getOriginalFile()->exists();
     }
 
     /**

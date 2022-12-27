@@ -1,3 +1,15 @@
 sys_file_storage,,,,,,,,,,
-,uid,pid,name,driver,configuration,is_default,is_browsable,is_public,is_writable,is_online
-,1,0,wikipedia/ (auto-created),Local,"<?xml version=""1.0"" encoding=""utf-8"" standalone=""yes"" ?><T3FlexForms><data><sheet index=""sDEF""><language index=""lDEF""><field index=""basePath""><value index=""vDEF"">wikipedia/</value></field><field index=""pathType""><value index=""vDEF"">relative</value></field><field index=""caseSensitive""><value index=""vDEF"">1</value></field></language></sheet></data></T3FlexForms>",1,1,1,1,1
+,uid,pid,name,driver,configuration,is_default,is_browsable,is_public,is_writable,is_online,tx_filefill_enable,tx_filefill_resources
+,1,0,fileadmin/ (auto-created),Local,"<?xml version=""1.0"" encoding=""utf-8"" standalone=""yes"" ?><T3FlexForms><data><sheet index=""sDEF""><language index=""lDEF""><field index=""basePath""><value index=""vDEF"">fileadmin/</value></field><field index=""pathType""><value index=""vDEF"">relative</value></field><field index=""caseSensitive""><value index=""vDEF"">1</value></field></language></sheet></data></T3FlexForms>",1,1,1,1,1,1,"<?xml version=""1.0"" encoding=""utf-8"" standalone=""yes"" ?><T3FlexForms><data><sheet index=""sDEF""><language index=""lDEF""><field index=""resources""><el index=""el""><field index=""63ab0a5a9f59a478456894""><value index=""domain""><el><field index=""domain""><value index=""vDEF"">https://upload.wikimedia.org</value></field></el></value><value index=""_TOGGLE"">0</value></field><field index=""63ab0a6e9c7c5977970934""><value index=""placeholder""><el><field index=""placeholder""><value index=""vDEF"">1</value></field></el></value><value index=""_TOGGLE"">0</value></field><field index=""63ab0aa048bf3424991815""><value index=""imagebuilder""><el><field index=""imagebuilder""><value index=""vDEF"">#FFFFFF, #000000</value></field></el></value><value index=""_TOGGLE"">0</value></field><field index=""63ab0a7f4fff9752068445""><value index=""static""><el><field index=""static""><value index=""vDEF"">path/to/example/file.txt = Hello world!
+another {
+    path {
+        to {
+            anotherFile\.txt = Lorem ipsum
+            *\.youtube =&gt; yiJjpKzCVE4
+        }
+        * = This file was found in /another/path folder.
+    }
+}
+*\.vimeo = 143018597
+* = This is some static text for all other files.</value></field></el></value><value index=""_TOGGLE"">0</value></field></el></field></language></sheet></data></T3FlexForms>"
+,2,0,wikipedia/,Local,"<?xml version=""1.0"" encoding=""utf-8"" standalone=""yes"" ?><T3FlexForms><data><sheet index=""sDEF""><language index=""lDEF""><field index=""basePath""><value index=""vDEF"">wikipedia/</value></field><field index=""pathType""><value index=""vDEF"">relative</value></field><field index=""caseSensitive""><value index=""vDEF"">1</value></field></language></sheet></data></T3FlexForms>",1,1,1,1,1,0,""

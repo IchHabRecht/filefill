@@ -27,6 +27,7 @@ class AbstractFunctionalTestCase extends FunctionalTestCase
     public function __construct(?string $name = null, array $data = [], $dataName = '')
     {
         $this->additionalFoldersToCreate = [
+            'fileadmin',
             self::STORAGE_FOLDER,
         ];
 
@@ -34,7 +35,7 @@ class AbstractFunctionalTestCase extends FunctionalTestCase
             'EXTCONF' => [
                 'filefill' => [
                     'storages' => [
-                        1 => [
+                        2 => [
                             [
                                 'identifier' => 'domain',
                                 'configuration' => 'https://upload.wikimedia.org',

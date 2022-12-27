@@ -16,3 +16,13 @@ services:
             -   name: event.listener
                 identifier: 'filefillFileProcessingEventEventListener'
                 event: TYPO3\CMS\Core\Resource\Event\BeforeFileProcessingEvent
+                
+    IchHabRecht\Filefill\Command\DeleteCommand:
+        tags:
+            - name: 'console.command'
+              command: 'filefill:delete'
+
+    IchHabRecht\Filefill\Command\ResetCommand:
+        tags:
+            - name: 'console.command'
+              command: 'filefill:reset'

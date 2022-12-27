@@ -72,7 +72,7 @@ class DeleteCommand extends AbstractCommand
 
         if ($all) {
             $rows = $this->fileRepository->countByIdentifier($storage);
-            $identifiers = array_column($rows, 1);
+            $identifiers = array_column($rows, 'tx_filefill_identifier');
         }
 
         $enabledStorages = $this->getEnabledStorages();

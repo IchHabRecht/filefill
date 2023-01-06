@@ -72,9 +72,12 @@ class PlaceholderResource implements RemoteResourceInterface
     {
         try {
             $fileExtension = $fileObject->getExtension();
-            $size = max(1, $fileObject->getProperty('width'))
-                . 'x' . max(1, $fileObject->getProperty('height'))
-                . $fileExtension;
+            $size = sprintf(
+                '%dx%d.%s',
+                max(1, $fileObject->getProperty('width')),
+                max(1, $fileObject->getProperty('height')),
+                $fileExtension
+            );
             $response = $this->requestFactory->request($this->url . $size);
             $content = $response->getBody()->getContents();
 

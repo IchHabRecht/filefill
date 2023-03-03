@@ -17,8 +17,17 @@ namespace IchHabRecht\Filefill\Hooks;
  * LICENSE file that was distributed with this source code.
  */
 
+use TYPO3\CMS\Core\Information\Typo3Version;
+
 class FlexFormToolsHook
 {
+    private Typo3Version $typo3Version;
+
+    public function __construct()
+    {
+        $this->typo3Version = new Typo3Version();
+    }
+
     public function parseDataStructureByIdentifierPostProcess(array $dataStructure, $identifier)
     {
         if ($identifier['tableName'] !== 'sys_file_storage'
@@ -37,11 +46,18 @@ class FlexFormToolsHook
                 continue;
             }
 
+            if ($this->typo3Version->getMajorVersion() < 12) {
+                $resourceConfiguration = [
+                    'TCEforms' => $configuration['config'],
+                ];
+            } else {
+                // See https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/12.0/Breaking-97126-RemoveTCEformsArrayKeyInFlexForm.html
+                $resourceConfiguration = $configuration['config'];
+            }
+
             $dataStructure['sheets']['sDEF']['ROOT']['el']['resources']['el'][$resource] = [
                 'el' => [
-                    $resource => [
-                        'TCEforms' => $configuration['config'],
-                    ],
+                    $resource => $resourceConfiguration,
                 ],
                 'title' => $configuration['title'],
                 'type' => 'array',

@@ -17,6 +17,7 @@ namespace IchHabRecht\Filefill\Form\Element;
  * LICENSE file that was distributed with this source code.
  */
 
+use Doctrine\DBAL\Result;
 use TYPO3\CMS\Backend\Form\Element\AbstractFormElement;
 use TYPO3\CMS\Backend\Form\NodeFactory;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -55,7 +56,7 @@ class ShowMissingFiles extends AbstractFormElement
 
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('sys_file');
         $expressionBuilder = $queryBuilder->expr();
-        $count = $queryBuilder->count('*')
+        $queryResult = $queryBuilder->count('*')
             ->from('sys_file')
             ->where(
                 $expressionBuilder->eq(
@@ -67,8 +68,15 @@ class ShowMissingFiles extends AbstractFormElement
                     $queryBuilder->createNamedParameter(1, \PDO::PARAM_INT)
                 )
             )
-            ->execute()
-            ->fetchColumn(0);
+            ->execute();
+
+        if ($queryResult instanceof Result) {
+            // TYPO3 >= 12
+            $count = $queryResult->fetchOne();
+        } else {
+            // TYPO3 < 12
+            $count = $queryResult->fetchColumn(0);
+        }
 
         $html = [];
         $html[] = '<div class="form-control-wrap">';

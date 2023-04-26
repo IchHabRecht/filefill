@@ -188,6 +188,9 @@ jobs:
             env: TYPO3=dev-main
         -   <<: *dev-tests
             php: 8.1.0
+            env: TYPO3=12.4.x-dev
+        -   <<: *dev-tests
+            php: 8.1.0
             env: TYPO3=11.5.x-dev
         -   <<: *dev-tests
             php: 8.0

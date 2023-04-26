@@ -25,6 +25,8 @@ jobs:
     allow_failures:
         -   env: TYPO3=dev-main
         -   if: type != cron
+            env: TYPO3=12.4.x-dev
+        -   if: type != cron
             env: TYPO3=11.5.x-dev
         -   if: type != cron
             env: TYPO3=10.4.x-dev

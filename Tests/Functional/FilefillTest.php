@@ -77,7 +77,7 @@ class FilefillTest extends AbstractFunctionalTestCase
         $this->assertCount(1, $rows);
     }
 
-    public function fileExistsWithImageBuilderResourceDataProvider()
+    public static function fileExistsWithImageBuilderResourceDataProvider()
     {
         return [
             'Logo_TYPO3.png' => [
@@ -105,7 +105,7 @@ class FilefillTest extends AbstractFunctionalTestCase
         $this->assertStringNotEqualsFile($this->getAbsoluteFilePath($fileResourcePath), '');
     }
 
-    public function fileExistsWithStaticResourceDataProvider()
+    public static function fileExistsWithStaticResourceDataProvider()
     {
         return [
             'path/to/example/file.txt' => [

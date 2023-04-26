@@ -52,7 +52,7 @@ another {
 * = This is some static text for all other files.
 EOT;
 
-    public function getFileReturnsContentDataProvider(): array
+    public static function getFileReturnsContentDataProvider(): array
     {
         return [
             'absolute file' => [

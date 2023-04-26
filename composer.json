@@ -20,11 +20,10 @@
     ],
     "require": {
         "php": "^7.4 || ^8.0",
-        "typo3/cms-core": "^10.4.11 || ^11.5 || ~12.0.0 || ~12.1.0 || ~12.2.0 || ~12.3.0"
+        "typo3/cms-core": "^10.4.11 || ^11.5 || ^12.4"
     },
     "require-dev": {
-        "typo3/testing-framework": "^6.16 || 7.*@dev",
-        "sbuerk/typo3-cmscomposerinstallers-testingframework-bridge": "^0.1.0"
+        "typo3/testing-framework": "^6.16 || ^7.0 || ^8.0"
     },
     "autoload": {
         "psr-4": {
@@ -44,8 +43,7 @@
         "bin-dir": ".Build/bin",
         "allow-plugins": {
             "typo3/class-alias-loader": true,
-            "typo3/cms-composer-installers": true,
-            "sbuerk/typo3-cmscomposerinstallers-testingframework-bridge": true
+            "typo3/cms-composer-installers": true
         }
     },
     "extra": {

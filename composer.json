@@ -20,10 +20,10 @@
     ],
     "require": {
         "php": "^7.4 || ^8.0",
-        "typo3/cms-core": "^10.4.11 || ^11.5 || ~12.0.0 || ~12.1.0"
+        "typo3/cms-core": "^12.4"
     },
     "require-dev": {
-        "typo3/testing-framework": "^6.16 || 7.*@dev",
+        "typo3/testing-framework": "^7.0",
         "sbuerk/typo3-cmscomposerinstallers-testingframework-bridge": "^0.1.0"
     },
     "autoload": {
@@ -50,7 +50,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-main": "4.x-dev"
+            "dev-main": "5.x-dev"
         },
         "typo3/cms": {
             "extension-key": "filefill",

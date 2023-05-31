@@ -47,9 +47,7 @@ class ResetCommandTest extends AbstractFunctionalTestCase
         parent::assertPreConditions();
 
         $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('sys_file');
-        $rows = $queryBuilder->update('sys_file')
-            ->set('missing', 1)
-            ->execute();
+        $rows = $queryBuilder->update('sys_file')->set('missing', 1)->executeStatement();
         $this->assertNotEmpty($rows);
     }
 
@@ -70,35 +68,25 @@ class ResetCommandTest extends AbstractFunctionalTestCase
 
         $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('sys_file');
         $rows = $queryBuilder->count('*')
-            ->from('sys_file')
-            ->where(
-                $queryBuilder->expr()->eq(
-                    'missing',
-                    $queryBuilder->createNamedParameter(1)
-                ),
-                $queryBuilder->expr()->eq(
-                    'storage',
-                    $queryBuilder->createNamedParameter(1)
-                )
-            )
-            ->execute()
+            ->from('sys_file')->where($queryBuilder->expr()->eq(
+            'missing',
+            $queryBuilder->createNamedParameter(1)
+        ), $queryBuilder->expr()->eq(
+            'storage',
+            $queryBuilder->createNamedParameter(1)
+        ))->executeQuery()
             ->fetchOne();
         $this->assertEmpty($rows);
 
         $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('sys_file');
         $rows = $queryBuilder->count('*')
-            ->from('sys_file')
-            ->where(
-                $queryBuilder->expr()->eq(
-                    'missing',
-                    $queryBuilder->createNamedParameter(1)
-                ),
-                $queryBuilder->expr()->eq(
-                    'storage',
-                    $queryBuilder->createNamedParameter(2)
-                )
-            )
-            ->execute()
+            ->from('sys_file')->where($queryBuilder->expr()->eq(
+            'missing',
+            $queryBuilder->createNamedParameter(1)
+        ), $queryBuilder->expr()->eq(
+            'storage',
+            $queryBuilder->createNamedParameter(2)
+        ))->executeQuery()
             ->fetchOne();
         $this->assertNotEmpty($rows);
     }
@@ -117,14 +105,10 @@ class ResetCommandTest extends AbstractFunctionalTestCase
 
         $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('sys_file');
         $rows = $queryBuilder->count('*')
-            ->from('sys_file')
-            ->where(
-                $queryBuilder->expr()->eq(
-                    'missing',
-                    $queryBuilder->createNamedParameter(1)
-                )
-            )
-            ->execute()
+            ->from('sys_file')->where($queryBuilder->expr()->eq(
+            'missing',
+            $queryBuilder->createNamedParameter(1)
+        ))->executeQuery()
             ->fetchOne();
         $this->assertEmpty($rows);
     }

@@ -47,9 +47,7 @@ class DeleteCommandTest extends AbstractFunctionalTestCase
         parent::assertPreConditions();
 
         $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('sys_file');
-        $rows = $queryBuilder->select('*')
-            ->from('sys_file')
-            ->execute()
+        $rows = $queryBuilder->select('*')->from('sys_file')->executeQuery()
             ->fetchAll();
         foreach ($rows as $row) {
             $file = $this->resourceFactory->getFileObject($row['uid']);
@@ -73,12 +71,10 @@ class DeleteCommandTest extends AbstractFunctionalTestCase
 
         $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('sys_file');
         $rows = $queryBuilder->select('*')
-            ->from('sys_file')
-            ->where($queryBuilder->expr()->eq(
-                'tx_filefill_identifier',
-                $queryBuilder->createNamedParameter('placeholder')
-            ))
-            ->execute()
+            ->from('sys_file')->where($queryBuilder->expr()->eq(
+            'tx_filefill_identifier',
+            $queryBuilder->createNamedParameter('placeholder')
+        ))->executeQuery()
             ->fetchAll();
         $this->assertEmpty($rows);
     }

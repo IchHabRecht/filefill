@@ -20,19 +20,14 @@ abstract class AbstractCommand extends Command
         $rows = $queryBuilder->select('uid', 'name')
             ->from('sys_file_storage')
             ->where(
-                $expressionBuilder->orX(
-                    $expressionBuilder->eq(
-                        'tx_filefill_enable',
-                        $queryBuilder->createNamedParameter(1, \PDO::PARAM_INT)
-                    ),
-                    $expressionBuilder->in(
-                        'uid',
-                        $queryBuilder->createNamedParameter($configuredStorages, Connection::PARAM_INT_ARRAY)
-                    )
-                )
-            )
-            ->orderBy('uid')
-            ->execute()
+                $expressionBuilder->or($expressionBuilder->eq(
+                    'tx_filefill_enable',
+                    $queryBuilder->createNamedParameter(1, \PDO::PARAM_INT)
+                ), $expressionBuilder->in(
+                    'uid',
+                    $queryBuilder->createNamedParameter($configuredStorages, Connection::PARAM_INT_ARRAY)
+                ))
+            )->orderBy('uid')->executeQuery()
             ->fetchAll();
 
         return array_combine(array_map('intval', array_column($rows, 'uid')), $rows);

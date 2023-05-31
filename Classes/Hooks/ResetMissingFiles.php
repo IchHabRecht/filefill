@@ -44,8 +44,6 @@ class ResetMissingFiles
                     'storage',
                     $queryBuilder->createNamedParameter((int)$id, \PDO::PARAM_INT)
                 )
-            )
-            ->set('missing', 0)
-            ->execute();
+            )->set('missing', 0)->executeStatement();
     }
 }

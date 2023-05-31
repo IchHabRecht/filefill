@@ -177,18 +177,13 @@ class RemoteResourceCollection implements LoggerAwareInterface
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('sys_file_processedfile');
             $expressionBuilder = $queryBuilder->expr();
             $databaseRow = $queryBuilder->select('*')
-                ->from('sys_file_processedfile')
-                ->where(
-                    $expressionBuilder->eq(
-                        'storage',
-                        $queryBuilder->createNamedParameter((int)$storage->getUid(), \PDO::PARAM_INT)
-                    ),
-                    $expressionBuilder->eq(
-                        'identifier',
-                        $queryBuilder->createNamedParameter($fileIdentifier, \PDO::PARAM_STR)
-                    )
-                )
-                ->execute()
+                ->from('sys_file_processedfile')->where($expressionBuilder->eq(
+                'storage',
+                $queryBuilder->createNamedParameter((int)$storage->getUid(), \PDO::PARAM_INT)
+            ), $expressionBuilder->eq(
+                'identifier',
+                $queryBuilder->createNamedParameter($fileIdentifier, \PDO::PARAM_STR)
+            ))->executeQuery()
                 ->fetch(\PDO::FETCH_ASSOC);
             if (empty($databaseRow)) {
                 return null;

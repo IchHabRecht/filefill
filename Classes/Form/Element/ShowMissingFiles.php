@@ -56,18 +56,13 @@ class ShowMissingFiles extends AbstractFormElement
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('sys_file');
         $expressionBuilder = $queryBuilder->expr();
         $count = $queryBuilder->count('*')
-            ->from('sys_file')
-            ->where(
-                $expressionBuilder->eq(
-                    'storage',
-                    $queryBuilder->createNamedParameter($this->data['vanillaUid'], \PDO::PARAM_INT)
-                ),
-                $expressionBuilder->eq(
-                    'missing',
-                    $queryBuilder->createNamedParameter(1, \PDO::PARAM_INT)
-                )
-            )
-            ->execute()
+            ->from('sys_file')->where($expressionBuilder->eq(
+            'storage',
+            $queryBuilder->createNamedParameter($this->data['vanillaUid'], \PDO::PARAM_INT)
+        ), $expressionBuilder->eq(
+            'missing',
+            $queryBuilder->createNamedParameter(1, \PDO::PARAM_INT)
+        ))->executeQuery()
             ->fetchColumn(0);
 
         $html = [];

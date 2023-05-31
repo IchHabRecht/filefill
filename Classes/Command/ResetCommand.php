@@ -94,9 +94,7 @@ class ResetCommand extends AbstractCommand
                         'storage',
                         $updateQueryBuilder->createNamedParameter($row['storage'], \PDO::PARAM_INT)
                     )
-                )
-                ->set('missing', 0, true, \PDO::PARAM_INT)
-                ->execute();
+                )->set('missing', 0, true, \PDO::PARAM_INT)->executeStatement();
             $output->writeln(sprintf(
                 'Reset %d file(s) in storage "%s" (uid: %d)',
                 $row['count'],

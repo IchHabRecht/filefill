@@ -1,3 +1,10 @@
+2023-06-19         [RELEASE] Release of filefill 4.3.0 (Nicole Cordes)
+2023-06-19 cc04b29 [TASK] Resolve StyleCI issues (Nicole Cordes)
+2023-06-19 fd017da [TASK] Raise compatibility to TYPO3 12.4 (Nicole Cordes)
+2023-06-19 6483f6f [TASK] Depend on stable typo3/testing-framework (Nicole Cordes)
+2023-06-19 0e72f09 [TASK] Remove obsolete testingframework-bridge package (Nicole Cordes)
+2023-01-17 0caf194 [TASK] Add new supporters to README (Nicole Cordes)
+
 2022-12-27         [RELEASE] Release of filefill 4.2.0 (Nicole Cordes)
 2022-12-27 a846dd5 [TASK] Add functional tests for reset command (Nicole Cordes)
 2022-12-27 df9ce0e [TASK] Add functional tests for delete command (Nicole Cordes)

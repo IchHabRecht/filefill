@@ -15,7 +15,7 @@ declare(strict_types=1);
  * LICENSE file that was distributed with this source code.
  */
 
-defined('TYPO3') || die();
+defined('TYPO3') || die('Access denied.');
 
 $tempColumns = [
     'tx_filefill_enable' => [

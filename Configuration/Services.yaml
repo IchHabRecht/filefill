@@ -16,7 +16,13 @@ services:
             -   name: event.listener
                 identifier: 'filefillFileProcessingEventEventListener'
                 event: TYPO3\CMS\Core\Resource\Event\BeforeFileProcessingEvent
-                
+
+    IchHabRecht\Filefill\EventListener\FlexFormDataStructureParsedEventListener:
+        tags:
+            -   name: event.listener
+                identifier: 'filefillFlexFormDataStructureParsedEventListener'
+                event: TYPO3\CMS\Core\Configuration\Event\AfterFlexFormDataStructureParsedEvent
+
     IchHabRecht\Filefill\Command\DeleteCommand:
         tags:
             - name: 'console.command'

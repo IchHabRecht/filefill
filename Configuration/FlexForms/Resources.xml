@@ -2,9 +2,7 @@
     <sheets>
         <sDEF>
             <ROOT>
-                <TCEforms>
-                    <sheetTitle>LLL:EXT:filefill/Resources/Private/Language/locallang_db.xlf:sys_file_storage.filefill.resources</sheetTitle>
-                </TCEforms>
+                <sheetTitle>LLL:EXT:filefill/Resources/Private/Language/locallang_db.xlf:sys_file_storage.filefill.resources</sheetTitle>
                 <type>array</type>
                 <el>
                     <resources>

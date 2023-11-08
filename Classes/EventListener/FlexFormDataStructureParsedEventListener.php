@@ -43,9 +43,7 @@ class FlexFormDataStructureParsedEventListener
 
             $dataStructure['sheets']['sDEF']['ROOT']['el']['resources']['el'][$resource] = [
                 'el' => [
-                    $resource => [
-                        'TCEforms' => $configuration['config'],
-                    ],
+                    $resource => $configuration['config'],
                 ],
                 'title' => $configuration['title'],
                 'type' => 'array',

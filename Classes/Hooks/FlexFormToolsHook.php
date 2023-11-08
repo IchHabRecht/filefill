@@ -37,14 +37,14 @@ class FlexFormToolsHook
                 continue;
             }
 
+            $elementConfig = $configuration['config'];
+
             $dataStructure['sheets']['sDEF']['ROOT']['el']['resources']['el'][$resource] = [
-                'el' => [
-                    $resource => [
-                        'TCEforms' => $configuration['config'],
-                    ],
-                ],
                 'title' => $configuration['title'],
                 'type' => 'array',
+                'el' => [
+                    $resource => $elementConfig,
+                ],
             ];
         }
 

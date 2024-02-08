@@ -31,7 +31,7 @@ class DeleteCommand extends AbstractCommand
         $this->languageService = $languageService ?: $GLOBALS['LANG'];
     }
 
-    public function configure()
+    public function configure(): void
     {
         $this->setDescription('Deletes files fetched by filefill')
             ->addOption(
@@ -59,8 +59,9 @@ class DeleteCommand extends AbstractCommand
      *
      * @param InputInterface $input
      * @param OutputInterface $output
+     * @return int
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $identifiers = $input->getOption('identifier');
         $storage = $input->getOption('storage');

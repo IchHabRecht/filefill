@@ -1,3 +1,6 @@
+2024-02-08         [RELEASE] Release of filefill 4.3.1 (Nicole Cordes)
+2024-02-08 50ed2d3 [BUGFIX] Add missing return types in commands (Nicole Cordes)
+
 2023-06-19         [RELEASE] Release of filefill 4.3.0 (Nicole Cordes)
 2023-06-19 cc04b29 [TASK] Resolve StyleCI issues (Nicole Cordes)
 2023-06-19 fd017da [TASK] Raise compatibility to TYPO3 12.4 (Nicole Cordes)

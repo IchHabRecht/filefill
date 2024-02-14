@@ -2,7 +2,7 @@ risky: true
 
 preset: psr12
 
-disbaled:
+disabled:
     - binary_operator_at_least_one_space
 
 enabled:

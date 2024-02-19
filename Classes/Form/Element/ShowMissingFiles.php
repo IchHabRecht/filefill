@@ -67,8 +67,8 @@ class ShowMissingFiles extends AbstractFormElement
                     $queryBuilder->createNamedParameter(1, \PDO::PARAM_INT)
                 )
             )
-            ->execute()
-            ->fetchColumn(0);
+            ->executeQuery()
+            ->fetchOne();
 
         $html = [];
         $html[] = '<div class="form-control-wrap">';

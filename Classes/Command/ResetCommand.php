@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace IchHabRecht\Filefill\Command;
 
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Exception;
 use IchHabRecht\Filefill\Repository\FileRepository;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;

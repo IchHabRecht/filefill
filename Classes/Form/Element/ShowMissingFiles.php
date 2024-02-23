@@ -17,6 +17,7 @@ namespace IchHabRecht\Filefill\Form\Element;
  * LICENSE file that was distributed with this source code.
  */
 
+use Doctrine\DBAL\FetchMode;
 use TYPO3\CMS\Backend\Form\Element\AbstractFormElement;
 use TYPO3\CMS\Backend\Form\NodeFactory;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -68,7 +69,7 @@ class ShowMissingFiles extends AbstractFormElement
                 )
             )
             ->execute()
-            ->fetchColumn(0);
+            ->fetch(FetchMode::NUMERIC)[0] ?? 0;
 
         $html = [];
         $html[] = '<div class="form-control-wrap">';

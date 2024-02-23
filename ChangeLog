@@ -1,3 +1,11 @@
+2024-02-23         [RELEASE] Release of filefill 4.3.2 (Nicole Cordes)
+2024-02-22 0ae65cc [BUGFIX] Remove superflous TCEforms wrapper (Nicole Cordes)
+2023-06-27 553b52f [BUGFIX] Support multiple Doctrine versions (Nicole Cordes)
+2023-06-27 66f5594 [BUGFIX] Introduce event listener for FlexForm manipulation (Nicole Cordes)
+2024-02-23 01fbffc [TASK] Resolve StyleCI issues (Nicole Cordes)
+2024-02-14 bcf48fa Update .styleci.yml (Graham Campbell)
+2024-02-14 75b131a Update .styleci.yml (Graham Campbell)
+
 2024-02-08         [RELEASE] Release of filefill 4.3.1 (Nicole Cordes)
 2024-02-08 50ed2d3 [BUGFIX] Add missing return types in commands (Nicole Cordes)
 

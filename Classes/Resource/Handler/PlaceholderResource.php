@@ -43,7 +43,7 @@ class PlaceholderResource implements RemoteResourceInterface
     /**
      * @var string
      */
-    protected $url = 'https://via.placeholder.com/';
+    protected $url = 'https://placehold.co/';
 
     public function __construct($_, RequestFactory $requestFactory = null)
     {

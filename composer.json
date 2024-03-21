@@ -19,8 +19,8 @@
         }
     ],
     "require": {
-        "php": "^7.4 || ^8.0",
-        "typo3/cms-core": "^10.4.11 || ^11.5 || ^12.4"
+        "php": "^8.2",
+        "typo3/cms-core": "^13.1"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.6",
@@ -49,7 +49,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-main": "4.x-dev"
+            "dev-main": "5.0.x-dev"
         },
         "typo3/cms": {
             "extension-key": "filefill",

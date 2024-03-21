@@ -17,40 +17,30 @@ namespace IchHabRecht\Filefill\Form\Element;
  * LICENSE file that was distributed with this source code.
  */
 
-use Doctrine\DBAL\FetchMode;
+use Doctrine\DBAL\ParameterType;
 use TYPO3\CMS\Backend\Form\Element\AbstractFormElement;
-use TYPO3\CMS\Backend\Form\NodeFactory;
 use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Imaging\IconFactory;
+use TYPO3\CMS\Core\Imaging\IconSize;
 use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class ShowMissingFiles extends AbstractFormElement
 {
     /**
-     * @var LanguageService
-     */
-    protected $languageService;
-
-    /**
      * Container objects give $nodeFactory down to other containers.
      *
-     * @param NodeFactory $nodeFactory
-     * @param array $data
      * @param LanguageService|null $languageService
      * @throws \InvalidArgumentException
      */
-    public function __construct(NodeFactory $nodeFactory, array $data, $languageService = null)
+    public function __construct(protected readonly LanguageService $languageService)
     {
-        parent::__construct($nodeFactory, $data);
-        $this->languageService = $languageService ?: $GLOBALS['LANG'];
     }
 
     /**
      * @return array
      */
-    public function render()
+    public function render(): array
     {
         $result = $this->initializeResultArray();
 
@@ -61,15 +51,17 @@ class ShowMissingFiles extends AbstractFormElement
             ->where(
                 $expressionBuilder->eq(
                     'storage',
-                    $queryBuilder->createNamedParameter($this->data['vanillaUid'], \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter($this->data['vanillaUid'], ParameterType::INTEGER)
                 ),
                 $expressionBuilder->eq(
                     'missing',
-                    $queryBuilder->createNamedParameter(1, \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter(1, ParameterType::INTEGER)
                 )
             )
-            ->execute()
-            ->fetch(FetchMode::NUMERIC)[0] ?? 0;
+            ->executeQuery()
+            ->fetchNumeric()[0] ?? 0;
+
+        // TODO https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/13.0/Breaking-97330-FormEngineElementClassesMustCreateLabelOrLegend.html
 
         $html = [];
         $html[] = '<div class="form-control-wrap">';
@@ -89,7 +81,7 @@ class ShowMissingFiles extends AbstractFormElement
             $html[] = '</div>';
             $html[] = '<div class="form-control-wrap t3js-module-docheader">';
             $html[] = '<a class="btn btn-default t3js-editform-submitButton" data-name="_save_tx_filefill_missing" data-form="EditDocumentController" data-value="1">';
-            $html[] = $iconFactory->getIcon('actions-database-reload', Icon::SIZE_SMALL);
+            $html[] = $iconFactory->getIcon('actions-database-reload', IconSize::SMALL);
             $html[] = ' ' . $this->languageService->sL('LLL:EXT:filefill/Resources/Private/Language/locallang_db.xlf:sys_file_storage.filefill.reset');
             $html[] = '</a>';
         }

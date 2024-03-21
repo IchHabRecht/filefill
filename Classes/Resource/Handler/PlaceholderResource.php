@@ -25,20 +25,14 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class PlaceholderResource implements RemoteResourceInterface
 {
-    /**
-     * @var array
-     */
-    protected $allowedFileExtensions = [
+    protected array $allowedFileExtensions = [
         'gif',
         'jpeg',
         'jpg',
         'png',
     ];
 
-    /**
-     * @var RequestFactory
-     */
-    protected $requestFactory;
+    protected RequestFactory $requestFactory;
 
     /**
      * @var string

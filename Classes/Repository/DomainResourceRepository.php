@@ -26,7 +26,7 @@ class DomainResourceRepository
     /**
      * @return DomainResource[]
      */
-    public function findAll()
+    public function findAll(): array
     {
         $domainResources = [];
 

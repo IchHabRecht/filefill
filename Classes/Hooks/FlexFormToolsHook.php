@@ -21,16 +21,16 @@ class FlexFormToolsHook
 {
     public function parseDataStructureByIdentifierPostProcess(array $dataStructure, $identifier)
     {
-        if ($identifier['tableName'] !== 'sys_file_storage'
-            || $identifier['fieldName'] !== 'tx_filefill_resources'
-        ) {
+	    if (   ( isset($identifier['tableName']) && $identifier['tableName'] !== 'sys_file_storage')
+            || ( isset($identifier['fieldName']) && $identifier['fieldName'] !== 'tx_filefill_resources')
+	    ) {
             return $dataStructure;
         }
 
         $dataStructure['sheets']['sDEF']['ROOT']['el']['resources']['el'] = [];
 
         foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['filefill']['resourceHandler'] ?? [] as $resource => $configuration) {
-            if (empty($configuration['title'])
+            if (   empty($configuration['title'])
                 || empty($configuration['config'])
                 || empty($configuration['handler'])
             ) {
@@ -51,3 +51,4 @@ class FlexFormToolsHook
         return $dataStructure;
     }
 }
+

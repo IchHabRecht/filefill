@@ -19,9 +19,9 @@ folder (e.g. fileadmin). You can re-run filefill at any time by deleting the loc
 
 ## Installation
 
-Simply install the extension with Composer or the Extension Manager.
+Simply install the extension with Composer as development dependency or the Extension Manager.
 
-`composer require ichhabrecht/filefill`
+`composer require --dev ichhabrecht/filefill`
 
 ## Usage
 

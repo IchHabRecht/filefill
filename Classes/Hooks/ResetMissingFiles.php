@@ -17,6 +17,7 @@ namespace IchHabRecht\Filefill\Hooks;
  * LICENSE file that was distributed with this source code.
  */
 
+use Doctrine\DBAL\ParameterType;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
@@ -42,10 +43,10 @@ class ResetMissingFiles
             ->where(
                 $expressionBuilder->eq(
                     'storage',
-                    $queryBuilder->createNamedParameter((int)$id, \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter((int)$id, ParameterType::INTEGER)
                 )
             )
             ->set('missing', 0)
-            ->execute();
+            ->executeStatement();
     }
 }

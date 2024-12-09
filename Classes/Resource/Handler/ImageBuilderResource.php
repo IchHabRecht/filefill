@@ -102,7 +102,7 @@ class ImageBuilderResource implements RemoteResourceInterface
         ];
         $gifBuilder = GeneralUtility::makeInstance(GifBuilder::class);
         $gifBuilder->start($fileArray, []);
-        $theImage = $gifBuilder->gifBuild();
+        $theImage = $gifBuilder->gifBuild()->getFullPath();
         if (file_exists($theImage)) {
             $content = file_get_contents($theImage);
             unlink($theImage);

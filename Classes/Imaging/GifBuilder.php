@@ -7,9 +7,9 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class GifBuilder extends \TYPO3\CMS\Frontend\Imaging\GifBuilder
 {
-    public function fileName($pre)
+    public function fileName(): string
     {
-        $fileName = parent::fileName($pre);
+        $fileName = parent::fileName();
         $temporaryPath = Environment::getVarPath() . '/transient/';
         if (!is_dir($temporaryPath)) {
             GeneralUtility::mkdir_deep($temporaryPath);

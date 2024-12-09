@@ -17,6 +17,7 @@ namespace IchHabRecht\Filefill\Resource;
  * LICENSE file that was distributed with this source code.
  */
 
+use Doctrine\DBAL\ParameterType;
 use IchHabRecht\Filefill\Exception\MissingInterfaceException;
 use IchHabRecht\Filefill\Exception\UnknownResourceException;
 use IchHabRecht\Filefill\Repository\FileRepository;
@@ -181,15 +182,15 @@ class RemoteResourceCollection implements LoggerAwareInterface
                 ->where(
                     $expressionBuilder->eq(
                         'storage',
-                        $queryBuilder->createNamedParameter((int)$storage->getUid(), \PDO::PARAM_INT)
+                        $queryBuilder->createNamedParameter((int)$storage->getUid(), ParameterType::INTEGER)
                     ),
                     $expressionBuilder->eq(
                         'identifier',
-                        $queryBuilder->createNamedParameter($fileIdentifier, \PDO::PARAM_STR)
+                        $queryBuilder->createNamedParameter($fileIdentifier)
                     )
                 )
-                ->execute()
-                ->fetch(\PDO::FETCH_ASSOC);
+                ->executeQuery()
+                ->fetchAssociative();
             if (empty($databaseRow)) {
                 return null;
             }

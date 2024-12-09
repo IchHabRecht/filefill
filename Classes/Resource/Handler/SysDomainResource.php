@@ -27,12 +27,12 @@ class SysDomainResource implements RemoteResourceInterface
     /**
      * @var DomainResource[]
      */
-    protected $domainResources;
+    protected array $domainResources;
 
     /**
      * @var DomainResource[]
      */
-    protected static $fileIdentifierCache = [];
+    protected static array $fileIdentifierCache = [];
 
     /**
      * @param string $configuration

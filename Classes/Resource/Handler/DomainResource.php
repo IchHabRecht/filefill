@@ -27,19 +27,13 @@ use TYPO3\CMS\Core\Utility\HttpUtility;
 
 class DomainResource implements RemoteResourceInterface
 {
-    /**
-     * @var RequestFactory
-     */
-    protected $requestFactory;
+    protected RequestFactory $requestFactory;
 
-    /**
-     * @var string
-     */
-    protected $url;
+    protected string $url;
 
     /**
      * @param string $configuration
-     * @param RequestFactory $requestFactory
+     * @param ?RequestFactory $requestFactory
      */
     public function __construct($configuration, RequestFactory $requestFactory = null)
     {

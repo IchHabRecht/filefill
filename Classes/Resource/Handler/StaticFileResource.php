@@ -19,17 +19,14 @@ namespace IchHabRecht\Filefill\Resource\Handler;
 
 use IchHabRecht\Filefill\Resource\RemoteResourceInterface;
 use TYPO3\CMS\Core\Resource\FileInterface;
-use TYPO3\CMS\Core\TypoScript\Parser\TypoScriptParser;
+use TYPO3\CMS\Core\TypoScript\TypoScriptStringFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class StaticFileResource implements RemoteResourceInterface
 {
-    /**
-     * @var array
-     */
-    protected $configuration;
+    protected array $configuration;
 
-    protected $tsReplaceConfiguration = [
+    protected array $tsReplaceConfiguration = [
         [
             '*',
             '/',
@@ -42,11 +39,16 @@ class StaticFileResource implements RemoteResourceInterface
 
     public function __construct($configuration)
     {
-        if (!is_array($configuration)) {
+        if (empty($configuration)) {
+            // Null, empty string, empty array, etc
+            $configuration = [];
+        } elseif (is_string($configuration)) {
             $configuration = str_replace($this->tsReplaceConfiguration[0], $this->tsReplaceConfiguration[1], $configuration);
-            $parser = GeneralUtility::makeInstance(TypoScriptParser::class);
-            $parser->parse($configuration);
-            $configuration = $parser->setup;
+            $parser = GeneralUtility::makeInstance(TypoScriptStringFactory::class);
+            // TODO Untested!!!
+            $configuration = $parser
+                ->parseFromStringWithIncludes('Filefill-StaticFileResource', $configuration)
+                ->toArray();
         }
 
         $this->configuration = $this->prepareConfiguration($configuration);

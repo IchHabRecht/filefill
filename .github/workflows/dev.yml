@@ -1,0 +1,97 @@
+name: 🏃 dev tests
+
+on: [ push, pull_request ]
+
+jobs:
+    compute:
+        uses: ./.github/workflows/compute.yml
+
+    test:
+        uses: ./.github/workflows/test.yml
+
+    dev:
+        name: 'TYPO3: ${{ matrix.typo3 }} - PHP: ${{ matrix.php }} - ${{ matrix.dependency-version }}'
+
+        needs: [ compute, test ]
+
+        strategy:
+            fail-fast: false
+            matrix:
+                os: ${{ fromJson(needs.compute.outputs.os)  }}
+                php: ${{ fromJson(needs.compute.outputs.php)  }}
+                typo3: ${{ fromJson(needs.compute.outputs.typo3_dev)  }}
+                dependency-version: [ 'lowest', 'stable' ]
+                exclude: ${{ fromJson(needs.compute.outputs.exclude)  }}
+
+        runs-on: ${{ matrix.os }}
+
+        steps:
+            -   name: Checkout
+                uses: actions/checkout@v4
+
+            -   name: Store Composer cache directory
+                id: composer-cache
+                run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+            -   name: Store TYPO3 version
+                id: version-cache
+                env:
+                    TYPO3: ${{ matrix.typo3 }}
+                run: echo "version=${TYPO3//[!0-9]/}" >> $GITHUB_OUTPUT
+
+            -   uses: actions/cache/restore@v4
+                id: restore-composer-cache
+                with:
+                    path: ${{ steps.composer-cache.outputs.dir }}
+                    key: ${{ runner.os }}-composer-${{ matrix.typo3 }}-${{ matrix.php }}
+                    restore-keys: |
+                        ${{ runner.os }}-composer-${{ matrix.typo3 }}-
+                        ${{ runner.os }}-composer-
+
+            -   name: Set up PHP Version ${{ matrix.php }}
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: ${{ matrix.php }}
+                    extensions: mbstring, intl, pdo_sqlite, pdo_mysql
+                    tools: composer:v2
+                    coverage: none
+
+            -   name: Environment Check
+                run: |
+                    php --version
+                    composer --version
+                    mkdir -p .Log/coverage/ .Log/junit/
+
+            -   name: Validate composer.json
+                run: composer validate
+
+            -   name: Composer install
+                run: |
+                    composer config minimum-stability dev
+                    composer update --with "typo3/cms-core:${{ matrix.typo3 }}" --no-interaction  --prefer-dist --prefer-stable --prefer-${{ matrix.dependency-version }}
+
+            -   name: Save composer cache
+                uses: actions/cache/save@v4
+                with:
+                    path: ${{ steps.composer-cache.outputs.dir }}
+                    key: ${{ steps.restore-composer-cache.outputs.cache-primary-key }}
+
+            -   name: Lint PHP
+                run: php .Build/bin/parallel-lint --exclude .Build .
+
+            -   name: Unit Tests
+                if: ${{ hashFiles('Tests/Unit/') != '' }}
+                run: .Build/bin/phpunit --bootstrap .Build/vendor/typo3/testing-framework/Resources/Core/Build/UnitTestsBootstrap.php --no-coverage --no-logging --testsuite unit
+
+            -   name: Functional Tests
+                if: ${{ success() || failure() }} && ${{ hashFiles('Tests/Functional/') != '' }}
+                env:
+                    typo3DatabaseHost: '127.0.0.1'
+                    typo3DatabaseName: 'typo3'
+                    typo3DatabasePassword: 'root'
+                    typo3DatabaseUsername: 'root'
+                run: |
+                    sudo /etc/init.d/mysql start                
+                    mkdir -p .Build/public/typo3conf/ext/
+                    if [ ! -L .Build/public/typo3conf/ext/filefill ]; then ln -snvf ../../../../. .Build/public/typo3conf/ext/filefill; fi
+                    find 'Tests/Functional' -wholename '*Test.php' | parallel --gnu 'echo ""; echo ""; echo; echo "Running functional test suite {}"; .Build/bin/phpunit --bootstrap .Build/vendor/typo3/testing-framework/Resources/Core/Build/FunctionalTestsBootstrap.php --no-coverage --no-logging {}'

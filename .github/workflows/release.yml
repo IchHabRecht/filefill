@@ -1,0 +1,69 @@
+name: 🚢 to TER
+
+on:
+    push:
+        tags:
+            - "v?[0-9]+.[0-9]+.[0-9]+"
+
+jobs:
+    compute:
+        uses: ./.github/workflows/compute.yml
+
+    test:
+        uses: ./.github/workflows/test.yml
+
+    release:
+        name: '🚢 to TER'
+
+        needs: [ compute, test ]
+
+        env:
+            php: ${{ fromJson(needs.compute.outputs.php-single) }}
+            typo3: ${{ fromJson(needs.compute.outputs.typo3-single) }}
+
+        if: github.repository == 'IchHabRecht/filefill'
+
+        runs-on: ${{ fromJson(needs.compute.outputs.os-single) }}
+
+        steps:
+            -   name: Checkout
+                uses: actions/checkout@v4
+                with:
+                    ref: ${{ github.ref }}
+
+            -   name: Store Composer cache directory
+                id: composer-cache
+                run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+            -   uses: actions/cache/restore@v4
+                id: restore-composer-cache
+                with:
+                    path: ${{ steps.composer-cache.outputs.dir }}
+                    key: ${{ runner.os }}-composer-${{ env.typo3 }}-${{ env.php }}
+                    restore-keys: |
+                        ${{ runner.os }}-composer-${{ env.typo3 }}-
+                        ${{ runner.os }}-composer-
+
+            -   name: Set up PHP
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: ${{ env.php }}
+                    tools: composer:v2
+                    coverage: none
+
+            -   name: Extract version from GITHUB_REF
+                id: github-ref
+                run: |
+                    echo "version=$(echo $GITHUB_REF | sed -E -n 's#^refs/tags/v?([0-9]+\.)([0-9]+\.)([0-9]+)#\1\2\3#p')" >> $GITHUB_OUTPUT
+
+            -   name: Composer install
+                run: |
+                    composer global require typo3/tailor
+                    export PATH=$PATH:$(composer global config bin-dir --absolute --quiet)
+
+            -   name: Uploading release ${{ steps.github-ref.outputs.version }} to TER
+                run: |
+                    export TAG_MESSAGE=$(git tag -n10 -l ${{ steps.github-ref.outputs.version }} | sed 's/^[v]*[0-9.]*[ ]*//g')
+                    echo $TAG_MESSAGE
+                    echo
+                    TYPO3_API_USERNAME="${{ secrets.TYPO3_ORG_USERNAME }}" TYPO3_API_PASSWORD="${{ secrets.TYPO3_ORG_PASSWORD }}" tailor ter:publish --comment "$TAG_MESSAGE" "${{ steps.github-ref.outputs.version }}" filefill

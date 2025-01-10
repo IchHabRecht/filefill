@@ -21,7 +21,7 @@ class FlexFormToolsHook
 {
     public function parseDataStructureByIdentifierPostProcess(array $dataStructure, $identifier)
     {
-        if ($identifier['tableName'] !== 'sys_file_storage'
+        if (!isset($identifier['tableName']) || $identifier['tableName'] !== 'sys_file_storage'
             || $identifier['fieldName'] !== 'tx_filefill_resources'
         ) {
             return $dataStructure;

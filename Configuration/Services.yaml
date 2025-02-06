@@ -32,3 +32,12 @@ services:
         tags:
             - name: 'console.command'
               command: 'filefill:reset'
+
+    IchHabRecht\Filefill\Repository\FileRepository:
+      public: true
+
+    IchHabRecht\Filefill\Form\Element\ShowDeleteFiles:
+      public: true
+
+    IchHabRecht\Filefill\Form\Element\ShowMissingFiles:
+      public: true

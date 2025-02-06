@@ -20,7 +20,7 @@ class ResetCommand extends AbstractCommand
 
     protected FileRepository $fileRepository;
 
-    public function __construct(string $name = null, Connection $connection = null, FileRepository $fileRepository = null)
+    public function __construct(?string $name = null, Connection $connection = null, FileRepository $fileRepository = null)
     {
         parent::__construct($name);
 

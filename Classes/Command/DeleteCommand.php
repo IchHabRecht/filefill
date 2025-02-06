@@ -17,7 +17,7 @@ class DeleteCommand extends AbstractCommand
 
     protected LanguageService $languageService;
 
-    public function __construct(string $name = null, FileRepository $fileRepository = null, $languageService = null)
+    public function __construct(?string $name = null, ?FileRepository $fileRepository = null, $languageService = null)
     {
         parent::__construct($name);
 

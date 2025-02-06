@@ -34,9 +34,9 @@ class FileRepository
     protected ResourceFactory $resourceFactory;
 
     public function __construct(
-        Connection $connection = null,
-        ProcessedFileRepository $processedFileRepository = null,
-        ResourceFactory $resourceFactory = null
+        ?Connection $connection = null,
+        ?ProcessedFileRepository $processedFileRepository = null,
+        ?ResourceFactory $resourceFactory = null
     ) {
         $this->connection = $connection ?: GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('sys_file');
         $this->processedFileRepository = $processedFileRepository ?: GeneralUtility::makeInstance(ProcessedFileRepository::class);

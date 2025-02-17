@@ -57,7 +57,7 @@ $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['filefill']['storages'][1] = [
         'identifier' => 'sys_domain',
     ],
     [
-        'identifier' => 'placeholder',
+        'identifier' => 'placehold',
     ],
     [
         'identifier' => 'imagebuilder',
@@ -115,9 +115,9 @@ Configuration:
 
 There is no need for multiple usage. All domains are used by default.
 
-### Placeholder.com
+### Placehold.co
 
-Fetch a missing image from the [placeholder.com](https://placeholder.com) service. This fetches an image with the correct
+Fetch a missing image from the [placehold.co](https://placehold.co) service. This fetches an image with the correct
 resolution of the original file.
 
 Configuration:

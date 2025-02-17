@@ -17,84 +17,17 @@ namespace IchHabRecht\Filefill\Resource\Handler;
  * LICENSE file that was distributed with this source code.
  */
 
-use GuzzleHttp\Exception\RequestException;
-use IchHabRecht\Filefill\Resource\RemoteResourceInterface;
 use TYPO3\CMS\Core\Http\RequestFactory;
-use TYPO3\CMS\Core\Resource\FileInterface;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-class PlaceholderResource implements RemoteResourceInterface
+class PlaceholderResource extends PlaceholdResource
 {
-    /**
-     * @var array
-     */
-    protected $allowedFileExtensions = [
-        'gif',
-        'jpeg',
-        'jpg',
-        'png',
-    ];
-
-    /**
-     * @var RequestFactory
-     */
-    protected $requestFactory;
-
-    /**
-     * @var string
-     */
-    protected $url = 'https://via.placeholder.com/';
-
     public function __construct($_, RequestFactory $requestFactory = null)
     {
-        $this->requestFactory = $requestFactory ?: GeneralUtility::makeInstance(RequestFactory::class);
-    }
-
-    /**
-     * @param string $fileIdentifier
-     * @param string $filePath
-     * @param FileInterface $fileObject
-     * @return bool
-     */
-    public function hasFile($fileIdentifier, $filePath, FileInterface $fileObject = null)
-    {
-        return $fileObject instanceof FileInterface
-            && in_array($fileObject->getExtension(), $this->allowedFileExtensions, true);
-    }
-
-    /**
-     * @param string $fileIdentifier
-     * @param string $filePath
-     * @param FileInterface $fileObject
-     * @return string
-     */
-    public function getFile($fileIdentifier, $filePath, FileInterface $fileObject = null)
-    {
-        try {
-            $fileExtension = $fileObject->getExtension();
-            $size = sprintf(
-                '%dx%d.%s',
-                max(1, $fileObject->getProperty('width')),
-                max(1, $fileObject->getProperty('height')),
-                $fileExtension
-            );
-            $response = $this->requestFactory->request($this->url . $size);
-            $content = $response->getBody()->getContents();
-
-            // Currently the API sends PNG images instead of GIF
-            // Check for PNG image and convert to GIF manually
-            if ($fileExtension === 'gif' && substr(bin2hex($content), 0, 16) === '89504e470d0a1a0a') {
-                $image = imagecreatefromstring($content);
-                ob_start();
-                imagegif($image);
-                $content = ob_get_contents();
-                imagedestroy($image);
-                ob_end_clean();
-            }
-
-            return $content;
-        } catch (RequestException $e) {
-            return false;
-        }
+        trigger_error(
+            'As the service placeholder.com was closed down, using this class is deprecated. Please use the' .
+            ' replacement class \IchHabRecht\Filefill\Resource\Handler\PlaceholdResource instead.',
+            E_USER_DEPRECATED
+        );
+        parent::__construct($_, $requestFactory);
     }
 }

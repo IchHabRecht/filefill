@@ -1,3 +1,13 @@
+2025-02-17         [RELEASE] Release of filefill 4.4.0 (Nicole Hummel)
+2025-02-17 6502ae2 [FEATURE] Add placehold.co as placeholder replacement (Nicole Hummel)
+2025-02-16 631fc6c [TASK] Update author information (Nicole Hummel)
+2025-02-16 16d1b83 [BUGFIX] Remove misconfigured concurrency configuration (Nicole Hummel)
+2025-02-16 135dba7 [TASK] Raise testing compatibility to PHP 8.4 (Nicole Hummel)
+2024-12-18 036982d [TASK] Raise testing compatibility to PHP 8.3 (Nicole Hummel)
+2024-12-18 3dbaf95 [TASK] Update build status in Readme.md (Nicole Hummel)
+2024-12-17 66a64e0 [TASK] Migrate to GitHub Actions (Nicole Hummel)
+2024-12-05 da388f1 [DOCS] Install filefill as development dependency (Lina Wolf)
+
 2024-02-23         [RELEASE] Release of filefill 4.3.2 (Nicole Cordes)
 2024-02-22 0ae65cc [BUGFIX] Remove superflous TCEforms wrapper (Nicole Cordes)
 2023-06-27 553b52f [BUGFIX] Support multiple Doctrine versions (Nicole Cordes)

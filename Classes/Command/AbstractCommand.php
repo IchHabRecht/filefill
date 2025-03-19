@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace IchHabRecht\Filefill\Command;
 
-use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\ArrayParameterType;
+use Doctrine\DBAL\ParameterType;
 use Symfony\Component\Console\Command\Command;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -20,20 +21,20 @@ abstract class AbstractCommand extends Command
         $rows = $queryBuilder->select('uid', 'name')
             ->from('sys_file_storage')
             ->where(
-                $expressionBuilder->orX(
+                $expressionBuilder->or(
                     $expressionBuilder->eq(
                         'tx_filefill_enable',
-                        $queryBuilder->createNamedParameter(1, \PDO::PARAM_INT)
+                        $queryBuilder->createNamedParameter(1, ParameterType::INTEGER)
                     ),
                     $expressionBuilder->in(
                         'uid',
-                        $queryBuilder->createNamedParameter($configuredStorages, Connection::PARAM_INT_ARRAY)
+                        $queryBuilder->createNamedParameter($configuredStorages, ArrayParameterType::INTEGER)
                     )
                 )
             )
             ->orderBy('uid')
-            ->execute()
-            ->fetchAll();
+            ->executeQuery()
+            ->fetchAllAssociative();
 
         return array_combine(array_map('intval', array_column($rows, 'uid')), $rows);
     }

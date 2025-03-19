@@ -4,28 +4,15 @@ env:
     OS: |
         "ubuntu-latest"
     PHP: |
-        "8.1"
         "8.2"
         "8.3"
         "8.4"
     TYPO3: |
-        "^11.5"
-        "^12.4"
         "^13.4"
     TYPO3_DEV: |
-        "11.5.x-dev"
-        "12.4.x-dev"
         "13.4.x-dev"
     EXCLUDE: |
         {
-            "13.4-8.1": {
-                "typo3": "^13.4",
-                "php": "8.1",
-            },
-            "13.4.x-dev-8.1": {
-                "typo3": "13.4.x-dev",
-                "php": "8.1",
-            },
         }
 
 on:
@@ -72,36 +59,36 @@ jobs:
                     echo "::group::OS"
                     os=$(echo $OS | jq --compact-output --raw-input --raw-output '.' | jq --compact-output --slurp '.')
                     echo "os = $os"
-                    echo "os=$os" >> "$GITHUB_OUTPUT" 
+                    echo "os=$os" >> "$GITHUB_OUTPUT"
                     echo "os-single = $(echo $os | jq '.'[0])"
-                    echo "os-single=$(echo $os | jq '.'[0])" >> "$GITHUB_OUTPUT" 
+                    echo "os-single=$(echo $os | jq '.'[0])" >> "$GITHUB_OUTPUT"
                     echo "::endgroup::"
-                    
+
                     echo ""
                     echo "::group::PHP"
                     php=$(echo $PHP | jq --compact-output --raw-input --raw-output '.' | jq --compact-output --slurp '.')
                     echo "php = $php"
-                    echo "php=$php" >> "$GITHUB_OUTPUT" 
+                    echo "php=$php" >> "$GITHUB_OUTPUT"
                     echo "php-single = $(echo $php | jq '.'[-1])"
                     echo "php-single=$(echo $php | jq '.'[-1])" >> "$GITHUB_OUTPUT"
                     echo "::endgroup::"
-                
+
                     echo ""
                     echo "::group::TYPO3"
                     typo3=$(echo $TYPO3 | jq --compact-output --raw-input --raw-output '.' | jq --compact-output --slurp '.')
                     echo "typo3 = $typo3"
-                    echo "typo3=$typo3" >> "$GITHUB_OUTPUT" 
+                    echo "typo3=$typo3" >> "$GITHUB_OUTPUT"
                     echo "typo3-single = $(echo $typo3 | jq --compact-output '.[] | select( contains("^"))' | jq --slurp '.'[-1])"
                     echo "typo3-single=$(echo $typo3 | jq --compact-output '.[] | select( contains("^"))' | jq --slurp '.'[-1])" >> "$GITHUB_OUTPUT"
                     echo "::endgroup::"
-                    
+
                     echo ""
                     echo "::group::TYPO3_DEV"
                     typo3_dev=$(echo $TYPO3_DEV | jq --compact-output --raw-input --raw-output '.' | jq --compact-output --slurp '.')
                     echo "typo3_dev = $typo3_dev"
                     echo "typo3_dev=$typo3_dev" >> "$GITHUB_OUTPUT"
-                    echo "::endgroup::" 
-                    
+                    echo "::endgroup::"
+
                     echo ""
                     echo "::group::EXCLUDE"
                     exclude=$(cat <<EOF | jq -nc -f /dev/stdin | jq -c 'to_entries | map_values(.value)'

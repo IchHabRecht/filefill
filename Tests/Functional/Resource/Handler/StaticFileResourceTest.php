@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace IchHabRecht\Filefill\Tests\Unit\Resource\Handler;
+namespace IchHabRecht\Filefill\Tests\Functional\Resource\Handler;
 
 /*
  * This file is part of the TYPO3 extension filefill.
@@ -18,11 +18,11 @@ namespace IchHabRecht\Filefill\Tests\Unit\Resource\Handler;
  */
 
 use IchHabRecht\Filefill\Resource\Handler\StaticFileResource;
-use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
+use IchHabRecht\Filefill\Tests\Functional\AbstractFunctionalTestCase;
 
-class StaticFileResourceTest extends UnitTestCase
+class StaticFileResourceTest extends AbstractFunctionalTestCase
 {
-    protected $configuration = [
+    protected array $configuration = [
         'path/to/example/file.txt' => 'Hello world!',
         'another' => [
             'path' => [
@@ -37,7 +37,7 @@ class StaticFileResourceTest extends UnitTestCase
         '*' => 'This is some static text for all other files.',
     ];
 
-    protected $tsConfiguration = <<< EOT
+    protected string $tsConfiguration = <<< EOT
 path/to/example/file\.txt = Hello world!
 another {
     path {
@@ -52,7 +52,7 @@ another {
 * = This is some static text for all other files.
 EOT;
 
-    public function getFileReturnsContentDataProvider(): array
+    public static function getFileReturnsContentDataProvider(): array
     {
         return [
             'absolute file' => [
@@ -90,7 +90,7 @@ EOT;
      * @test
      * @dataProvider getFileReturnsContentDataProvider
      */
-    public function getFileReturnsContentForArrayConfiguration(string $filePath, string $expectation)
+    public function getFileReturnsContentForArrayConfiguration(string $filePath, string $expectation): void
     {
         $subject = new StaticFileResource($this->configuration);
         $this->assertEquals($expectation, $subject->getFile($filePath, $filePath));
@@ -100,7 +100,7 @@ EOT;
      * @test
      * @dataProvider getFileReturnsContentDataProvider
      */
-    public function getFileReturnsContentForTypoScriptConfiguration(string $filePath, string $expectation)
+    public function getFileReturnsContentForTypoScriptConfiguration(string $filePath, string $expectation): void
     {
         $subject = new StaticFileResource($this->tsConfiguration);
         $this->assertEquals($expectation, $subject->getFile($filePath, $filePath));

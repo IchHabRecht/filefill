@@ -17,6 +17,7 @@ namespace IchHabRecht\Filefill\Resource;
  * LICENSE file that was distributed with this source code.
  */
 
+use Doctrine\DBAL\ParameterType;
 use IchHabRecht\Filefill\Exception\MissingInterfaceException;
 use IchHabRecht\Filefill\Exception\UnknownResourceException;
 use IchHabRecht\Filefill\Repository\FileRepository;
@@ -34,25 +35,19 @@ class RemoteResourceCollection implements LoggerAwareInterface
 {
     use LoggerAwareTrait;
 
-    /**
-     * @var FileRepository
-     */
-    protected $fileRepository;
+    protected FileRepository $fileRepository;
 
     /**
      * @var ResourceInterface[]
      */
-    protected $resources;
+    protected array $resources;
 
-    /**
-     * @var ResourceFactory
-     */
-    protected $resourceFactory;
+    protected ResourceFactory $resourceFactory;
 
     /**
      * @var FileInterface[]
      */
-    protected static $fileIdentifierCache = [];
+    protected static array $fileIdentifierCache = [];
 
     /**
      * RemoteResourceCollection constructor.
@@ -143,7 +138,7 @@ class RemoteResourceCollection implements LoggerAwareInterface
      * @param string $filePath
      * @return bool
      */
-    protected function fileCanBeReProcessed($fileIdentifier, $filePath)
+    protected function fileCanBeReProcessed($fileIdentifier, $filePath): bool
     {
         if (!array_key_exists($filePath, static::$fileIdentifierCache)) {
             static::$fileIdentifierCache[$filePath] = null;
@@ -163,14 +158,12 @@ class RemoteResourceCollection implements LoggerAwareInterface
      * @param string $fileIdentifier
      * @return FileInterface|null
      */
-    protected function getFileObjectFromStorage(ResourceStorage $storage, string $fileIdentifier)
+    protected function getFileObjectFromStorage(ResourceStorage $storage, string $fileIdentifier): ?FileInterface
     {
-        $fileObject = null;
-
         if (!$storage->isWithinProcessingFolder($fileIdentifier)) {
             try {
                 $fileObject = $this->resourceFactory->getFileObjectByStorageAndIdentifier($storage->getUid(), $fileIdentifier);
-            } catch (\InvalidArgumentException $e) {
+            } catch (\InvalidArgumentException) {
                 return null;
             }
         } else {
@@ -181,15 +174,15 @@ class RemoteResourceCollection implements LoggerAwareInterface
                 ->where(
                     $expressionBuilder->eq(
                         'storage',
-                        $queryBuilder->createNamedParameter((int)$storage->getUid(), \PDO::PARAM_INT)
+                        $queryBuilder->createNamedParameter($storage->getUid(), ParameterType::INTEGER)
                     ),
                     $expressionBuilder->eq(
                         'identifier',
-                        $queryBuilder->createNamedParameter($fileIdentifier, \PDO::PARAM_STR)
+                        $queryBuilder->createNamedParameter($fileIdentifier)
                     )
                 )
-                ->execute()
-                ->fetch(\PDO::FETCH_ASSOC);
+                ->executeQuery()
+                ->fetchAssociative();
             if (empty($databaseRow)) {
                 return null;
             }

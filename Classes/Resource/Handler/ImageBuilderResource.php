@@ -24,24 +24,17 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class ImageBuilderResource implements RemoteResourceInterface
 {
-    /**
-     * @var array
-     */
-    protected $allowedFileExtensions = [
+    protected array $allowedFileExtensions = [
         'gif',
         'jpeg',
         'jpg',
         'png',
     ];
 
-    protected $backgroundColor;
+    protected string $backgroundColor;
+    protected string $textColor;
 
-    protected $textColor;
-
-    /**
-     * @param string $configuration
-     */
-    public function __construct($configuration)
+    public function __construct(array|string $configuration)
     {
         if (!is_array($configuration)) {
             $colors = GeneralUtility::trimExplode(',', $configuration);
@@ -61,7 +54,7 @@ class ImageBuilderResource implements RemoteResourceInterface
      * @param FileInterface $fileObject
      * @return bool
      */
-    public function hasFile($fileIdentifier, $filePath, FileInterface $fileObject = null)
+    public function hasFile($fileIdentifier, $filePath, FileInterface $fileObject = null): bool
     {
         return $GLOBALS['TYPO3_CONF_VARS']['GFX']['gdlib']
             && $fileObject instanceof FileInterface
@@ -72,19 +65,19 @@ class ImageBuilderResource implements RemoteResourceInterface
      * @param string $fileIdentifier
      * @param string $filePath
      * @param FileInterface $fileObject
-     * @return string
+     * @return string|false
      */
-    public function getFile($fileIdentifier, $filePath, FileInterface $fileObject = null)
+    public function getFile($fileIdentifier, $filePath, FileInterface $fileObject = null): string
     {
         $content = '';
 
-        $height = max(1, $fileObject->getProperty('height'));
-        $width = max(1, $fileObject->getProperty('width'));
+        $height = max(1, $fileObject?->getProperty('height'));
+        $width = max(1, $fileObject?->getProperty('width'));
 
         $fileArray = [
             'XY' => sprintf('%d,%d', $width, $height),
             'backColor' => $this->backgroundColor,
-            'format' => $fileObject->getExtension(),
+            'format' => $fileObject?->getExtension() ?: 'png',
             '10' => 'BOX',
             '10.' => [
                 'dimensions' => sprintf('%d,%d,%d,%d', 0, 0, $width, $height),
@@ -102,7 +95,7 @@ class ImageBuilderResource implements RemoteResourceInterface
         ];
         $gifBuilder = GeneralUtility::makeInstance(GifBuilder::class);
         $gifBuilder->start($fileArray, []);
-        $theImage = $gifBuilder->gifBuild();
+        $theImage = $gifBuilder->gifBuild()?->getFullPath();
         if (file_exists($theImage)) {
             $content = file_get_contents($theImage);
             unlink($theImage);

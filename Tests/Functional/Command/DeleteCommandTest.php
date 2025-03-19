@@ -27,7 +27,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class DeleteCommandTest extends AbstractFunctionalTestCase
 {
-    protected $commandIdentifier = 'filefill:delete';
+    protected string $commandIdentifier = 'filefill:delete';
 
     protected CommandRegistry $commandRegistry;
 
@@ -49,8 +49,8 @@ class DeleteCommandTest extends AbstractFunctionalTestCase
         $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('sys_file');
         $rows = $queryBuilder->select('*')
             ->from('sys_file')
-            ->execute()
-            ->fetchAll();
+            ->executeQuery()
+            ->fetchAllAssociative();
         foreach ($rows as $row) {
             $file = $this->resourceFactory->getFileObject($row['uid']);
             $this->assertNotEmpty($file->getContents());
@@ -60,7 +60,7 @@ class DeleteCommandTest extends AbstractFunctionalTestCase
     /**
      * @test
      */
-    public function executeDeleteCommandForIdentifier()
+    public function executeDeleteCommandForIdentifier(): void
     {
         $input = new ArrayInput([
             '--identifier' => ['placeholder'],
@@ -78,15 +78,15 @@ class DeleteCommandTest extends AbstractFunctionalTestCase
                 'tx_filefill_identifier',
                 $queryBuilder->createNamedParameter('placeholder')
             ))
-            ->execute()
-            ->fetchAll();
+            ->executeQuery()
+            ->fetchAllAssociative();
         $this->assertEmpty($rows);
     }
 
     /**
      * @test
      */
-    public function executeDeleteCommandForStorage()
+    public function executeDeleteCommandForStorage(): void
     {
         $input = new ArrayInput([
             '--all' => true,
@@ -111,7 +111,7 @@ class DeleteCommandTest extends AbstractFunctionalTestCase
     /**
      * @test
      */
-    public function executeDeleteCommandForAll()
+    public function executeDeleteCommandForAll(): void
     {
         $input = new ArrayInput([
             '--all' => true,

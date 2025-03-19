@@ -23,10 +23,7 @@ use TYPO3\CMS\Core\Utility\MathUtility;
 
 class DeleteFiles
 {
-    /**
-     * @var FileRepository
-     */
-    protected $fileRepository;
+    protected FileRepository $fileRepository;
 
     public function __construct(
         FileRepository $fileRepository = null

@@ -25,10 +25,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class PlaceholdResource implements RemoteResourceInterface
 {
-    /**
-     * @var array
-     */
-    protected $allowedFileExtensions = [
+    protected array $allowedFileExtensions = [
         'avif',
         'gif',
         'jpeg',
@@ -38,15 +35,8 @@ class PlaceholdResource implements RemoteResourceInterface
         'webp',
     ];
 
-    /**
-     * @var RequestFactory
-     */
-    protected $requestFactory;
-
-    /**
-     * @var string
-     */
-    protected $url = 'https://placehold.co/';
+    protected RequestFactory $requestFactory;
+    protected string $url = 'https://placehold.co/';
 
     public function __construct($_, RequestFactory $requestFactory = null)
     {
@@ -59,7 +49,7 @@ class PlaceholdResource implements RemoteResourceInterface
      * @param FileInterface $fileObject
      * @return bool
      */
-    public function hasFile($fileIdentifier, $filePath, FileInterface $fileObject = null)
+    public function hasFile($fileIdentifier, $filePath, FileInterface $fileObject = null): bool
     {
         return $fileObject instanceof FileInterface
             && in_array($fileObject->getExtension(), $this->allowedFileExtensions, true);
@@ -69,16 +59,16 @@ class PlaceholdResource implements RemoteResourceInterface
      * @param string $fileIdentifier
      * @param string $filePath
      * @param FileInterface $fileObject
-     * @return string
+     * @return string|false
      */
-    public function getFile($fileIdentifier, $filePath, FileInterface $fileObject = null)
+    public function getFile($fileIdentifier, $filePath, FileInterface $fileObject = null): false|string
     {
         try {
-            $fileExtension = $fileObject->getExtension();
+            $fileExtension = $fileObject?->getExtension() ?: 'png';
             $size = sprintf(
                 '%dx%d.%s',
-                max(1, $fileObject->getProperty('width')),
-                max(1, $fileObject->getProperty('height')),
+                max(1, $fileObject?->getProperty('width')),
+                max(1, $fileObject?->getProperty('height')),
                 $fileExtension
             );
             $response = $this->requestFactory->request($this->url . $size);

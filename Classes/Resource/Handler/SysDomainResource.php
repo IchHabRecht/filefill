@@ -27,12 +27,12 @@ class SysDomainResource implements RemoteResourceInterface
     /**
      * @var DomainResource[]
      */
-    protected $domainResources;
+    protected array $domainResources;
 
     /**
      * @var DomainResource[]
      */
-    protected static $fileIdentifierCache = [];
+    protected static array $fileIdentifierCache = [];
 
     /**
      * @param string $configuration
@@ -52,7 +52,7 @@ class SysDomainResource implements RemoteResourceInterface
      * @param FileInterface|null $fileObject
      * @return bool
      */
-    public function hasFile($fileIdentifier, $filePath, FileInterface $fileObject = null)
+    public function hasFile($fileIdentifier, $filePath, FileInterface $fileObject = null): bool
     {
         if (!isset(static::$fileIdentifierCache[$fileIdentifier])) {
             static::$fileIdentifierCache[$fileIdentifier] = null;
@@ -71,7 +71,7 @@ class SysDomainResource implements RemoteResourceInterface
      * @param string $fileIdentifier
      * @param string $filePath
      * @param FileInterface|null $fileObject
-     * @return string
+     * @return false|resource
      */
     public function getFile($fileIdentifier, $filePath, FileInterface $fileObject = null)
     {

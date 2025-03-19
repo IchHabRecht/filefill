@@ -18,6 +18,7 @@ namespace IchHabRecht\Filefill\Repository;
  */
 
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\ParameterType;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\ProcessedFileRepository;
@@ -26,20 +27,9 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class FileRepository
 {
-    /**
-     * @var Connection
-     */
-    protected $connection;
-
-    /**
-     * @var ProcessedFileRepository
-     */
-    protected $processedFileRepository;
-
-    /**
-     * @var ResourceFactory
-     */
-    protected $resourceFactory;
+    protected Connection $connection;
+    protected ProcessedFileRepository $processedFileRepository;
+    protected ResourceFactory $resourceFactory;
 
     public function __construct(
         Connection $connection = null,
@@ -60,7 +50,7 @@ class FileRepository
             ->where(
                 $expressionBuilder->neq(
                     'tx_filefill_identifier',
-                    $queryBuilder->createNamedParameter('', \PDO::PARAM_STR)
+                    $queryBuilder->createNamedParameter('')
                 )
             )
             ->groupBy('tx_filefill_identifier');
@@ -69,13 +59,13 @@ class FileRepository
             $queryBuilder->andWhere(
                 $expressionBuilder->eq(
                     'storage',
-                    $queryBuilder->createNamedParameter($storage, \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter($storage, ParameterType::INTEGER)
                 )
             );
         }
 
-        return $queryBuilder->execute()
-            ->fetchAll();
+        return $queryBuilder->executeQuery()
+            ->fetchAllAssociative();
     }
 
     public function findByIdentifier(string $identifier, $storage = null): array
@@ -87,7 +77,7 @@ class FileRepository
             ->where(
                 $expressionBuilder->eq(
                     'tx_filefill_identifier',
-                    $queryBuilder->createNamedParameter($identifier, \PDO::PARAM_STR)
+                    $queryBuilder->createNamedParameter($identifier)
                 )
             )
             ->groupBy('tx_filefill_identifier', 'identifier', 'storage');
@@ -96,13 +86,13 @@ class FileRepository
             $queryBuilder->andWhere(
                 $expressionBuilder->eq(
                     'storage',
-                    $queryBuilder->createNamedParameter($storage, \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter($storage, ParameterType::INTEGER)
                 )
             );
         }
 
-        return $queryBuilder->execute()
-            ->fetchAll();
+        return $queryBuilder->executeQuery()
+            ->fetchAllAssociative();
     }
 
     public function updateIdentifier(FileInterface $file, string $identifier)
@@ -112,11 +102,11 @@ class FileRepository
             ->where(
                 $queryBuilder->expr()->eq(
                     'uid',
-                    $queryBuilder->createNamedParameter($file->getUid(), \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter($file->getUid(), ParameterType::INTEGER)
                 )
             )
             ->set('tx_filefill_identifier', $identifier)
-            ->execute();
+            ->executeStatement();
     }
 
     public function deleteByIdentifier(string $identifier, $storage = null): int
@@ -125,6 +115,9 @@ class FileRepository
         foreach ($rows as $row) {
             try {
                 $file = $this->resourceFactory->getFileObjectByStorageAndIdentifier($row['storage'], $row['identifier']);
+                if (!$file) {
+                    continue;
+                }
 
                 // First delete all processed files, because file_exists is called on driver
                 foreach ($this->processedFileRepository->findAllByOriginalFile($file) as $processedFile) {

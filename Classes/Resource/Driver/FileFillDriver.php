@@ -24,8 +24,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class FileFillDriver extends LocalDriver
 {
-    protected DriverInterface $originalDriverObject;
-    protected RemoteResourceCollection $remoteResourceCollection;
+    protected readonly DriverInterface $originalDriverObject;
+    protected readonly RemoteResourceCollection $remoteResourceCollection;
 
     public function __construct(array $configuration, DriverInterface $originalDriverObject, RemoteResourceCollection $remoteResourceCollection)
     {

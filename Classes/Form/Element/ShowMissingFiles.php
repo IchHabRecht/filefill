@@ -22,12 +22,11 @@ use TYPO3\CMS\Backend\Form\Element\AbstractFormElement;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Imaging\IconSize;
-use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class ShowMissingFiles extends AbstractFormElement
 {
-    public function __construct(protected readonly LanguageService $languageService)
+    public function __construct(protected readonly ConnectionPool $connectionPool)
     {
     }
 
@@ -35,7 +34,7 @@ class ShowMissingFiles extends AbstractFormElement
     {
         $result = $this->initializeResultArray();
 
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('sys_file');
+        $queryBuilder = $this->connectionPool->getQueryBuilderForTable('sys_file');
         $expressionBuilder = $queryBuilder->expr();
         $count = $queryBuilder->count('*')
             ->from('sys_file')
@@ -55,15 +54,16 @@ class ShowMissingFiles extends AbstractFormElement
         $html = [];
         $html[] = '<div class="form-control-wrap">';
 
+        $languageService = $this->getLanguageService();
         if ($count === 0) {
             $html[] = '<span class="badge badge-success">'
-                . $this->languageService->sL('LLL:EXT:filefill/Resources/Private/Language/locallang_db.xlf:sys_file_storage.filefill.no_missing')
+                . $languageService->sL('LLL:EXT:filefill/Resources/Private/Language/locallang_db.xlf:sys_file_storage.filefill.no_missing')
                 . '</span>';
         } else {
             $iconFactory = GeneralUtility::makeInstance(IconFactory::class);
             $html[] = '<span class="badge badge-danger">'
                 . sprintf(
-                    $this->languageService->sL('LLL:EXT:filefill/Resources/Private/Language/locallang_db.xlf:sys_file_storage.filefill.missing_files'),
+                    $languageService->sL('LLL:EXT:filefill/Resources/Private/Language/locallang_db.xlf:sys_file_storage.filefill.missing_files'),
                     $count
                 )
                 . '</span>';
@@ -71,7 +71,7 @@ class ShowMissingFiles extends AbstractFormElement
             $html[] = '<div class="form-control-wrap t3js-module-docheader">';
             $html[] = '<a class="btn btn-default t3js-editform-submitButton" data-name="_save_tx_filefill_missing" data-form="EditDocumentController" data-value="1">';
             $html[] = $iconFactory->getIcon('actions-database-reload', IconSize::SMALL);
-            $html[] = ' ' . $this->languageService->sL('LLL:EXT:filefill/Resources/Private/Language/locallang_db.xlf:sys_file_storage.filefill.reset');
+            $html[] = ' ' . $languageService->sL('LLL:EXT:filefill/Resources/Private/Language/locallang_db.xlf:sys_file_storage.filefill.reset');
             $html[] = '</a>';
         }
 

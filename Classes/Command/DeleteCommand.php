@@ -13,10 +13,10 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class DeleteCommand extends AbstractCommand
 {
-    protected FileRepository $fileRepository;
-    protected LanguageService $languageService;
+    protected readonly FileRepository $fileRepository;
+    protected readonly LanguageService $languageService;
 
-    public function __construct(string $name = null, FileRepository $fileRepository = null, $languageService = null)
+    public function __construct(?string $name = null, ?FileRepository $fileRepository = null, ?LanguageService $languageService = null)
     {
         parent::__construct($name);
 

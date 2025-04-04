@@ -35,14 +35,14 @@ class RemoteResourceCollection implements LoggerAwareInterface
 {
     use LoggerAwareTrait;
 
-    protected FileRepository $fileRepository;
+    protected readonly FileRepository $fileRepository;
 
     /**
      * @var ResourceInterface[]
      */
-    protected array $resources;
+    protected readonly array $resources;
 
-    protected ResourceFactory $resourceFactory;
+    protected readonly ResourceFactory $resourceFactory;
 
     /**
      * @var FileInterface[]
@@ -56,7 +56,7 @@ class RemoteResourceCollection implements LoggerAwareInterface
      * @param ResourceFactory|null $resourceFactory
      * @param FileRepository|null $fileRepository
      */
-    public function __construct(array $resources, ResourceFactory $resourceFactory = null, FileRepository $fileRepository = null)
+    public function __construct(array $resources, ?ResourceFactory $resourceFactory = null, ?FileRepository $fileRepository = null)
     {
         $this->resources = $resources;
         $this->resourceFactory = $resourceFactory ?: GeneralUtility::makeInstance(ResourceFactory::class);

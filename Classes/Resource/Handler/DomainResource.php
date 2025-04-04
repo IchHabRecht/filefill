@@ -27,14 +27,14 @@ use TYPO3\CMS\Core\Utility\HttpUtility;
 
 class DomainResource implements RemoteResourceInterface
 {
-    protected RequestFactory $requestFactory;
-    protected string $url;
+    protected readonly RequestFactory $requestFactory;
+    protected readonly string $url;
 
     /**
      * @param string $configuration
      * @param ?RequestFactory $requestFactory
      */
-    public function __construct($configuration, RequestFactory $requestFactory = null)
+    public function __construct($configuration, ?RequestFactory $requestFactory = null)
     {
         $this->requestFactory = $requestFactory ?: GeneralUtility::makeInstance(RequestFactory::class);
         $urlParts = parse_url((string)$configuration);
@@ -48,7 +48,7 @@ class DomainResource implements RemoteResourceInterface
      * @param FileInterface|null $fileObject
      * @return bool
      */
-    public function hasFile($fileIdentifier, $filePath, FileInterface $fileObject = null): bool
+    public function hasFile($fileIdentifier, $filePath, ?FileInterface $fileObject = null): bool
     {
         try {
             $response = $this->requestFactory->request($this->url . ltrim($filePath, '/'), 'HEAD');
@@ -65,7 +65,7 @@ class DomainResource implements RemoteResourceInterface
      * @param FileInterface|null $fileObject
      * @return resource|false
      */
-    public function getFile($fileIdentifier, $filePath, FileInterface $fileObject = null)
+    public function getFile($fileIdentifier, $filePath, ?FileInterface $fileObject = null)
     {
         try {
             $fileName = $this->url . ltrim($filePath, '/');

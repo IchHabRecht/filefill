@@ -20,6 +20,7 @@ namespace IchHabRecht\Filefill\Tests\Functional;
 use IchHabRecht\Filefill\Repository\FileRepository;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Domain\Model\File;
 
 class FilefillTest extends AbstractFunctionalTestCase
 {
@@ -37,7 +38,7 @@ class FilefillTest extends AbstractFunctionalTestCase
     {
         parent::setUp();
 
-        $this->fileRepository = new FileRepository();
+        $this->fileRepository = GeneralUtility::makeInstance(FileRepository::class);
         $this->resourceFactory = GeneralUtility::makeInstance(ResourceFactory::class);
     }
 

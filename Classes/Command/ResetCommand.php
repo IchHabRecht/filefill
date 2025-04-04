@@ -16,10 +16,10 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class ResetCommand extends AbstractCommand
 {
-    protected Connection $connection;
-    protected FileRepository $fileRepository;
+    protected readonly Connection $connection;
+    protected readonly FileRepository $fileRepository;
 
-    public function __construct(string $name = null, Connection $connection = null, FileRepository $fileRepository = null)
+    public function __construct(?string $name = null, ?Connection $connection = null, ?FileRepository $fileRepository = null)
     {
         parent::__construct($name);
 

@@ -31,8 +31,8 @@ class ImageBuilderResource implements RemoteResourceInterface
         'png',
     ];
 
-    protected string $backgroundColor;
-    protected string $textColor;
+    protected readonly string $backgroundColor;
+    protected readonly string $textColor;
 
     public function __construct(array|string $configuration)
     {
@@ -54,7 +54,7 @@ class ImageBuilderResource implements RemoteResourceInterface
      * @param FileInterface $fileObject
      * @return bool
      */
-    public function hasFile($fileIdentifier, $filePath, FileInterface $fileObject = null): bool
+    public function hasFile($fileIdentifier, $filePath, ?FileInterface $fileObject = null): bool
     {
         return $GLOBALS['TYPO3_CONF_VARS']['GFX']['gdlib']
             && $fileObject instanceof FileInterface
@@ -67,7 +67,7 @@ class ImageBuilderResource implements RemoteResourceInterface
      * @param FileInterface $fileObject
      * @return string|false
      */
-    public function getFile($fileIdentifier, $filePath, FileInterface $fileObject = null): string
+    public function getFile($fileIdentifier, $filePath, ?FileInterface $fileObject = null): string
     {
         $content = '';
 

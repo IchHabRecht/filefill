@@ -24,7 +24,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class StaticFileResource implements RemoteResourceInterface
 {
-    protected array $configuration;
+    protected readonly array $configuration;
     protected array $tsReplaceConfiguration = [
         [
             '*',
@@ -52,7 +52,7 @@ class StaticFileResource implements RemoteResourceInterface
         $this->configuration = $this->prepareConfiguration($configuration);
     }
 
-    public function hasFile($fileIdentifier, $filePath, FileInterface $fileObject = null): bool
+    public function hasFile($fileIdentifier, $filePath, ?FileInterface $fileObject = null): bool
     {
         return true;
     }
@@ -63,7 +63,7 @@ class StaticFileResource implements RemoteResourceInterface
      * @param FileInterface $fileObject
      * @return string
      */
-    public function getFile($fileIdentifier, $filePath, FileInterface $fileObject = null)
+    public function getFile($fileIdentifier, $filePath, ?FileInterface $fileObject = null)
     {
         return $this->getFileContent($fileIdentifier, $this->configuration);
     }

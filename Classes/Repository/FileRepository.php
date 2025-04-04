@@ -17,33 +17,24 @@ namespace IchHabRecht\Filefill\Repository;
  * LICENSE file that was distributed with this source code.
  */
 
-use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\ParameterType;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\ProcessedFileRepository;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class FileRepository
 {
-    protected Connection $connection;
-    protected ProcessedFileRepository $processedFileRepository;
-    protected ResourceFactory $resourceFactory;
-
     public function __construct(
-        Connection $connection = null,
-        ProcessedFileRepository $processedFileRepository = null,
-        ResourceFactory $resourceFactory = null
+        protected readonly ConnectionPool $connectionPool,
+        protected readonly ProcessedFileRepository $processedFileRepository,
+        protected readonly ResourceFactory $resourceFactory
     ) {
-        $this->connection = $connection ?: GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('sys_file');
-        $this->processedFileRepository = $processedFileRepository ?: GeneralUtility::makeInstance(ProcessedFileRepository::class);
-        $this->resourceFactory = $resourceFactory ?: GeneralUtility::makeInstance(ResourceFactory::class);
     }
 
-    public function countByIdentifier($storage = null): array
+    public function countByIdentifier(?int $storage = null): array
     {
-        $queryBuilder = $this->connection->createQueryBuilder();
+        $queryBuilder = $this->connectionPool->getQueryBuilderForTable('sys_file');
         $expressionBuilder = $queryBuilder->expr();
         $queryBuilder->getConcreteQueryBuilder()->select('COUNT(*) AS count', 'tx_filefill_identifier');
         $queryBuilder->from('sys_file')
@@ -68,9 +59,9 @@ class FileRepository
             ->fetchAllAssociative();
     }
 
-    public function findByIdentifier(string $identifier, $storage = null): array
+    public function findByIdentifier(string $identifier, ?int $storage = null): array
     {
-        $queryBuilder = $this->connection->createQueryBuilder();
+        $queryBuilder = $this->connectionPool->getQueryBuilderForTable('sys_file');
         $expressionBuilder = $queryBuilder->expr();
         $queryBuilder->select('storage', 'identifier')
             ->from('sys_file')
@@ -95,9 +86,9 @@ class FileRepository
             ->fetchAllAssociative();
     }
 
-    public function updateIdentifier(FileInterface $file, string $identifier)
+    public function updateIdentifier(FileInterface $file, string $identifier): void
     {
-        $queryBuilder = $this->connection->createQueryBuilder();
+        $queryBuilder = $this->connectionPool->getQueryBuilderForTable('sys_file');
         $queryBuilder->update('sys_file')
             ->where(
                 $queryBuilder->expr()->eq(
@@ -109,7 +100,7 @@ class FileRepository
             ->executeStatement();
     }
 
-    public function deleteByIdentifier(string $identifier, $storage = null): int
+    public function deleteByIdentifier(string $identifier, ?int $storage = null): int
     {
         $rows = $this->findByIdentifier($identifier, $storage);
         foreach ($rows as $row) {

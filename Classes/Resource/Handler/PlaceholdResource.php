@@ -35,10 +35,10 @@ class PlaceholdResource implements RemoteResourceInterface
         'webp',
     ];
 
-    protected RequestFactory $requestFactory;
+    protected readonly RequestFactory $requestFactory;
     protected string $url = 'https://placehold.co/';
 
-    public function __construct($_, RequestFactory $requestFactory = null)
+    public function __construct($_, ?RequestFactory $requestFactory = null)
     {
         $this->requestFactory = $requestFactory ?: GeneralUtility::makeInstance(RequestFactory::class);
     }
@@ -49,7 +49,7 @@ class PlaceholdResource implements RemoteResourceInterface
      * @param FileInterface $fileObject
      * @return bool
      */
-    public function hasFile($fileIdentifier, $filePath, FileInterface $fileObject = null): bool
+    public function hasFile($fileIdentifier, $filePath, ?FileInterface $fileObject = null): bool
     {
         return $fileObject instanceof FileInterface
             && in_array($fileObject->getExtension(), $this->allowedFileExtensions, true);
@@ -61,7 +61,7 @@ class PlaceholdResource implements RemoteResourceInterface
      * @param FileInterface $fileObject
      * @return string|false
      */
-    public function getFile($fileIdentifier, $filePath, FileInterface $fileObject = null): false|string
+    public function getFile($fileIdentifier, $filePath, ?FileInterface $fileObject = null): false|string
     {
         try {
             $fileExtension = $fileObject?->getExtension() ?: 'png';

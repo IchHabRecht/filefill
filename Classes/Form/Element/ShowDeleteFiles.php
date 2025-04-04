@@ -21,21 +21,12 @@ use IchHabRecht\Filefill\Repository\FileRepository;
 use TYPO3\CMS\Backend\Form\Element\AbstractFormElement;
 use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Imaging\IconSize;
-use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class ShowDeleteFiles extends AbstractFormElement
 {
-    /**
-     * Container objects give $nodeFactory down to other containers.
-     *
-     * @param FileRepository $fileRepository
-     * @param LanguageService $languageService
-     */
-    public function __construct(
-        protected readonly FileRepository $fileRepository,
-        protected readonly LanguageService $languageService
-    ) {
+    public function __construct(protected readonly FileRepository $fileRepository)
+    {
     }
 
     /**
@@ -50,9 +41,10 @@ class ShowDeleteFiles extends AbstractFormElement
         $html = [];
         $html[] = '<div class="form-control-wrap">';
 
+        $languageService = $this->getLanguageService();
         if (empty($rows)) {
             $html[] = '<span class="badge badge-success">'
-                . $this->languageService->sL('LLL:EXT:filefill/Resources/Private/Language/locallang_db.xlf:sys_file_storage.filefill.no_delete')
+                . $languageService->sL('LLL:EXT:filefill/Resources/Private/Language/locallang_db.xlf:sys_file_storage.filefill.no_delete')
                 . '</span>';
         } else {
             $iconFactory = GeneralUtility::makeInstance(IconFactory::class);
@@ -63,9 +55,9 @@ class ShowDeleteFiles extends AbstractFormElement
                 $html[] = '<a class="btn btn-default t3js-editform-submitButton" data-name="_save_tx_filefill_delete" data-form="EditDocumentController" data-value="' . $row['tx_filefill_identifier'] . '">';
                 $html[] = $iconFactory->getIcon('actions-edit-delete', IconSize::SMALL);
                 $html[] = ' ' . sprintf(
-                    $this->languageService->sL('LLL:EXT:filefill/Resources/Private/Language/locallang_db.xlf:sys_file_storage.filefill.delete_files'),
+                    $languageService->sL('LLL:EXT:filefill/Resources/Private/Language/locallang_db.xlf:sys_file_storage.filefill.delete_files'),
                     $row['count'],
-                    $this->languageService->sL($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['filefill']['resourceHandler'][$row['tx_filefill_identifier']]['title'] ?? $row['tx_filefill_identifier'])
+                    $languageService->sL($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['filefill']['resourceHandler'][$row['tx_filefill_identifier']]['title'] ?? $row['tx_filefill_identifier'])
                 );
                 $html[] = '</a>';
             }

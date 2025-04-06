@@ -74,17 +74,6 @@ call_user_func(function () {
                 ],
                 'handler' => \IchHabRecht\Filefill\Resource\Handler\PlaceholdResource::class,
             ],
-            'placeholder' => [
-                'title' => 'LLL:EXT:filefill/Resources/Private/Language/locallang_db.xlf:sys_file_storage.filefill.placehold',
-                'config' => [
-                    'label' => 'LLL:EXT:filefill/Resources/Private/Language/locallang_db.xlf:sys_file_storage.filefill.placehold',
-                    'config' => [
-                        'type' => 'check',
-                        'default' => '1',
-                    ],
-                ],
-                'handler' => \IchHabRecht\Filefill\Resource\Handler\PlaceholdResource::class,
-            ],
             'static' => [
                 'title' => 'LLL:EXT:filefill/Resources/Private/Language/locallang_db.xlf:sys_file_storage.filefill.static',
                 'config' => [

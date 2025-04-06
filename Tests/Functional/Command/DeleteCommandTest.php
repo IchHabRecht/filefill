@@ -63,7 +63,7 @@ class DeleteCommandTest extends AbstractFunctionalTestCase
     public function executeDeleteCommandForIdentifier(): void
     {
         $input = new ArrayInput([
-            '--identifier' => ['placeholder'],
+            '--identifier' => ['placehold'],
         ]);
         $output = new NullOutput();
 
@@ -76,7 +76,7 @@ class DeleteCommandTest extends AbstractFunctionalTestCase
             ->from('sys_file')
             ->where($queryBuilder->expr()->eq(
                 'tx_filefill_identifier',
-                $queryBuilder->createNamedParameter('placeholder')
+                $queryBuilder->createNamedParameter('placehold')
             ))
             ->executeQuery()
             ->fetchAllAssociative();

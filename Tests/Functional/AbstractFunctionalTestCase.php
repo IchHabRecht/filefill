@@ -41,7 +41,7 @@ class AbstractFunctionalTestCase extends FunctionalTestCase
                                 'configuration' => 'https://upload.wikimedia.org',
                             ],
                             [
-                                'identifier' => 'placeholder',
+                                'identifier' => 'placehold',
                             ],
                             [
                                 'identifier' => 'static',

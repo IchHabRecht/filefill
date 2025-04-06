@@ -74,7 +74,7 @@ class FilefillTest extends AbstractFunctionalTestCase
 
         $this->assertStringNotEqualsFile($this->getAbsoluteFilePath($placeholderResourcePath), '');
 
-        $rows = $this->fileRepository->findByIdentifier('placeholder', 2);
+        $rows = $this->fileRepository->findByIdentifier('placehold', 2);
         $this->assertCount(1, $rows);
     }
 

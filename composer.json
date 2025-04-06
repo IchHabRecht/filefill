@@ -25,7 +25,8 @@
     "require-dev": {
         "phpunit/phpunit": "^10.5",
         "php-parallel-lint/php-parallel-lint": "^1.4",
-        "typo3/testing-framework": "^8.2.3"
+        "typo3/testing-framework": "^8.2.3",
+        "dg/bypass-finals": "^1.9"
     },
     "autoload": {
         "psr-4": {

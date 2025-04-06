@@ -18,11 +18,13 @@ namespace IchHabRecht\Filefill\Tests\Unit\Resource\Handler;
  */
 
 use IchHabRecht\Filefill\Resource\Handler\StaticFileResource;
-use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
+use PHPUnit\Framework\TestCase;
+use TYPO3\CMS\Core\TypoScript\AST\Node\RootNode;
+use TYPO3\CMS\Core\TypoScript\TypoScriptStringFactory;
 
-class StaticFileResourceTest extends UnitTestCase
+class StaticFileResourceTest extends TestCase
 {
-    protected $configuration = [
+    protected array $configuration = [
         'path/to/example/file.txt' => 'Hello world!',
         'another' => [
             'path' => [
@@ -37,7 +39,7 @@ class StaticFileResourceTest extends UnitTestCase
         '*' => 'This is some static text for all other files.',
     ];
 
-    protected $tsConfiguration = <<< EOT
+    protected string $tsConfiguration = <<< EOT
 path/to/example/file\.txt = Hello world!
 another {
     path {
@@ -52,7 +54,7 @@ another {
 * = This is some static text for all other files.
 EOT;
 
-    public function getFileReturnsContentDataProvider(): array
+    public static function getFileReturnsContentDataProvider(): array
     {
         return [
             'absolute file' => [
@@ -90,9 +92,9 @@ EOT;
      * @test
      * @dataProvider getFileReturnsContentDataProvider
      */
-    public function getFileReturnsContentForArrayConfiguration(string $filePath, string $expectation)
+    public function getFileReturnsContentForArrayConfiguration(string $filePath, string $expectation): void
     {
-        $subject = new StaticFileResource($this->configuration);
+        $subject = $this->getStaticFileResource($this->configuration);
         $this->assertEquals($expectation, $subject->getFile($filePath, $filePath));
     }
 
@@ -100,9 +102,46 @@ EOT;
      * @test
      * @dataProvider getFileReturnsContentDataProvider
      */
-    public function getFileReturnsContentForTypoScriptConfiguration(string $filePath, string $expectation)
+    public function getFileReturnsContentForTypoScriptConfiguration(string $filePath, string $expectation): void
     {
-        $subject = new StaticFileResource($this->tsConfiguration);
+        $subject = $this->getStaticFileResource($this->tsConfiguration);
         $this->assertEquals($expectation, $subject->getFile($filePath, $filePath));
+    }
+
+    protected function getStaticFileResource($configuration): StaticFileResource
+    {
+        $rootNode = $this->getMockBuilder(RootNode::class)
+            ->onlyMethods(['toArray'])
+            ->getMock();
+        $rootNode->expects($this->atMost(1))
+            ->method('toArray')
+            ->willReturn(
+                [
+                    'path\\slashto\\slashexample\\slashfile.txt' => 'Hello world!',
+                    'another.' =>
+                        [
+                            'path.' =>
+                                [
+                                    'to.' =>
+                                        [
+                                            'anotherFile.txt' => 'Lorem ipsum',
+                                            '\\asterisk.youtube' => 'yiJjpKzCVE4',
+                                        ],
+                                    '\\asterisk' => 'This file was found in \\slashanother\\slashpath folder.',
+                                ],
+                        ],
+                    '\\asterisk.vimeo' => '143018597',
+                    '\\asterisk' => 'This is some static text for all other files.',
+                ]
+            );
+        $typoScriptStringFactory = $this->getMockBuilder(TypoScriptStringFactory::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['parseFromStringWithIncludes'])
+            ->getMock();
+        $typoScriptStringFactory->expects($this->atMost(1))
+            ->method('parseFromStringWithIncludes')
+            ->willReturn($rootNode);
+
+        return new StaticFileResource($configuration, $typoScriptStringFactory);
     }
 }

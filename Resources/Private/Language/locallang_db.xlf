@@ -21,9 +21,6 @@
             <trans-unit id="sys_file_storage.filefill.url">
                 <source>URL</source>
             </trans-unit>
-            <trans-unit id="sys_file_storage.filefill.sys_domain">
-                <source>Domain records</source>
-            </trans-unit>
             <trans-unit id="sys_file_storage.filefill.placehold">
                 <source>Placehold</source>
             </trans-unit>

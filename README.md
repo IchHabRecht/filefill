@@ -54,9 +54,6 @@ $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['filefill']['storages'][1] = [
         'configuration' => 'https://another-example.com',
     ],
     [
-        'identifier' => 'sys_domain',
-    ],
-    [
         'identifier' => 'placehold',
     ],
     [
@@ -103,17 +100,6 @@ Configuration:
 - Url: Enter a valid url (incl http/https scheme)
 
 You can use multiple single domains within one resources configuration.
-
-### Domain records
-
-Fetch missing files from all available site configurations. Filefill runs through all base and variant urls as long as
-the file can be fetched or all domains are processed.
-
-Configuration:
-
-- no configuration required (the checkbox is just a field placeholder)
-
-There is no need for multiple usage. All domains are used by default.
 
 ### Placehold.co
 

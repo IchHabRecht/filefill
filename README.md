@@ -176,12 +176,12 @@ $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['filefill']['resourceHandler']['identifie
 namespace Vendor\Extension\Resource;
 class ResourceHandler implements \IchHabRecht\Filefill\Resource\RemoteResourceInterface
 {
-    public function hasFile($fileIdentifier, $filePath, FileInterface $fileObject = null)
+    public function hasFile($fileIdentifier, $filePath, ?FileInterface $fileObject = null)
     {
         return true;
     }
 
-    public function getFile($fileIdentifier, $filePath, FileInterface $fileObject = null)
+    public function getFile($fileIdentifier, $filePath, ?FileInterface $fileObject = null)
     {
         return 'file content';
     }

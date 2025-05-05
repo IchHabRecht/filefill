@@ -22,12 +22,15 @@ use TYPO3\CMS\Backend\Form\Element\AbstractFormElement;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Imaging\IconSize;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Page\PageRenderer;
 
 class ShowMissingFiles extends AbstractFormElement
 {
-    public function __construct(protected readonly ConnectionPool $connectionPool)
-    {
+    public function __construct(
+        protected readonly ConnectionPool $connectionPool,
+        protected readonly IconFactory $iconFactory,
+        protected readonly PageRenderer $pageRenderer
+    ) {
     }
 
     public function render(): array
@@ -52,15 +55,24 @@ class ShowMissingFiles extends AbstractFormElement
             ->fetchOne();
 
         $html = [];
-        $html[] = '<div class="form-control-wrap">';
+        $html[] = '<div class="form-group">';
 
         $languageService = $this->getLanguageService();
         if ($count === 0) {
+            $html[] = '<div class="form-text">';
             $html[] = '<span class="badge badge-success">'
                 . $languageService->sL('LLL:EXT:filefill/Resources/Private/Language/locallang_db.xlf:sys_file_storage.filefill.no_missing')
-                . '</span>';
+                . '</span>'
+                . '</div>';
         } else {
-            $iconFactory = GeneralUtility::makeInstance(IconFactory::class);
+            $this->pageRenderer->loadJavaScriptModule('@ichhabrecht/filefill/form/submit-interceptor.js');
+            $html[] = '<div class="form-control-wrap">';
+            $html[] = '<a class="btn btn-default t3js-editform-submitButton" data-name="_save_tx_filefill_missing" data-form="EditDocumentController" data-value="1">';
+            $html[] = $this->iconFactory->getIcon('actions-database-reload', IconSize::SMALL);
+            $html[] = ' ' . $languageService->sL('LLL:EXT:filefill/Resources/Private/Language/locallang_db.xlf:sys_file_storage.filefill.reset');
+            $html[] = '</a>';
+            $html[] = '</div>';
+            $html[] = '<div class="form-text">';
             $html[] = '<span class="badge badge-danger">'
                 . sprintf(
                     $languageService->sL('LLL:EXT:filefill/Resources/Private/Language/locallang_db.xlf:sys_file_storage.filefill.missing_files'),
@@ -68,16 +80,11 @@ class ShowMissingFiles extends AbstractFormElement
                 )
                 . '</span>';
             $html[] = '</div>';
-            $html[] = '<div class="form-control-wrap t3js-module-docheader">';
-            $html[] = '<a class="btn btn-default t3js-editform-submitButton" data-name="_save_tx_filefill_missing" data-form="EditDocumentController" data-value="1">';
-            $html[] = $iconFactory->getIcon('actions-database-reload', IconSize::SMALL);
-            $html[] = ' ' . $languageService->sL('LLL:EXT:filefill/Resources/Private/Language/locallang_db.xlf:sys_file_storage.filefill.reset');
-            $html[] = '</a>';
         }
 
         $html[] = '</div>';
 
-        $result['html'] = implode('', $html);
+        $result['html'] = $this->wrapWithFieldsetAndLegend(implode('', $html));
 
         return $result;
     }

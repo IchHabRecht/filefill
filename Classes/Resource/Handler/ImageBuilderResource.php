@@ -56,7 +56,7 @@ class ImageBuilderResource implements RemoteResourceInterface
      */
     public function hasFile($fileIdentifier, $filePath, ?FileInterface $fileObject = null): bool
     {
-        return $GLOBALS['TYPO3_CONF_VARS']['GFX']['gdlib']
+        return class_exists(\GdImage::class)
             && $fileObject instanceof FileInterface
             && in_array($fileObject->getExtension(), $this->allowedFileExtensions, true);
     }

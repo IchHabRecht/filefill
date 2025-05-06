@@ -84,7 +84,7 @@ jobs:
                     typo3DatabasePassword: 'root'
                     typo3DatabaseUsername: 'root'
                 run: |
-                    sudo /etc/init.d/mysql start                
+                    sudo /etc/init.d/mysql start
                     mkdir -p .Build/public/typo3conf/ext/
                     if [ ! -L .Build/public/typo3conf/ext/filefill ]; then ln -snvf ../../../../. .Build/public/typo3conf/ext/filefill; fi
                     find 'Tests/Functional' -wholename '*Test.php' | parallel --gnu 'echo ""; echo ""; echo "Running functional test suite {}"; HASH=${{ steps.version-cache.outputs.version }}_${{ matrix.php }}_$( echo {} | md5sum | cut -d " " -f 1); .Build/bin/phpunit --bootstrap .Build/vendor/typo3/testing-framework/Resources/Core/Build/FunctionalTestsBootstrap.php --log-junit .Log/junit/functional_$HASH.xml --coverage-php .Log/coverage/functional_$HASH.cov {}'

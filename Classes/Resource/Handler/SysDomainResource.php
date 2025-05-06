@@ -27,18 +27,18 @@ class SysDomainResource implements RemoteResourceInterface
     /**
      * @var DomainResource[]
      */
-    protected $domainResources;
+    protected readonly array $domainResources;
 
     /**
      * @var DomainResource[]
      */
-    protected static $fileIdentifierCache = [];
+    protected static array $fileIdentifierCache = [];
 
     /**
      * @param string $configuration
      * @param DomainResourceRepository $domainResourceRepository
      */
-    public function __construct($configuration, DomainResourceRepository $domainResourceRepository = null)
+    public function __construct($configuration, ?DomainResourceRepository $domainResourceRepository = null)
     {
         if ($domainResourceRepository === null) {
             $domainResourceRepository = GeneralUtility::makeInstance(DomainResourceRepository::class);
@@ -52,7 +52,7 @@ class SysDomainResource implements RemoteResourceInterface
      * @param FileInterface|null $fileObject
      * @return bool
      */
-    public function hasFile($fileIdentifier, $filePath, FileInterface $fileObject = null)
+    public function hasFile($fileIdentifier, $filePath, ?FileInterface $fileObject = null): bool
     {
         if (!isset(static::$fileIdentifierCache[$fileIdentifier])) {
             static::$fileIdentifierCache[$fileIdentifier] = null;
@@ -71,9 +71,9 @@ class SysDomainResource implements RemoteResourceInterface
      * @param string $fileIdentifier
      * @param string $filePath
      * @param FileInterface|null $fileObject
-     * @return string
+     * @return false|resource
      */
-    public function getFile($fileIdentifier, $filePath, FileInterface $fileObject = null)
+    public function getFile($fileIdentifier, $filePath, ?FileInterface $fileObject = null)
     {
         return static::$fileIdentifierCache[$fileIdentifier]->getFile($fileIdentifier, $filePath);
     }

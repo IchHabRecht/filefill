@@ -17,50 +17,31 @@ namespace IchHabRecht\Filefill\Repository;
  * LICENSE file that was distributed with this source code.
  */
 
-use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\ParameterType;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\ProcessedFileRepository;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class FileRepository
 {
-    /**
-     * @var Connection
-     */
-    protected $connection;
-
-    /**
-     * @var ProcessedFileRepository
-     */
-    protected $processedFileRepository;
-
-    /**
-     * @var ResourceFactory
-     */
-    protected $resourceFactory;
-
     public function __construct(
-        Connection $connection = null,
-        ProcessedFileRepository $processedFileRepository = null,
-        ResourceFactory $resourceFactory = null
+        protected readonly ConnectionPool $connectionPool,
+        protected readonly ProcessedFileRepository $processedFileRepository,
+        protected readonly ResourceFactory $resourceFactory
     ) {
-        $this->connection = $connection ?: GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('sys_file');
-        $this->processedFileRepository = $processedFileRepository ?: GeneralUtility::makeInstance(ProcessedFileRepository::class);
-        $this->resourceFactory = $resourceFactory ?: GeneralUtility::makeInstance(ResourceFactory::class);
     }
 
-    public function countByIdentifier($storage = null): array
+    public function countByIdentifier(?int $storage = null): array
     {
-        $queryBuilder = $this->connection->createQueryBuilder();
+        $queryBuilder = $this->connectionPool->getQueryBuilderForTable('sys_file');
         $expressionBuilder = $queryBuilder->expr();
         $queryBuilder->getConcreteQueryBuilder()->select('COUNT(*) AS count', 'tx_filefill_identifier');
         $queryBuilder->from('sys_file')
             ->where(
                 $expressionBuilder->neq(
                     'tx_filefill_identifier',
-                    $queryBuilder->createNamedParameter('', \PDO::PARAM_STR)
+                    $queryBuilder->createNamedParameter('')
                 )
             )
             ->groupBy('tx_filefill_identifier');
@@ -69,25 +50,25 @@ class FileRepository
             $queryBuilder->andWhere(
                 $expressionBuilder->eq(
                     'storage',
-                    $queryBuilder->createNamedParameter($storage, \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter($storage, ParameterType::INTEGER)
                 )
             );
         }
 
-        return $queryBuilder->execute()
-            ->fetchAll();
+        return $queryBuilder->executeQuery()
+            ->fetchAllAssociative();
     }
 
-    public function findByIdentifier(string $identifier, $storage = null): array
+    public function findByIdentifier(string $identifier, ?int $storage = null): array
     {
-        $queryBuilder = $this->connection->createQueryBuilder();
+        $queryBuilder = $this->connectionPool->getQueryBuilderForTable('sys_file');
         $expressionBuilder = $queryBuilder->expr();
         $queryBuilder->select('storage', 'identifier')
             ->from('sys_file')
             ->where(
                 $expressionBuilder->eq(
                     'tx_filefill_identifier',
-                    $queryBuilder->createNamedParameter($identifier, \PDO::PARAM_STR)
+                    $queryBuilder->createNamedParameter($identifier)
                 )
             )
             ->groupBy('tx_filefill_identifier', 'identifier', 'storage');
@@ -96,35 +77,38 @@ class FileRepository
             $queryBuilder->andWhere(
                 $expressionBuilder->eq(
                     'storage',
-                    $queryBuilder->createNamedParameter($storage, \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter($storage, ParameterType::INTEGER)
                 )
             );
         }
 
-        return $queryBuilder->execute()
-            ->fetchAll();
+        return $queryBuilder->executeQuery()
+            ->fetchAllAssociative();
     }
 
-    public function updateIdentifier(FileInterface $file, string $identifier)
+    public function updateIdentifier(FileInterface $file, string $identifier): void
     {
-        $queryBuilder = $this->connection->createQueryBuilder();
+        $queryBuilder = $this->connectionPool->getQueryBuilderForTable('sys_file');
         $queryBuilder->update('sys_file')
             ->where(
                 $queryBuilder->expr()->eq(
                     'uid',
-                    $queryBuilder->createNamedParameter($file->getUid(), \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter($file->getUid(), ParameterType::INTEGER)
                 )
             )
             ->set('tx_filefill_identifier', $identifier)
-            ->execute();
+            ->executeStatement();
     }
 
-    public function deleteByIdentifier(string $identifier, $storage = null): int
+    public function deleteByIdentifier(string $identifier, ?int $storage = null): int
     {
         $rows = $this->findByIdentifier($identifier, $storage);
         foreach ($rows as $row) {
             try {
                 $file = $this->resourceFactory->getFileObjectByStorageAndIdentifier($row['storage'], $row['identifier']);
+                if (!$file) {
+                    continue;
+                }
 
                 // First delete all processed files, because file_exists is called on driver
                 foreach ($this->processedFileRepository->findAllByOriginalFile($file) as $processedFile) {

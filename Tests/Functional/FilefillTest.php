@@ -20,6 +20,7 @@ namespace IchHabRecht\Filefill\Tests\Functional;
 use IchHabRecht\Filefill\Repository\FileRepository;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Domain\Model\File;
 
 class FilefillTest extends AbstractFunctionalTestCase
 {
@@ -37,7 +38,7 @@ class FilefillTest extends AbstractFunctionalTestCase
     {
         parent::setUp();
 
-        $this->fileRepository = new FileRepository();
+        $this->fileRepository = GeneralUtility::makeInstance(FileRepository::class);
         $this->resourceFactory = GeneralUtility::makeInstance(ResourceFactory::class);
     }
 
@@ -73,11 +74,11 @@ class FilefillTest extends AbstractFunctionalTestCase
 
         $this->assertStringNotEqualsFile($this->getAbsoluteFilePath($placeholderResourcePath), '');
 
-        $rows = $this->fileRepository->findByIdentifier('placeholder', 2);
+        $rows = $this->fileRepository->findByIdentifier('placehold', 2);
         $this->assertCount(1, $rows);
     }
 
-    public function fileExistsWithImageBuilderResourceDataProvider()
+    public static function fileExistsWithImageBuilderResourceDataProvider()
     {
         return [
             'Logo_TYPO3.png' => [
@@ -105,7 +106,7 @@ class FilefillTest extends AbstractFunctionalTestCase
         $this->assertStringNotEqualsFile($this->getAbsoluteFilePath($fileResourcePath), '');
     }
 
-    public function fileExistsWithStaticResourceDataProvider()
+    public static function fileExistsWithStaticResourceDataProvider()
     {
         return [
             'path/to/example/file.txt' => [

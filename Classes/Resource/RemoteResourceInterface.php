@@ -27,7 +27,7 @@ interface RemoteResourceInterface
      * @param FileInterface|null $fileObject
      * @return bool
      */
-    public function hasFile($fileIdentifier, $filePath, FileInterface $fileObject = null);
+    public function hasFile($fileIdentifier, $filePath, ?FileInterface $fileObject = null): bool;
 
     /**
      * @param string $fileIdentifier
@@ -35,5 +35,5 @@ interface RemoteResourceInterface
      * @param FileInterface|null $fileObject
      * @return resource|string
      */
-    public function getFile($fileIdentifier, $filePath, FileInterface $fileObject = null);
+    public function getFile($fileIdentifier, $filePath, ?FileInterface $fileObject = null);
 }

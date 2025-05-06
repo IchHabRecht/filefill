@@ -19,17 +19,13 @@ namespace IchHabRecht\Filefill\Resource\Handler;
 
 use IchHabRecht\Filefill\Resource\RemoteResourceInterface;
 use TYPO3\CMS\Core\Resource\FileInterface;
-use TYPO3\CMS\Core\TypoScript\Parser\TypoScriptParser;
+use TYPO3\CMS\Core\TypoScript\TypoScriptStringFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class StaticFileResource implements RemoteResourceInterface
 {
-    /**
-     * @var array
-     */
-    protected $configuration;
-
-    protected $tsReplaceConfiguration = [
+    protected readonly array $configuration;
+    protected array $tsReplaceConfiguration = [
         [
             '*',
             '/',
@@ -40,19 +36,23 @@ class StaticFileResource implements RemoteResourceInterface
         ],
     ];
 
-    public function __construct($configuration)
+    public function __construct($configuration, ?TypoScriptStringFactory $typoScriptStringFactory = null)
     {
-        if (!is_array($configuration)) {
+        if (empty($configuration)) {
+            // Null, empty string, empty array, etc
+            $configuration = [];
+        } elseif (is_string($configuration)) {
             $configuration = str_replace($this->tsReplaceConfiguration[0], $this->tsReplaceConfiguration[1], $configuration);
-            $parser = GeneralUtility::makeInstance(TypoScriptParser::class);
-            $parser->parse($configuration);
-            $configuration = $parser->setup;
+            $parser = $typoScriptStringFactory ?: GeneralUtility::makeInstance(TypoScriptStringFactory::class);
+            $configuration = $parser
+                ->parseFromStringWithIncludes('Filefill-StaticFileResource', $configuration)
+                ->toArray();
         }
 
         $this->configuration = $this->prepareConfiguration($configuration);
     }
 
-    public function hasFile($fileIdentifier, $filePath, FileInterface $fileObject = null)
+    public function hasFile($fileIdentifier, $filePath, ?FileInterface $fileObject = null): bool
     {
         return true;
     }
@@ -63,7 +63,7 @@ class StaticFileResource implements RemoteResourceInterface
      * @param FileInterface $fileObject
      * @return string
      */
-    public function getFile($fileIdentifier, $filePath, FileInterface $fileObject = null)
+    public function getFile($fileIdentifier, $filePath, ?FileInterface $fileObject = null)
     {
         return $this->getFileContent($fileIdentifier, $this->configuration);
     }

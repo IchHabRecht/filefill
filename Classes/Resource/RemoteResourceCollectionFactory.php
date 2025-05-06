@@ -28,7 +28,7 @@ class RemoteResourceCollectionFactory
      * @throws \RuntimeException
      * @return RemoteResourceCollection
      */
-    public static function createRemoteResourceCollectionFromConfiguration(array $configuration)
+    public static function createRemoteResourceCollectionFromConfiguration(array $configuration): RemoteResourceCollection
     {
         $remoteResources = [];
 
@@ -67,7 +67,7 @@ class RemoteResourceCollectionFactory
      * @throws \RuntimeException
      * @return RemoteResourceCollection
      */
-    public static function createRemoteResourceCollectionFromFlexForm($flexForm)
+    public static function createRemoteResourceCollectionFromFlexForm($flexForm): RemoteResourceCollection
     {
         $configuration = [];
 

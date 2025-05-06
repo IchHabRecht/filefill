@@ -54,9 +54,6 @@ $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['filefill']['storages'][1] = [
         'configuration' => 'https://another-example.com',
     ],
     [
-        'identifier' => 'sys_domain',
-    ],
-    [
         'identifier' => 'placehold',
     ],
     [
@@ -103,17 +100,6 @@ Configuration:
 - Url: Enter a valid url (incl http/https scheme)
 
 You can use multiple single domains within one resources configuration.
-
-### Domain records
-
-Fetch missing files from all available site configurations. Filefill runs through all base and variant urls as long as
-the file can be fetched or all domains are processed.
-
-Configuration:
-
-- no configuration required (the checkbox is just a field placeholder)
-
-There is no need for multiple usage. All domains are used by default.
 
 ### Placehold.co
 
@@ -190,12 +176,12 @@ $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['filefill']['resourceHandler']['identifie
 namespace Vendor\Extension\Resource;
 class ResourceHandler implements \IchHabRecht\Filefill\Resource\RemoteResourceInterface
 {
-    public function hasFile($fileIdentifier, $filePath, FileInterface $fileObject = null)
+    public function hasFile($fileIdentifier, $filePath, ?FileInterface $fileObject = null)
     {
         return true;
     }
 
-    public function getFile($fileIdentifier, $filePath, FileInterface $fileObject = null)
+    public function getFile($fileIdentifier, $filePath, ?FileInterface $fileObject = null)
     {
         return 'file content';
     }
@@ -233,7 +219,8 @@ all files were properly created on your current system.
 
 ## Community
 
+- Thanks to [in2code](https://www.in2code.de/) that sponsored parts of the TYPO3 13 update
 - Thanks to [b13](https://b13.com) that sponsored the maintenance of this extension with a sponsorship
 - Thanks to [Wolfgang Wagner](https://wwagner.net) who sponsored the maintenance of this extension with a sponsorship
 - Thanks to [Marcus Schwemer](https://twitter.com/MarcusSchwemer) who wrote about filefill in his blog [TYPO3worx](https://typo3worx.eu/2018/03/eight-typo3-extensions-making-developers-happy/)
-- Thanks to [Thomas Löffler](https://spooner-web.de) for his ongoing support as [Patron](https://www.patreon.com/IchHabRecht)
+- Thanks to [Thomas Löffler](https://spooner-web.de) for his support as [Patron](https://www.patreon.com/IchHabRecht)

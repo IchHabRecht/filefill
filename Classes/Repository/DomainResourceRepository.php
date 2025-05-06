@@ -26,11 +26,11 @@ class DomainResourceRepository
     /**
      * @return DomainResource[]
      */
-    public function findAll()
+    public function findAll(): array
     {
         $domainResources = [];
 
-        $sites = GeneralUtility::makeInstance(SiteFinder::class)->getAllSites();
+        $sites = GeneralUtility::makeInstance(SiteFinder::class)?->getAllSites();
         foreach ($sites as $site) {
             $siteConfiguration = $site->getConfiguration();
             $url = $siteConfiguration['base'];

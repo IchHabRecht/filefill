@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace IchHabRecht\Filefill\Command;
 
+use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\ParameterType;
 use IchHabRecht\Filefill\Repository\FileRepository;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -14,17 +16,10 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class ResetCommand extends AbstractCommand
 {
-    /**
-     * @var \TYPO3\CMS\Core\Database\Connection
-     */
-    protected $connection;
+    protected readonly Connection $connection;
+    protected readonly FileRepository $fileRepository;
 
-    /**
-     * @var FileRepository
-     */
-    protected $fileRepository;
-
-    public function __construct(string $name = null, Connection $connection = null, FileRepository $fileRepository = null)
+    public function __construct(?string $name = null, ?Connection $connection = null, ?FileRepository $fileRepository = null)
     {
         parent::__construct($name);
 
@@ -76,28 +71,28 @@ class ResetCommand extends AbstractCommand
             ->where(
                 $expressionBuilder->in(
                     'f.storage',
-                    $queryBuilder->createNamedParameter(array_keys($enabledStorages), Connection::PARAM_INT_ARRAY)
+                    $queryBuilder->createNamedParameter(array_keys($enabledStorages), ArrayParameterType::INTEGER)
                 ),
                 $expressionBuilder->eq(
                     'f.missing',
-                    $queryBuilder->createNamedParameter(1, \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter(1, ParameterType::INTEGER)
                 )
             )
             ->groupBy('f.storage')
             ->orderBy('f.storage')
-            ->execute();
+            ->executeQuery();
 
-        while ($row = $statement->fetch()) {
+        while ($row = $statement->fetchAssociative()) {
             $updateQueryBuilder = $this->connection->createQueryBuilder();
             $updateQueryBuilder->update('sys_file')
                 ->where(
                     $updateQueryBuilder->expr()->eq(
                         'storage',
-                        $updateQueryBuilder->createNamedParameter($row['storage'], \PDO::PARAM_INT)
+                        $updateQueryBuilder->createNamedParameter($row['storage'], ParameterType::INTEGER)
                     )
                 )
-                ->set('missing', 0, true, \PDO::PARAM_INT)
-                ->execute();
+                ->set('missing', 0, true, ParameterType::INTEGER)
+                ->executeStatement();
             $output->writeln(sprintf(
                 'Reset %d file(s) in storage "%s" (uid: %d)',
                 $row['count'],

@@ -24,15 +24,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class FileFillDriver extends LocalDriver
 {
-    /**
-     * @var DriverInterface
-     */
-    protected $originalDriverObject;
-
-    /**
-     * @var RemoteResourceCollection
-     */
-    protected $remoteResourceCollection;
+    protected readonly DriverInterface $originalDriverObject;
+    protected readonly RemoteResourceCollection $remoteResourceCollection;
 
     public function __construct(array $configuration, DriverInterface $originalDriverObject, RemoteResourceCollection $remoteResourceCollection)
     {
@@ -46,7 +39,7 @@ class FileFillDriver extends LocalDriver
      * @param string $fileIdentifier
      * @return bool
      */
-    public function fileExists($fileIdentifier)
+    public function fileExists(string $fileIdentifier): bool
     {
         $this->ensureFileExists($fileIdentifier);
 
@@ -59,7 +52,7 @@ class FileFillDriver extends LocalDriver
      * @param string $folderIdentifier
      * @return bool
      */
-    public function folderExists($folderIdentifier)
+    public function folderExists(string $folderIdentifier): bool
     {
         if (parent::folderExists($folderIdentifier)) {
             return true;
@@ -76,9 +69,9 @@ class FileFillDriver extends LocalDriver
 
     /**
      * @param string $identifier
-     * @return string
+     * @return ?string
      */
-    public function getPublicUrl($identifier)
+    public function getPublicUrl(string $identifier): ?string
     {
         $this->ensureFileExists($identifier);
 
@@ -89,7 +82,7 @@ class FileFillDriver extends LocalDriver
      * @param string $fileIdentifier
      * @return string
      */
-    public function getFileContents($fileIdentifier)
+    public function getFileContents(string $fileIdentifier): string
     {
         $this->ensureFileExists($fileIdentifier);
 
@@ -101,7 +94,7 @@ class FileFillDriver extends LocalDriver
      * @param bool $writable
      * @return string
      */
-    public function getFileForLocalProcessing($fileIdentifier, $writable = true)
+    public function getFileForLocalProcessing(string $fileIdentifier, bool $writable = true): string
     {
         $this->ensureFileExists($fileIdentifier);
 
@@ -113,7 +106,7 @@ class FileFillDriver extends LocalDriver
      * @param array $propertiesToExtract
      * @return array
      */
-    public function getFileInfoByIdentifier($fileIdentifier, array $propertiesToExtract = [])
+    public function getFileInfoByIdentifier(string $fileIdentifier, array $propertiesToExtract = []): array
     {
         $this->ensureFileExists($fileIdentifier);
 
@@ -124,7 +117,7 @@ class FileFillDriver extends LocalDriver
      * @param string $identifier
      * @return array
      */
-    public function getPermissions($identifier)
+    public function getPermissions(string $identifier): array
     {
         $this->ensureFileExists($identifier);
 
@@ -135,7 +128,7 @@ class FileFillDriver extends LocalDriver
      * @param string $identifier
      * @return void
      */
-    public function dumpFileContents($identifier)
+    public function dumpFileContents(string $identifier): void
     {
         $this->ensureFileExists($identifier);
 
@@ -145,7 +138,7 @@ class FileFillDriver extends LocalDriver
     /**
      * @return bool
      */
-    public function isCaseSensitiveFileSystem()
+    public function isCaseSensitiveFileSystem(): bool
     {
         return true;
     }
@@ -154,7 +147,7 @@ class FileFillDriver extends LocalDriver
      * @param string $fileIdentifier
      * @return bool
      */
-    protected function ensureFileExists($fileIdentifier)
+    protected function ensureFileExists(string $fileIdentifier): bool
     {
         $absoluteFilePath = $this->getAbsolutePath($fileIdentifier, false);
         if (empty($absoluteFilePath) || file_exists($absoluteFilePath)) {
@@ -189,7 +182,7 @@ class FileFillDriver extends LocalDriver
      * @param bool $callOriginalDriver
      * @return string
      */
-    protected function getAbsolutePath($fileIdentifier, $callOriginalDriver = true)
+    protected function getAbsolutePath(string $fileIdentifier, bool $callOriginalDriver = true): string
     {
         $relativeFilePath = ltrim($this->canonicalizeAndCheckFileIdentifier($fileIdentifier, $callOriginalDriver), '/');
 
@@ -203,7 +196,7 @@ class FileFillDriver extends LocalDriver
      * @param bool $callOriginalDriver
      * @return string
      */
-    protected function canonicalizeAndCheckFileIdentifier($fileIdentifier, $callOriginalDriver = true)
+    protected function canonicalizeAndCheckFileIdentifier(string $fileIdentifier, bool $callOriginalDriver = true): string
     {
         return $callOriginalDriver
             ? $this->originalDriverObject->canonicalizeAndCheckFileIdentifier($fileIdentifier)

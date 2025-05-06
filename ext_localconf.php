@@ -3,9 +3,6 @@
 defined('TYPO3') || die('Access denied.');
 
 call_user_func(function () {
-    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][\TYPO3\CMS\Core\Configuration\FlexForm\FlexFormTools::class]['flexParsing']['filefill'] =
-        \IchHabRecht\Filefill\Hooks\FlexFormToolsHook::class;
-
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass']['filefill_missing'] =
         \IchHabRecht\Filefill\Hooks\ResetMissingFiles::class;
 
@@ -40,17 +37,6 @@ call_user_func(function () {
                 ],
                 'handler' => \IchHabRecht\Filefill\Resource\Handler\DomainResource::class,
             ],
-            'sys_domain' => [
-                'title' => 'LLL:EXT:filefill/Resources/Private/Language/locallang_db.xlf:sys_file_storage.filefill.sys_domain',
-                'config' => [
-                    'label' => 'LLL:EXT:filefill/Resources/Private/Language/locallang_db.xlf:sys_file_storage.filefill.sys_domain',
-                    'config' => [
-                        'type' => 'check',
-                        'default' => '1',
-                    ],
-                ],
-                'handler' => \IchHabRecht\Filefill\Resource\Handler\SysDomainResource::class,
-            ],
             'imagebuilder' => [
                 'title' => 'LLL:EXT:filefill/Resources/Private/Language/locallang_db.xlf:sys_file_storage.filefill.imagebuilder',
                 'config' => [
@@ -64,17 +50,6 @@ call_user_func(function () {
                 'handler' => \IchHabRecht\Filefill\Resource\Handler\ImageBuilderResource::class,
             ],
             'placehold' => [
-                'title' => 'LLL:EXT:filefill/Resources/Private/Language/locallang_db.xlf:sys_file_storage.filefill.placehold',
-                'config' => [
-                    'label' => 'LLL:EXT:filefill/Resources/Private/Language/locallang_db.xlf:sys_file_storage.filefill.placehold',
-                    'config' => [
-                        'type' => 'check',
-                        'default' => '1',
-                    ],
-                ],
-                'handler' => \IchHabRecht\Filefill\Resource\Handler\PlaceholdResource::class,
-            ],
-            'placeholder' => [
                 'title' => 'LLL:EXT:filefill/Resources/Private/Language/locallang_db.xlf:sys_file_storage.filefill.placehold',
                 'config' => [
                     'label' => 'LLL:EXT:filefill/Resources/Private/Language/locallang_db.xlf:sys_file_storage.filefill.placehold',

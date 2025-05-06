@@ -17,86 +17,74 @@ namespace IchHabRecht\Filefill\Form\Element;
  * LICENSE file that was distributed with this source code.
  */
 
-use Doctrine\DBAL\FetchMode;
+use Doctrine\DBAL\ParameterType;
 use TYPO3\CMS\Backend\Form\Element\AbstractFormElement;
-use TYPO3\CMS\Backend\Form\NodeFactory;
 use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Imaging\IconFactory;
-use TYPO3\CMS\Core\Localization\LanguageService;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Imaging\IconSize;
+use TYPO3\CMS\Core\Page\PageRenderer;
 
 class ShowMissingFiles extends AbstractFormElement
 {
-    /**
-     * @var LanguageService
-     */
-    protected $languageService;
-
-    /**
-     * Container objects give $nodeFactory down to other containers.
-     *
-     * @param NodeFactory $nodeFactory
-     * @param array $data
-     * @param LanguageService|null $languageService
-     * @throws \InvalidArgumentException
-     */
-    public function __construct(NodeFactory $nodeFactory, array $data, $languageService = null)
-    {
-        parent::__construct($nodeFactory, $data);
-        $this->languageService = $languageService ?: $GLOBALS['LANG'];
+    public function __construct(
+        protected readonly ConnectionPool $connectionPool,
+        protected readonly IconFactory $iconFactory,
+        protected readonly PageRenderer $pageRenderer
+    ) {
     }
 
-    /**
-     * @return array
-     */
-    public function render()
+    public function render(): array
     {
         $result = $this->initializeResultArray();
 
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('sys_file');
+        $queryBuilder = $this->connectionPool->getQueryBuilderForTable('sys_file');
         $expressionBuilder = $queryBuilder->expr();
         $count = $queryBuilder->count('*')
             ->from('sys_file')
             ->where(
                 $expressionBuilder->eq(
                     'storage',
-                    $queryBuilder->createNamedParameter($this->data['vanillaUid'], \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter($this->data['vanillaUid'], ParameterType::INTEGER)
                 ),
                 $expressionBuilder->eq(
                     'missing',
-                    $queryBuilder->createNamedParameter(1, \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter(1, ParameterType::INTEGER)
                 )
             )
-            ->execute()
-            ->fetch(FetchMode::NUMERIC)[0] ?? 0;
+            ->executeQuery()
+            ->fetchOne();
 
         $html = [];
-        $html[] = '<div class="form-control-wrap">';
+        $html[] = '<div class="form-group">';
 
+        $languageService = $this->getLanguageService();
         if ($count === 0) {
+            $html[] = '<div class="form-text">';
             $html[] = '<span class="badge badge-success">'
-                . $this->languageService->sL('LLL:EXT:filefill/Resources/Private/Language/locallang_db.xlf:sys_file_storage.filefill.no_missing')
-                . '</span>';
+                . $languageService->sL('LLL:EXT:filefill/Resources/Private/Language/locallang_db.xlf:sys_file_storage.filefill.no_missing')
+                . '</span>'
+                . '</div>';
         } else {
-            $iconFactory = GeneralUtility::makeInstance(IconFactory::class);
+            $this->pageRenderer->loadJavaScriptModule('@ichhabrecht/filefill/form/submit-interceptor.js');
+            $html[] = '<div class="form-control-wrap">';
+            $html[] = '<a class="btn btn-default t3js-editform-submitButton" data-name="_save_tx_filefill_missing" data-form="EditDocumentController" data-value="1">';
+            $html[] = $this->iconFactory->getIcon('actions-database-reload', IconSize::SMALL);
+            $html[] = ' ' . $languageService->sL('LLL:EXT:filefill/Resources/Private/Language/locallang_db.xlf:sys_file_storage.filefill.reset');
+            $html[] = '</a>';
+            $html[] = '</div>';
+            $html[] = '<div class="form-text">';
             $html[] = '<span class="badge badge-danger">'
                 . sprintf(
-                    $this->languageService->sL('LLL:EXT:filefill/Resources/Private/Language/locallang_db.xlf:sys_file_storage.filefill.missing_files'),
+                    $languageService->sL('LLL:EXT:filefill/Resources/Private/Language/locallang_db.xlf:sys_file_storage.filefill.missing_files'),
                     $count
                 )
                 . '</span>';
             $html[] = '</div>';
-            $html[] = '<div class="form-control-wrap t3js-module-docheader">';
-            $html[] = '<a class="btn btn-default t3js-editform-submitButton" data-name="_save_tx_filefill_missing" data-form="EditDocumentController" data-value="1">';
-            $html[] = $iconFactory->getIcon('actions-database-reload', Icon::SIZE_SMALL);
-            $html[] = ' ' . $this->languageService->sL('LLL:EXT:filefill/Resources/Private/Language/locallang_db.xlf:sys_file_storage.filefill.reset');
-            $html[] = '</a>';
         }
 
         $html[] = '</div>';
 
-        $result['html'] = implode('', $html);
+        $result['html'] = $this->wrapWithFieldsetAndLegend(implode('', $html));
 
         return $result;
     }

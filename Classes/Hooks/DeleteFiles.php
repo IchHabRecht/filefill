@@ -18,20 +18,12 @@ namespace IchHabRecht\Filefill\Hooks;
  */
 
 use IchHabRecht\Filefill\Repository\FileRepository;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 
 class DeleteFiles
 {
-    /**
-     * @var FileRepository
-     */
-    protected $fileRepository;
-
-    public function __construct(
-        FileRepository $fileRepository = null
-    ) {
-        $this->fileRepository = $fileRepository ?: GeneralUtility::makeInstance(FileRepository::class);
+    public function __construct(protected readonly FileRepository $fileRepository)
+    {
     }
 
     /**

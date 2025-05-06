@@ -24,8 +24,8 @@ class FlexFormDataStructureParsedEventListener
     public function __invoke(AfterFlexFormDataStructureParsedEvent $event)
     {
         $identifier = $event->getIdentifier();
-        if ($identifier['tableName'] !== 'sys_file_storage'
-            || $identifier['fieldName'] !== 'tx_filefill_resources'
+        if (($identifier['tableName'] ?? '') !== 'sys_file_storage'
+            || ($identifier['fieldName'] ?? '') !== 'tx_filefill_resources'
         ) {
             return;
         }

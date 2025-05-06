@@ -4,6 +4,9 @@ services:
         autoconfigure: true
         public: false
 
+    IchHabRecht\Filefill\:
+        resource: '../Classes/*'
+
     IchHabRecht\Filefill\EventListener\ResourceStorageInitializationEventListener:
         tags:
             -   name: psr.logger_aware
@@ -22,6 +25,15 @@ services:
             -   name: event.listener
                 identifier: 'filefillFlexFormDataStructureParsedEventListener'
                 event: TYPO3\CMS\Core\Configuration\Event\AfterFlexFormDataStructureParsedEvent
+
+    IchHabRecht\Filefill\Form\Element\ShowDeleteFiles:
+        public: true
+
+    IchHabRecht\Filefill\Hooks\DeleteFiles:
+        public: true
+
+    IchHabRecht\Filefill\Repository\FileRepository:
+        public: true
 
     IchHabRecht\Filefill\Command\DeleteCommand:
         tags:

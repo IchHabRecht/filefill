@@ -118,18 +118,15 @@ EOT;
             ->willReturn(
                 [
                     'path\\slashto\\slashexample\\slashfile.txt' => 'Hello world!',
-                    'another.' =>
-                        [
-                            'path.' =>
-                                [
-                                    'to.' =>
-                                        [
-                                            'anotherFile.txt' => 'Lorem ipsum',
-                                            '\\asterisk.youtube' => 'yiJjpKzCVE4',
-                                        ],
-                                    '\\asterisk' => 'This file was found in \\slashanother\\slashpath folder.',
-                                ],
+                    'another.' => [
+                        'path.' => [
+                            'to.' => [
+                                'anotherFile.txt' => 'Lorem ipsum',
+                                '\\asterisk.youtube' => 'yiJjpKzCVE4',
+                            ],
+                            '\\asterisk' => 'This file was found in \\slashanother\\slashpath folder.',
                         ],
+                    ],
                     '\\asterisk.vimeo' => '143018597',
                     '\\asterisk' => 'This is some static text for all other files.',
                 ]

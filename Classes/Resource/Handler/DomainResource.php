@@ -79,7 +79,7 @@ class DomainResource implements RemoteResourceInterface
 
             return @fopen($fileName, 'r') ?: $this->requestFactory->request($fileName)->getBody()->getContents();
         } catch (RequestException $e) {
-            return false;
+            return '';
         }
     }
 }

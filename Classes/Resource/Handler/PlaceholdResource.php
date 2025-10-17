@@ -85,7 +85,7 @@ class PlaceholdResource implements RemoteResourceInterface
 
             return $response->getBody()->getContents();
         } catch (RequestException $e) {
-            return false;
+            return '';
         }
     }
 }

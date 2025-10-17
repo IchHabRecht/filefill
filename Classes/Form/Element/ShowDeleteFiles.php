@@ -45,7 +45,7 @@ class ShowDeleteFiles extends AbstractFormElement
      * @param FileRepository|null $fileRepository
      * @param LanguageService|null $languageService
      */
-    public function __construct(NodeFactory $nodeFactory, array $data, FileRepository $fileRepository = null, $languageService = null)
+    public function __construct(NodeFactory $nodeFactory, array $data, ?FileRepository $fileRepository = null, $languageService = null)
     {
         parent::__construct($nodeFactory, $data);
         $this->fileRepository = $fileRepository ?: GeneralUtility::makeInstance(FileRepository::class);

@@ -21,7 +21,7 @@ use TYPO3\CMS\Core\Http\RequestFactory;
 
 class PlaceholderResource extends PlaceholdResource
 {
-    public function __construct($_, RequestFactory $requestFactory = null)
+    public function __construct($_, ?RequestFactory $requestFactory = null)
     {
         trigger_error(
             'As the service placeholder.com was closed down, using this class is deprecated. Please use the' .

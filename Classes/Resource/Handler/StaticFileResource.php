@@ -52,7 +52,7 @@ class StaticFileResource implements RemoteResourceInterface
         $this->configuration = $this->prepareConfiguration($configuration);
     }
 
-    public function hasFile($fileIdentifier, $filePath, FileInterface $fileObject = null)
+    public function hasFile($fileIdentifier, $filePath, ?FileInterface $fileObject = null)
     {
         return true;
     }
@@ -63,7 +63,7 @@ class StaticFileResource implements RemoteResourceInterface
      * @param FileInterface $fileObject
      * @return string
      */
-    public function getFile($fileIdentifier, $filePath, FileInterface $fileObject = null)
+    public function getFile($fileIdentifier, $filePath, ?FileInterface $fileObject = null)
     {
         return $this->getFileContent($fileIdentifier, $this->configuration);
     }

@@ -29,7 +29,7 @@ class DeleteFiles
     protected $fileRepository;
 
     public function __construct(
-        FileRepository $fileRepository = null
+        ?FileRepository $fileRepository = null
     ) {
         $this->fileRepository = $fileRepository ?: GeneralUtility::makeInstance(FileRepository::class);
     }

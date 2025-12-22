@@ -29,6 +29,7 @@ class DomainResource implements RemoteResourceInterface
 {
     protected readonly RequestFactory $requestFactory;
     protected readonly string $url;
+    protected readonly array $requestOptions;
 
     /**
      * @param string $configuration
@@ -37,9 +38,20 @@ class DomainResource implements RemoteResourceInterface
     public function __construct($configuration, ?RequestFactory $requestFactory = null)
     {
         $this->requestFactory = $requestFactory ?: GeneralUtility::makeInstance(RequestFactory::class);
-        $urlParts = parse_url((string)$configuration);
+        $urlParts = parse_url((string) $configuration);
         $urlParts['scheme'] = $urlParts['scheme'] ?? $_SERVER['REQUEST_SCHEME'];
         $this->url = rtrim(HttpUtility::buildUrl($urlParts), '/') . '/';
+
+        if (isset($urlParts['user']) && isset($urlParts['pass'])) {
+            $this->requestOptions = [
+                'auth' => [
+                    $urlParts['user'],
+                    $urlParts['pass'],
+                ],
+            ];
+        } else {
+            $this->requestOptions = [];
+        }
     }
 
     /**
@@ -51,7 +63,7 @@ class DomainResource implements RemoteResourceInterface
     public function hasFile($fileIdentifier, $filePath, ?FileInterface $fileObject = null): bool
     {
         try {
-            $response = $this->requestFactory->request($this->url . ltrim($filePath, '/'), 'HEAD');
+            $response = $this->requestFactory->request($this->url . ltrim($filePath, '/'), 'HEAD', $this->requestOptions);
 
             return $response->getStatusCode() === 200;
         } catch (TransferException $e) {
@@ -70,7 +82,7 @@ class DomainResource implements RemoteResourceInterface
         try {
             $fileName = $this->url . ltrim($filePath, '/');
 
-            return @fopen($fileName, 'r') ?: $this->requestFactory->request($fileName)->getBody()->getContents();
+            return @fopen($fileName, 'r') ?: $this->requestFactory->request($fileName, 'GET', $this->requestOptions)->getBody()->getContents();
         } catch (RequestException $e) {
             return false;
         }

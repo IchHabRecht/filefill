@@ -32,6 +32,13 @@ class AbstractFunctionalTestCase extends FunctionalTestCase
         ];
 
         $this->configurationToUseInTestInstance = [
+            // Wikimedia throttles requests with a generic User-Agent from cloud/CI
+            // IP ranges, see https://w.wiki/4wJS
+            'HTTP' => [
+                'headers' => [
+                    'User-Agent' => 'TYPO3-filefill-tests/1.0 (+https://github.com/IchHabRecht/filefill)',
+                ],
+            ],
             'EXTCONF' => [
                 'filefill' => [
                     'storages' => [

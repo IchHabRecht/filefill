@@ -9,8 +9,10 @@ env:
         "8.4"
     TYPO3: |
         "^13.4"
+        "^14.3"
     TYPO3_DEV: |
         "13.4.x-dev"
+        "14.3.x-dev"
     EXCLUDE: |
         {   
         }

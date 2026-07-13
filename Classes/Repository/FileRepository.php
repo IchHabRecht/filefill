@@ -22,13 +22,15 @@ use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\ProcessedFileRepository;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
+use TYPO3\CMS\Core\Resource\StorageRepository;
 
 class FileRepository
 {
     public function __construct(
         protected readonly ConnectionPool $connectionPool,
         protected readonly ProcessedFileRepository $processedFileRepository,
-        protected readonly ResourceFactory $resourceFactory
+        protected readonly ResourceFactory $resourceFactory,
+        protected readonly StorageRepository $storageRepository
     ) {
     }
 
@@ -105,7 +107,8 @@ class FileRepository
         $rows = $this->findByIdentifier($identifier, $storage);
         foreach ($rows as $row) {
             try {
-                $file = $this->resourceFactory->getFileObjectByStorageAndIdentifier($row['storage'], $row['identifier']);
+                $storage = $this->storageRepository->findByUid((int)$row['storage']);
+                $file = $storage?->getFileByIdentifier($row['identifier']);
                 if (!$file) {
                     continue;
                 }

@@ -18,9 +18,11 @@ namespace IchHabRecht\Filefill\Tests\Functional;
  */
 
 use IchHabRecht\Filefill\Repository\FileRepository;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
+use TYPO3\CMS\Core\Http\RequestFactory;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Domain\Model\File;
 
 class FilefillTest extends AbstractFunctionalTestCase
 {
@@ -42,11 +44,11 @@ class FilefillTest extends AbstractFunctionalTestCase
         $this->resourceFactory = GeneralUtility::makeInstance(ResourceFactory::class);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function fileExistsWithDomainResource()
     {
+        $this->skipTestIfDomainResourceIsNotReachable();
+
         $domainResourcePath = self::STORAGE_FOLDER . '/commons/5/58/Logo_TYPO3.svg';
 
         $file = $this->resourceFactory->getFileObjectFromCombinedIdentifier($domainResourcePath);
@@ -57,12 +59,16 @@ class FilefillTest extends AbstractFunctionalTestCase
         $this->assertStringNotEqualsFile($this->getAbsoluteFilePath($domainResourcePath), '');
 
         $rows = $this->fileRepository->findByIdentifier('domain', 2);
+        if ($rows === []) {
+            // Wikimedia may have started throttling between the initial probe
+            // and the actual fetch, making the placehold resource serve the
+            // file instead - re-check before failing
+            $this->skipTestIfDomainResourceIsNotReachable();
+        }
         $this->assertCount(1, $rows);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function fileExistsWithPlaceholderResource()
     {
         $placeholderResourcePath = self::STORAGE_FOLDER . '/Logo_TYPO3.png';
@@ -90,11 +96,8 @@ class FilefillTest extends AbstractFunctionalTestCase
         ];
     }
 
-    /**
-     * @test
-     * @dataProvider fileExistsWithImageBuilderResourceDataProvider
-     * @param string $fileName
-     */
+    #[Test]
+    #[DataProvider('fileExistsWithImageBuilderResourceDataProvider')]
     public function fileExistsWithImageBuilderResource(string $fileName)
     {
         $fileResourcePath = self::STORAGE_FOLDER . '/' . $fileName;
@@ -136,12 +139,8 @@ class FilefillTest extends AbstractFunctionalTestCase
         ];
     }
 
-    /**
-     * @test
-     * @dataProvider fileExistsWithStaticResourceDataProvider
-     * @param string $fileName
-     * @param string $content
-     */
+    #[Test]
+    #[DataProvider('fileExistsWithStaticResourceDataProvider')]
     public function fileExistsWithStaticResource(string $fileName, string $content)
     {
         $fileResourcePath = self::STORAGE_FOLDER . '/' . $fileName;
@@ -152,5 +151,26 @@ class FilefillTest extends AbstractFunctionalTestCase
         $this->assertFileExists($this->getAbsoluteFilePath($fileResourcePath));
 
         $this->assertStringEqualsFile($this->getAbsoluteFilePath($fileResourcePath), $content);
+    }
+
+    /**
+     * Wikimedia throttles requests from cloud IP ranges (e.g. GitHub Actions
+     * runners), see https://w.wiki/4wJS. As this test asserts that the file
+     * has been fetched by the domain resource, it has to be skipped instead
+     * of falling back to the next configured resource.
+     */
+    protected function skipTestIfDomainResourceIsNotReachable(): void
+    {
+        try {
+            $statusCode = GeneralUtility::makeInstance(RequestFactory::class)
+                ->request('https://upload.wikimedia.org/wikipedia/commons/5/58/Logo_TYPO3.svg')
+                ->getStatusCode();
+        } catch (\Throwable $e) {
+            $statusCode = 0;
+        }
+
+        if ($statusCode !== 200) {
+            self::markTestSkipped('upload.wikimedia.org is not reachable, status code ' . $statusCode);
+        }
     }
 }

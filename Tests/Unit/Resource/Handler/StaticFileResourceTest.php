@@ -18,6 +18,8 @@ namespace IchHabRecht\Filefill\Tests\Unit\Resource\Handler;
  */
 
 use IchHabRecht\Filefill\Resource\Handler\StaticFileResource;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use TYPO3\CMS\Core\TypoScript\AST\Node\RootNode;
 use TYPO3\CMS\Core\TypoScript\TypoScriptStringFactory;
@@ -88,20 +90,16 @@ EOT;
         ];
     }
 
-    /**
-     * @test
-     * @dataProvider getFileReturnsContentDataProvider
-     */
+    #[Test]
+    #[DataProvider('getFileReturnsContentDataProvider')]
     public function getFileReturnsContentForArrayConfiguration(string $filePath, string $expectation): void
     {
         $subject = $this->getStaticFileResource($this->configuration);
         $this->assertEquals($expectation, $subject->getFile($filePath, $filePath));
     }
 
-    /**
-     * @test
-     * @dataProvider getFileReturnsContentDataProvider
-     */
+    #[Test]
+    #[DataProvider('getFileReturnsContentDataProvider')]
     public function getFileReturnsContentForTypoScriptConfiguration(string $filePath, string $expectation): void
     {
         $subject = $this->getStaticFileResource($this->tsConfiguration);

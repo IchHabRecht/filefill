@@ -29,6 +29,7 @@ use TYPO3\CMS\Core\Resource\ProcessedFile;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Resource\ResourceInterface;
 use TYPO3\CMS\Core\Resource\ResourceStorage;
+use TYPO3\CMS\Core\Resource\StorageRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class RemoteResourceCollection implements LoggerAwareInterface
@@ -43,6 +44,7 @@ class RemoteResourceCollection implements LoggerAwareInterface
     protected readonly array $resources;
 
     protected readonly ResourceFactory $resourceFactory;
+    protected readonly StorageRepository $storageRepository;
 
     /**
      * @var FileInterface[]
@@ -61,6 +63,7 @@ class RemoteResourceCollection implements LoggerAwareInterface
         $this->resources = $resources;
         $this->resourceFactory = $resourceFactory ?: GeneralUtility::makeInstance(ResourceFactory::class);
         $this->fileRepository = $fileRepository ?: GeneralUtility::makeInstance(FileRepository::class);
+        $this->storageRepository = GeneralUtility::makeInstance(StorageRepository::class);
     }
 
     /**
@@ -143,7 +146,7 @@ class RemoteResourceCollection implements LoggerAwareInterface
         if (!array_key_exists($filePath, static::$fileIdentifierCache)) {
             static::$fileIdentifierCache[$filePath] = null;
             $localPath = $filePath;
-            $storage = $this->resourceFactory->getStorageObject(0, [], $localPath);
+            $storage = $this->storageRepository->getStorageObject(0, [], $localPath);
             if ($storage->getUid() !== 0) {
                 static::$fileIdentifierCache[$filePath] = $this->getFileObjectFromStorage($storage, $fileIdentifier);
             }
@@ -162,7 +165,7 @@ class RemoteResourceCollection implements LoggerAwareInterface
     {
         if (!$storage->isWithinProcessingFolder($fileIdentifier)) {
             try {
-                $fileObject = $this->resourceFactory->getFileObjectByStorageAndIdentifier($storage->getUid(), $fileIdentifier);
+                $fileObject = $storage->getFileByIdentifier($fileIdentifier);
             } catch (\InvalidArgumentException) {
                 return null;
             }

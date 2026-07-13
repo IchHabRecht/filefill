@@ -24,54 +24,56 @@ class AbstractFunctionalTestCase extends FunctionalTestCase
 {
     protected const STORAGE_FOLDER = 'wikipedia';
 
-    public function __construct(?string $name = null, array $data = [], $dataName = '')
-    {
-        $this->additionalFoldersToCreate = [
-            'fileadmin',
-            self::STORAGE_FOLDER,
-        ];
+    protected array $additionalFoldersToCreate = [
+        'fileadmin',
+        self::STORAGE_FOLDER,
+    ];
 
-        $this->configurationToUseInTestInstance = [
-            'EXTCONF' => [
-                'filefill' => [
-                    'storages' => [
-                        2 => [
-                            [
-                                'identifier' => 'domain',
-                                'configuration' => 'https://upload.wikimedia.org',
-                            ],
-                            [
-                                'identifier' => 'placehold',
-                            ],
-                            [
-                                'identifier' => 'static',
-                                'configuration' => [
-                                    'path/to/example/file.txt' => 'Hello world!',
-                                    'another' => [
-                                        'path' => [
-                                            'to' => [
-                                                'anotherFile.txt' => 'Lorem ipsum',
-                                                '*.youtube' => 'yiJjpKzCVE4',
-                                            ],
-                                            '*' => 'This file was found in /another/path folder.',
+    protected array $configurationToUseInTestInstance = [
+        // Wikimedia throttles requests with a generic User-Agent from cloud/CI
+        // IP ranges, see https://w.wiki/4wJS
+        'HTTP' => [
+            'headers' => [
+                'User-Agent' => 'TYPO3-filefill-tests/1.0 (+https://github.com/IchHabRecht/filefill)',
+            ],
+        ],
+        'EXTCONF' => [
+            'filefill' => [
+                'storages' => [
+                    2 => [
+                        [
+                            'identifier' => 'domain',
+                            'configuration' => 'https://upload.wikimedia.org',
+                        ],
+                        [
+                            'identifier' => 'placehold',
+                        ],
+                        [
+                            'identifier' => 'static',
+                            'configuration' => [
+                                'path/to/example/file.txt' => 'Hello world!',
+                                'another' => [
+                                    'path' => [
+                                        'to' => [
+                                            'anotherFile.txt' => 'Lorem ipsum',
+                                            '*.youtube' => 'yiJjpKzCVE4',
                                         ],
+                                        '*' => 'This file was found in /another/path folder.',
                                     ],
-                                    '*.vimeo' => '143018597',
-                                    '*' => 'This is some static text for all other files.',
                                 ],
+                                '*.vimeo' => '143018597',
+                                '*' => 'This is some static text for all other files.',
                             ],
                         ],
                     ],
                 ],
             ],
-        ];
+        ],
+    ];
 
-        $this->testExtensionsToLoad = [
-            'typo3conf/ext/filefill',
-        ];
-
-        parent::__construct($name, $data, $dataName);
-    }
+    protected array $testExtensionsToLoad = [
+        'typo3conf/ext/filefill',
+    ];
 
     protected function setUp(): void
     {

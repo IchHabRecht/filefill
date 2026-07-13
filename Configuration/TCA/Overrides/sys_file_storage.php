@@ -31,9 +31,12 @@ $tempColumns = [
         'displayCond' => 'FIELD:driver:=:Local',
         'config' => [
             'type' => 'flex',
-            'ds' => [
-                'default' => 'FILE:EXT:filefill/Configuration/FlexForms/Resources.xml',
-            ],
+            // TYPO3 v13 expects an array with "default" key, since v14 "ds" holds the data structure directly
+            'ds' => (new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() >= 14
+                ? 'FILE:EXT:filefill/Configuration/FlexForms/Resources.xml'
+                : [
+                    'default' => 'FILE:EXT:filefill/Configuration/FlexForms/Resources.xml',
+                ],
         ],
     ],
     'tx_filefill_missing' => [

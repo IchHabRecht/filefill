@@ -32,7 +32,7 @@ call_user_func(function () {
                     'label' => 'LLL:EXT:filefill/Resources/Private/Language/locallang_db.xlf:sys_file_storage.filefill.url',
                     'config' => [
                         'type' => 'input',
-                        'eval' => 'required',
+                        'required' => true,
                     ],
                 ],
                 'handler' => \IchHabRecht\Filefill\Resource\Handler\DomainResource::class,
@@ -43,7 +43,7 @@ call_user_func(function () {
                     'label' => 'LLL:EXT:filefill/Resources/Private/Language/locallang_db.xlf:sys_file_storage.filefill.colors',
                     'config' => [
                         'type' => 'input',
-                        'eval' => 'required',
+                        'required' => true,
                         'default' => '#FFFFFF, #000000',
                     ],
                 ],

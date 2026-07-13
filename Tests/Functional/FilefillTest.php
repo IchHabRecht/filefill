@@ -60,6 +60,12 @@ class FilefillTest extends AbstractFunctionalTestCase
         $this->assertStringNotEqualsFile($this->getAbsoluteFilePath($domainResourcePath), '');
 
         $rows = $this->fileRepository->findByIdentifier('domain', 2);
+        if ($rows === []) {
+            // Wikimedia may have started throttling between the initial probe
+            // and the actual fetch, making the placehold resource serve the
+            // file instead - re-check before failing
+            $this->skipTestIfDomainResourceIsNotReachable();
+        }
         $this->assertCount(1, $rows);
     }
 
@@ -167,7 +173,7 @@ class FilefillTest extends AbstractFunctionalTestCase
     {
         try {
             $statusCode = GeneralUtility::makeInstance(RequestFactory::class)
-                ->request('https://upload.wikimedia.org/wikipedia/commons/5/58/Logo_TYPO3.svg', 'HEAD')
+                ->request('https://upload.wikimedia.org/wikipedia/commons/5/58/Logo_TYPO3.svg')
                 ->getStatusCode();
         } catch (\Throwable $e) {
             $statusCode = 0;

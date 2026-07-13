@@ -20,6 +20,7 @@ namespace IchHabRecht\Filefill\Tests\Functional;
 use IchHabRecht\Filefill\Repository\FileRepository;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
+use TYPO3\CMS\Core\Http\RequestFactory;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -46,6 +47,8 @@ class FilefillTest extends AbstractFunctionalTestCase
     #[Test]
     public function fileExistsWithDomainResource()
     {
+        $this->skipTestIfDomainResourceIsNotReachable();
+
         $domainResourcePath = self::STORAGE_FOLDER . '/commons/5/58/Logo_TYPO3.svg';
 
         $file = $this->resourceFactory->getFileObjectFromCombinedIdentifier($domainResourcePath);
@@ -142,5 +145,26 @@ class FilefillTest extends AbstractFunctionalTestCase
         $this->assertFileExists($this->getAbsoluteFilePath($fileResourcePath));
 
         $this->assertStringEqualsFile($this->getAbsoluteFilePath($fileResourcePath), $content);
+    }
+
+    /**
+     * Wikimedia throttles requests from cloud IP ranges (e.g. GitHub Actions
+     * runners), see https://w.wiki/4wJS. As this test asserts that the file
+     * has been fetched by the domain resource, it has to be skipped instead
+     * of falling back to the next configured resource.
+     */
+    protected function skipTestIfDomainResourceIsNotReachable(): void
+    {
+        try {
+            $statusCode = GeneralUtility::makeInstance(RequestFactory::class)
+                ->request('https://upload.wikimedia.org/wikipedia/commons/5/58/Logo_TYPO3.svg', 'HEAD')
+                ->getStatusCode();
+        } catch (\Throwable $e) {
+            $statusCode = 0;
+        }
+
+        if ($statusCode !== 200) {
+            self::markTestSkipped('upload.wikimedia.org is not reachable, status code ' . $statusCode);
+        }
     }
 }

@@ -18,11 +18,13 @@ namespace IchHabRecht\Filefill\Tests\Functional\Command;
  */
 
 use IchHabRecht\Filefill\Tests\Functional\AbstractFunctionalTestCase;
+use PHPUnit\Framework\Attributes\Test;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\NullOutput;
 use TYPO3\CMS\Core\Console\CommandRegistry;
 use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
+use TYPO3\CMS\Core\Resource\StorageRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class DeleteCommandTest extends AbstractFunctionalTestCase
@@ -57,9 +59,7 @@ class DeleteCommandTest extends AbstractFunctionalTestCase
         }
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function executeDeleteCommandForIdentifier(): void
     {
         $input = new ArrayInput([
@@ -83,9 +83,7 @@ class DeleteCommandTest extends AbstractFunctionalTestCase
         $this->assertEmpty($rows);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function executeDeleteCommandForStorage(): void
     {
         $input = new ArrayInput([
@@ -99,18 +97,16 @@ class DeleteCommandTest extends AbstractFunctionalTestCase
 
         $this->assertEquals(0, $statusCode);
 
-        $storage = $this->resourceFactory->getStorageObject(1);
+        $storage = $this->get(StorageRepository::class)->getStorageObject(1);
         $files = $storage->getFilesInFolder($storage->getRootLevelFolder(), 0, 0, false, true);
         $this->assertEmpty($files);
 
-        $storage = $this->resourceFactory->getStorageObject(2);
+        $storage = $this->get(StorageRepository::class)->getStorageObject(2);
         $files = $storage->getFilesInFolder($storage->getRootLevelFolder(), 0, 0, false, true);
         $this->assertNotEmpty($files);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function executeDeleteCommandForAll(): void
     {
         $input = new ArrayInput([
@@ -122,11 +118,11 @@ class DeleteCommandTest extends AbstractFunctionalTestCase
         $statusCode = $command->run($input, $output);
         $this->assertEquals(0, $statusCode);
 
-        $storage = $this->resourceFactory->getStorageObject(1);
+        $storage = $this->get(StorageRepository::class)->getStorageObject(1);
         $files = $storage->getFilesInFolder($storage->getRootLevelFolder(), 0, 0, false, true);
         $this->assertEmpty($files);
 
-        $storage = $this->resourceFactory->getStorageObject(2);
+        $storage = $this->get(StorageRepository::class)->getStorageObject(2);
         $files = $storage->getFilesInFolder($storage->getRootLevelFolder(), 0, 0, false, true);
         $this->assertEmpty($files);
     }

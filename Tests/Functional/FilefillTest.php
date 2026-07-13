@@ -18,9 +18,10 @@ namespace IchHabRecht\Filefill\Tests\Functional;
  */
 
 use IchHabRecht\Filefill\Repository\FileRepository;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Domain\Model\File;
 
 class FilefillTest extends AbstractFunctionalTestCase
 {
@@ -42,9 +43,7 @@ class FilefillTest extends AbstractFunctionalTestCase
         $this->resourceFactory = GeneralUtility::makeInstance(ResourceFactory::class);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function fileExistsWithDomainResource()
     {
         $domainResourcePath = self::STORAGE_FOLDER . '/commons/5/58/Logo_TYPO3.svg';
@@ -60,9 +59,7 @@ class FilefillTest extends AbstractFunctionalTestCase
         $this->assertCount(1, $rows);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function fileExistsWithPlaceholderResource()
     {
         $placeholderResourcePath = self::STORAGE_FOLDER . '/Logo_TYPO3.png';
@@ -90,11 +87,8 @@ class FilefillTest extends AbstractFunctionalTestCase
         ];
     }
 
-    /**
-     * @test
-     * @dataProvider fileExistsWithImageBuilderResourceDataProvider
-     * @param string $fileName
-     */
+    #[Test]
+    #[DataProvider('fileExistsWithImageBuilderResourceDataProvider')]
     public function fileExistsWithImageBuilderResource(string $fileName)
     {
         $fileResourcePath = self::STORAGE_FOLDER . '/' . $fileName;
@@ -136,12 +130,8 @@ class FilefillTest extends AbstractFunctionalTestCase
         ];
     }
 
-    /**
-     * @test
-     * @dataProvider fileExistsWithStaticResourceDataProvider
-     * @param string $fileName
-     * @param string $content
-     */
+    #[Test]
+    #[DataProvider('fileExistsWithStaticResourceDataProvider')]
     public function fileExistsWithStaticResource(string $fileName, string $content)
     {
         $fileResourcePath = self::STORAGE_FOLDER . '/' . $fileName;

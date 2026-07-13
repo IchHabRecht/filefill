@@ -18,6 +18,7 @@ namespace IchHabRecht\Filefill\Tests\Functional\Command;
  */
 
 use IchHabRecht\Filefill\Tests\Functional\AbstractFunctionalTestCase;
+use PHPUnit\Framework\Attributes\Test;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\NullOutput;
 use TYPO3\CMS\Core\Console\CommandRegistry;
@@ -53,9 +54,7 @@ class ResetCommandTest extends AbstractFunctionalTestCase
         $this->assertNotEmpty($rows);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function executeResetCommandForStorage(): void
     {
         $input = new ArrayInput([
@@ -103,9 +102,7 @@ class ResetCommandTest extends AbstractFunctionalTestCase
         $this->assertNotEmpty($rows);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function executeResetCommandForAll(): void
     {
         $input = new ArrayInput([]);

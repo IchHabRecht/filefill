@@ -25,14 +25,19 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class ImageBuilderResource implements RemoteResourceInterface
 {
     protected array $allowedFileExtensions = [
+        'avif',
         'gif',
         'jpeg',
         'jpg',
         'png',
+        'webp',
     ];
 
     protected readonly string $backgroundColor;
     protected readonly string $textColor;
+    protected readonly int $maxWidth;
+    protected readonly int $maxHeight;
+    protected readonly bool $text;
 
     public function __construct(array|string $configuration)
     {
@@ -46,6 +51,10 @@ class ImageBuilderResource implements RemoteResourceInterface
 
         $this->backgroundColor = $configuration['backgroundColor'] ?? '#FFFFFF';
         $this->textColor = $configuration['textColor'] ?? '#000000';
+        // Fall back to the default limit of GifBuilder::start()
+        $this->maxWidth = max(0, (int)($configuration['maxWidth'] ?? 0)) ?: 2000;
+        $this->maxHeight = max(0, (int)($configuration['maxHeight'] ?? 0)) ?: 2000;
+        $this->text = (bool)($configuration['text'] ?? true);
     }
 
     /**
@@ -56,9 +65,11 @@ class ImageBuilderResource implements RemoteResourceInterface
      */
     public function hasFile($fileIdentifier, $filePath, ?FileInterface $fileObject = null): bool
     {
-        return class_exists(\GdImage::class)
-            && $fileObject instanceof FileInterface
-            && in_array($fileObject->getExtension(), $this->allowedFileExtensions, true);
+        $extension = $fileObject?->getExtension();
+
+        // Only offer formats GD can write (e.g. imagewebp)
+        return in_array($extension, $this->allowedFileExtensions, true)
+            && function_exists('image' . ($extension === 'jpg' ? 'jpeg' : $extension));
     }
 
     /**
@@ -67,15 +78,22 @@ class ImageBuilderResource implements RemoteResourceInterface
      * @param FileInterface $fileObject
      * @return string|false
      */
-    public function getFile($fileIdentifier, $filePath, ?FileInterface $fileObject = null): string
+    public function getFile($fileIdentifier, $filePath, ?FileInterface $fileObject = null): string|false
     {
-        $content = '';
+        $content = false;
 
-        $height = max(1, $fileObject?->getProperty('height'));
-        $width = max(1, $fileObject?->getProperty('width'));
+        $originalHeight = max(1, (int)$fileObject?->getProperty('height'));
+        $originalWidth = max(1, (int)$fileObject?->getProperty('width'));
+
+        // GifBuilder clamps each axis on its own, so scale proportionally beforehand to keep the aspect ratio
+        $scale = min(1, $this->maxWidth / $originalWidth, $this->maxHeight / $originalHeight);
+        $height = max(1, (int)round($originalHeight * $scale));
+        $width = max(1, (int)round($originalWidth * $scale));
 
         $fileArray = [
             'XY' => sprintf('%d,%d', $width, $height),
+            'maxWidth' => $this->maxWidth,
+            'maxHeight' => $this->maxHeight,
             'backColor' => $this->backgroundColor,
             'format' => $fileObject?->getExtension() ?: 'png',
             '10' => 'BOX',
@@ -83,20 +101,23 @@ class ImageBuilderResource implements RemoteResourceInterface
                 'dimensions' => sprintf('%d,%d,%d,%d', 0, 0, $width, $height),
                 'color' => $this->backgroundColor,
             ],
-            '20' => 'TEXT',
-            '20.' => [
-                'text' => sprintf('%d x %d', $width, $height),
-                'fontColor' => $this->textColor,
-                'fontSize' => floor($width / 10),
-                'niceText' => 1,
-                'align' => 'center',
-                'offset' => sprintf('%d,%d', 0, floor($height / 2 + $width / 20)),
-            ],
         ];
+        if ($this->text) {
+            // Limit the font size by the height as well, so the text fits into wide images
+            $fontSize = floor(min($width / 10, $height / 2));
+            $fileArray['20'] = 'TEXT';
+            $fileArray['20.'] = [
+                'text' => sprintf('%d x %d', $originalWidth, $originalHeight),
+                'fontColor' => $this->textColor,
+                'fontSize' => $fontSize,
+                'align' => 'center',
+                'offset' => sprintf('%d,%d', 0, floor($height / 2 + $fontSize / 2)),
+            ];
+        }
         $gifBuilder = GeneralUtility::makeInstance(GifBuilder::class);
         $gifBuilder->start($fileArray, []);
         $theImage = $gifBuilder->gifBuild()?->getFullPath();
-        if (file_exists($theImage)) {
+        if ($theImage !== null && file_exists($theImage)) {
             $content = file_get_contents($theImage);
             unlink($theImage);
         }

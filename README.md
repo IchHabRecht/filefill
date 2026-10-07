@@ -114,12 +114,33 @@ There is no need for multiple usage. This resource can be the last one in the ch
 
 ### Image builder
 
-Create an empty image with the correct resolution of the original file. The height and width is added as a text layer.
+Create an empty image with the resolution of the original file. Larger images are scaled down proportionally to fit
+into `maxWidth` / `maxHeight`, so the aspect ratio is kept. By default, the original width and height are added as a
+text layer. Supported file extensions are gif, jpeg, jpg and png, as well as webp and avif if your GD library
+supports them.
 
 Configuration:
 
 - Background color: Enter a valid hex code as background color
 - Text color: Enter a valid hex code as text color
+
+Additional options for the `TYPO3_CONF_VARS` configuration:
+
+- `maxWidth` / `maxHeight`: Maximum size of the created image (default: 2000). Smaller values speed up the image
+  creation.
+- `text`: Set to `false` to skip the text layer
+
+```php
+[
+    'identifier' => 'imagebuilder',
+    'configuration' => [
+        'backgroundColor' => '#FFFFFF',
+        'textColor' => '#000000',
+        'maxWidth' => 1440,
+        'text' => false,
+    ],
+],
+```
 
 ### Static file
 
